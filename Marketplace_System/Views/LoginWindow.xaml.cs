@@ -53,8 +53,9 @@ namespace Marketplace_System.Views
 
         private void linkRegister_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Registration feature coming soon!",
-                "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            var registerWindow = new RegisterWindow();
+            registerWindow.Show();
+            Close();
         }
 
         // New event handlers for the modern design
@@ -140,10 +141,6 @@ namespace Marketplace_System.Views
             }
         }
 
-        private void btnForgotPassword_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Password reset feature coming soon!",
-                "Forgot Password", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
+       
     }
 }
