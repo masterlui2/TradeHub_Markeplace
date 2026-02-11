@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Marketplace_System.Views
 {
@@ -8,34 +10,57 @@ namespace Marketplace_System.Views
         {
             InitializeComponent();
 
-            MouseLeftButtonDown += (s, e) => DragMove();
+            // Allow dragging the borderless window
+            MouseLeftButtonDown += (s, e) =>
+            {
+                if (e.ButtonState == MouseButtonState.Pressed)
+                    DragMove();
+            };
         }
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
-            string username = txtUsername.Text.Trim();
-            string email = txtEmail.Text.Trim();
-            string password = txtPassword.Password;
-            string confirmPassword = txtConfirmPassword.Password;
+            string name = txtName.Text.Trim();            string password = txtPassword.Password;
+            string city = txtCity.Text.Trim();
+            string accountType = (cmbAccountType.SelectedItem as ComboBoxItem)?.Content?.ToString();
 
-            if (string.IsNullOrWhiteSpace(username)
-                || string.IsNullOrWhiteSpace(email)
-                || string.IsNullOrWhiteSpace(password)
-                || string.IsNullOrWhiteSpace(confirmPassword))
+            // Basic validation
+            if (string.IsNullOrWhiteSpace(name) ||
+                string.IsNullOrWhiteSpace(password) ||
+                string.IsNullOrWhiteSpace(city) ||
+                cmbAccountType.SelectedIndex == 0)
             {
-                MessageBox.Show("Please complete all fields before registering.",
-                    "Registration Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    "Please complete all required fields.",
+                    "Registration Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
-            if (!string.Equals(password, confirmPassword, System.StringComparison.Ordinal))
+            // Consent check
+            if (chkConsent.IsChecked != true)
             {
-                MessageBox.Show("Passwords do not match. Please re-enter them.",
-                    "Registration Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    "You must agree to the Terms & Privacy Policy to continue.",
+                    "Consent Required",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
-            
+            // ✅ STEP 1 SUCCESS
+            MessageBox.Show(
+                "Step 1 completed successfully!\nProceeding to the next step.",
+                "Success",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+
+            // TODO:
+            // Navigate to Step 2 window
+            // var step2 = new RegisterStep2Window();
+            // step2.Show();
+            // Close();
         }
 
         private void linkLogin_Click(object sender, RoutedEventArgs e)
@@ -52,7 +77,7 @@ namespace Marketplace_System.Views
 
         private void CloseWindow_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            Application.Current.Shutdown();
         }
     }
 }

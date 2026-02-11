@@ -11,7 +11,8 @@
 
     <Grid>
         <!-- Background blur effect -->
-        <Border Background="#0F172A" Opacity="1">
+        <Border Background="#0B1F17" Opacity="1">
+
             <Border.Effect>
                 <BlurEffect Radius="20"/>
             </Border.Effect>
@@ -39,7 +40,7 @@
                 <Grid>
                     <StackPanel VerticalAlignment="Center"
                                 HorizontalAlignment="Center" Height="423">
-                        <Image Source="pack://application:,,,/Images/new.png"
+                        <Image Source="pack://application:,,,/Images/logo2.png"
        Width="721"
        Height="414"
        Stretch="Uniform"
@@ -186,8 +187,8 @@
                                 Click="btnLogin_Click">
                             <Button.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="#3B82F6" Offset="0"/>
-                                    <GradientStop Color="#8B5CF6" Offset="1"/>
+                                    <GradientStop Color="#16A34A" Offset="0"/>
+                                    <GradientStop Color="#0D9488" Offset="1"/>
                                 </LinearGradientBrush>
                             </Button.Background>
                             <Button.Template>
@@ -216,7 +217,7 @@
                             <Button x:Name="linkRegister"
                                     Content=" Create account"
                                     Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                                    Foreground="#3B82F6"
+                                    Foreground="#0B1F17"
                                     FontWeight="SemiBold"
                                     Click="linkRegister_Click"
                                     Height="19"
