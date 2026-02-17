@@ -184,7 +184,7 @@
                            Margin="12,0,0,0"
                            VerticalAlignment="Center"/>
                         </StackPanel>
-                        
+
                     </Border>
                     <Separator Margin="0,20"/>
 
@@ -268,83 +268,280 @@
                     <!-- Card 1: Asparagus -->
 
                     <!-- Card 2: Carrots -->
-                    <Border Width="287"
-                            Margin="10,0,0,0"
-                            Background="White"
-                            CornerRadius="15"
-                            Padding="15"
-                            BorderBrush="#DCEAE3"
-                            BorderThickness="1"
-                            HorizontalAlignment="Left" Height="337">
+                    <!-- PRODUCT CARD -->
+                    <Border
+        Margin="32,0,-5,0"
+        Background="White"
+        CornerRadius="18"
+        Padding="12"
+        BorderBrush="#DCEAE3"
+        BorderThickness="1">
+
                         <StackPanel>
-                            <Border Height="150" CornerRadius="10" ClipToBounds="True">
-                                <Image Source="/Images/carrot.jpg" Stretch="UniformToFill" Margin="0,0,0,-11"/>
+
+                            <!-- PRODUCT IMAGE -->
+                            <Border Height="150"
+        Background="#F3F8F4"
+        CornerRadius="12"
+        ClipToBounds="True">
+
+                                <Image Source="/Images/carrot.jpg"
+           Stretch="UniformToFill"/>
                             </Border>
-                            <TextBlock Text="Carrots" Margin="0,10,0,4" FontWeight="SemiBold" FontSize="15"/>
-                            <TextBlock Text="₱150 / per kilo" FontSize="12" Foreground="#3F6F5A"/>
-                            <Button Content="Add to Cart" Margin="0,10,0,0"
-                                    Background="#2E7D5B" Foreground="White"
-                                    BorderThickness="0" Padding="8"/>
+
+
+                            <!-- PRODUCT NAME -->
+                            <TextBlock Text="Fresh Carrots"
+                   FontSize="15"
+                   FontWeight="SemiBold"
+                   Margin="0,12,0,2"/>
+
+                            <!-- PRICE -->
+                            <TextBlock Text="₱210 per kilo"
+                   FontSize="13"
+                   Foreground="#2E7D5B"
+                   FontWeight="Bold"/>
+
+                            <!-- IMPORTANT INFO -->
+                            <TextBlock Text="Approx. 12 pcs • In Stock"
+                   FontSize="11"
+                   Foreground="Gray"
+                   Margin="0,4,0,8"/>
+
+                            <Separator Margin="0,6"/>
+
+                            <!-- SELLER INFO SECTION -->
+                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+
+                                <!-- PROFILE CIRCLE -->
+                                <Ellipse Width="32"
+                     Height="32"
+                     Fill="#CFEDE1"/>
+
+                                <StackPanel Margin="8,0,0,0">
+                                    <TextBlock Text="Juan Dela Cruz"
+                           FontSize="12"
+                           FontWeight="SemiBold"/>
+                                    <TextBlock Text="Davao City"
+                           FontSize="11"
+                           Foreground="Gray"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- ACTION BUTTON -->
+                            <Button Content="Add to Cart"
+                Margin="0,10,0,0"
+                Background="#2E7D5B"
+                Foreground="White"
+                BorderThickness="0"
+                Padding="6"/>
                         </StackPanel>
                     </Border>
-                    <Border Width="289"
-                            Margin="8,0,0,0"
-                            Background="White"
-                            CornerRadius="15"
-                            Padding="15"
-                            BorderBrush="#DCEAE3"
-                            BorderThickness="1"
-                            HorizontalAlignment="Left" Height="342">
+                    <Border
+                        Margin="32,0,13,0"
+                        Background="White"
+                        CornerRadius="18"
+                        Padding="12"
+                        BorderBrush="#DCEAE3"
+                        BorderThickness="1">
+
                         <StackPanel>
-                            <Border Height="150" CornerRadius="10" ClipToBounds="True">
-                                <Image Source="/Images/asp.jpg" Stretch="UniformToFill"/>
+
+                            <!-- PRODUCT IMAGE -->
+                            <Border Height="150"
+                                Background="#F3F8F4"
+                                CornerRadius="12"
+                                ClipToBounds="True">
+
+                                <Image Source="/asp.jpg"
+                                    Stretch="UniformToFill"/>
                             </Border>
-                            <TextBlock Text="Asparagus" Margin="0,10,0,4" FontWeight="SemiBold" FontSize="15"/>
-                            <TextBlock Text="₱210 / per kilo" FontSize="12" Foreground="#3F6F5A"/>
-                            <Button Content="Add to Cart" Margin="0,10,0,0"
-                                    Background="#2E7D5B" Foreground="White"
-                                    BorderThickness="0" Padding="8"/>
+
+
+                            <!-- PRODUCT NAME -->
+                            <TextBlock Text="Fresh Asparagus"
+                                FontSize="15"
+                                FontWeight="SemiBold"
+                                Margin="0,12,0,2"/>
+
+                            <!-- PRICE -->
+                            <TextBlock Text="₱210 per kilo"
+                                FontSize="13"
+                                Foreground="#2E7D5B"
+                                FontWeight="Bold"/>
+
+                            <!-- IMPORTANT INFO -->
+                            <TextBlock Text="Approx. 12 pcs • In Stock"
+                                FontSize="11"
+                                Foreground="Gray"
+                                Margin="0,4,0,8"/>
+
+                            <Separator Margin="0,6"/>
+
+                            <!-- SELLER INFO SECTION -->
+                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+
+                                <!-- PROFILE CIRCLE -->
+                                <Ellipse Width="32"
+                                    Height="32"
+                                    Fill="#CFEDE1"/>
+
+                                <StackPanel Margin="8,0,0,0">
+                                    <TextBlock Text="Juan Dela Cruz"
+                                        FontSize="12"
+                                        FontWeight="SemiBold"/>
+                                    <TextBlock Text="Davao City"
+                                        FontSize="11"
+                                        Foreground="Gray"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- ACTION BUTTON -->
+                            <Button Content="Add to Cart"
+                                Margin="0,10,0,0"
+                                Background="#2E7D5B"
+                                Foreground="White"
+                                BorderThickness="0"
+                                Padding="6"/>
+                        </StackPanel>
+                    </Border>
+                    <Border
+Margin="11,0,37,0"
+Background="White"
+CornerRadius="18"
+Padding="12"
+BorderBrush="#DCEAE3"
+BorderThickness="1">
+
+                        <StackPanel>
+
+                            <!-- PRODUCT IMAGE -->
+                            <Border Height="150"
+                            Background="#F3F8F4"
+                            CornerRadius="12"
+                            ClipToBounds="True">
+
+                                <Image Source="/Images/potato.jpg"
+                        Stretch="UniformToFill"/>
+                            </Border>
+
+
+                            <!-- PRODUCT NAME -->
+                            <TextBlock Text="Fresh Potatoes"
+           FontSize="15"
+           FontWeight="SemiBold"
+           Margin="0,12,0,2"/>
+
+                            <!-- PRICE -->
+                            <TextBlock Text="₱210 per kilo"
+           FontSize="13"
+           Foreground="#2E7D5B"
+           FontWeight="Bold"/>
+
+                            <!-- IMPORTANT INFO -->
+                            <TextBlock Text="Approx. 12 pcs • In Stock"
+           FontSize="11"
+           Foreground="Gray"
+           Margin="0,4,0,8"/>
+
+                            <Separator Margin="0,6"/>
+
+                            <!-- SELLER INFO SECTION -->
+                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+
+                                <!-- PROFILE CIRCLE -->
+                                <Ellipse Width="32"
+             Height="32"
+             Fill="#CFEDE1"/>
+
+                                <StackPanel Margin="8,0,0,0">
+                                    <TextBlock Text="Juan Dela Cruz"
+                   FontSize="12"
+                   FontWeight="SemiBold"/>
+                                    <TextBlock Text="Davao City"
+                   FontSize="11"
+                   Foreground="Gray"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- ACTION BUTTON -->
+                            <Button Content="Add to Cart"
+        Margin="0,10,0,0"
+        Background="#2E7D5B"
+        Foreground="White"
+        BorderThickness="0"
+        Padding="6"/>
                         </StackPanel>
                     </Border>
 
                     <!-- Card 3: Beets -->
 
-                    <!-- Card 4: Potatoes – automatically goes to second row -->
-                    <Border Width="267"
-                            Margin="4,0,0,0"
-                            Background="White"
-                            CornerRadius="15"
-                            Padding="15"
-                            BorderBrush="#DCEAE3"
-                            BorderThickness="1"
-                            HorizontalAlignment="Left" Height="342">
+                    <Border
+Margin="32,0,-5,0"
+Background="White"
+CornerRadius="18"
+Padding="12"
+BorderBrush="#DCEAE3"
+BorderThickness="1" Height="316">
+
                         <StackPanel>
-                            <Border Height="150" CornerRadius="10" ClipToBounds="True">
-                                <Image Source="/Images/potato.jpg" Stretch="UniformToFill"/>
+
+                            <!-- PRODUCT IMAGE -->
+                            <Border Height="150"
+                            Background="#F3F8F4"
+                            CornerRadius="12"
+                            ClipToBounds="True">
+
+                                <Image Source="/Images/beets.jpg"
+                            Stretch="UniformToFill"/>
                             </Border>
-                            <TextBlock Text="Potatoes" Margin="0,10,0,4" FontWeight="SemiBold" FontSize="15"/>
-                            <TextBlock Text="₱100 / per kilo" FontSize="12" Foreground="#3F6F5A"/>
-                            <Button Content="Add to Cart" Margin="0,10,0,0"
-                                    Background="#2E7D5B" Foreground="White"
-                                    BorderThickness="0" Padding="8"/>
-                        </StackPanel>
-                    </Border>
-                    <Border Width="284"
-                            Background="White"
-                            CornerRadius="15"
-                            Padding="15"
-                            BorderBrush="#DCEAE3"
-                            BorderThickness="1"
-                            HorizontalAlignment="Center" Height="324">
-                        <StackPanel>
-                            <Border Height="150" CornerRadius="10" ClipToBounds="True">
-                                <Image Source="/Images/beets.jpg" Stretch="UniformToFill"/>
-                            </Border>
-                            <TextBlock Text="Beets" Margin="0,10,0,4" FontWeight="SemiBold" FontSize="15"/>
-                            <TextBlock Text="₱120 / per kilo" FontSize="12" Foreground="#3F6F5A"/>
-                            <Button Content="Add to Cart" Margin="0,10,0,0"
-                                    Background="#2E7D5B" Foreground="White"
-                                    BorderThickness="0" Padding="8"/>
+
+
+                            <!-- PRODUCT NAME -->
+                            <TextBlock Text="Fresh Beets"
+           FontSize="15"
+           FontWeight="SemiBold"
+           Margin="0,12,0,2"/>
+
+                            <!-- PRICE -->
+                            <TextBlock Text="₱210 per kilo"
+           FontSize="13"
+           Foreground="#2E7D5B"
+           FontWeight="Bold"/>
+
+                            <!-- IMPORTANT INFO -->
+                            <TextBlock Text="Approx. 12 pcs • In Stock"
+           FontSize="11"
+           Foreground="Gray"
+           Margin="0,4,0,8"/>
+
+                            <Separator Margin="0,6"/>
+
+                            <!-- SELLER INFO SECTION -->
+                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+
+                                <!-- PROFILE CIRCLE -->
+                                <Ellipse Width="32"
+             Height="32"
+             Fill="#CFEDE1"/>
+
+                                <StackPanel Margin="8,0,0,0">
+                                    <TextBlock Text="Juan Dela Cruz"
+                   FontSize="12"
+                   FontWeight="SemiBold"/>
+                                    <TextBlock Text="Davao City"
+                   FontSize="11"
+                   Foreground="Gray"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- ACTION BUTTON -->
+                            <Button Content="Add to Cart"
+        Margin="0,10,0,0"
+        Background="#2E7D5B"
+        Foreground="White"
+        BorderThickness="0"
+        Padding="6"/>
                         </StackPanel>
                     </Border>
                 </UniformGrid>
