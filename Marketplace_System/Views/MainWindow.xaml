@@ -35,16 +35,52 @@
                 <!-- Optional right margin to separate from nav -->
 
                 <!-- NAVIGATION LINKS – centered in remaining space -->
-                <StackPanel Grid.Column="1"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center" Height="290" Width="315" RenderTransformOrigin="0.983,0.547">
-                    <TextBlock Text="Home" Margin="0,0,25,0" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
-                    <TextBlock Text="My Orders" Margin="0,0,25,0" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
-                    <TextBlock Text="Messages" Margin="0,0,25,0" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
-                    <TextBlock Text="Wishlist" Margin="0,0,25,0" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
-                    <TextBlock Text="Cart" Margin="0,0,25,0" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
-                </StackPanel>
+                <!-- NAVIGATION CONTAINER -->
+                <Border Grid.Column="1"
+        Background="#E8F6ED"
+        CornerRadius="20"
+        Padding="14,8"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        BorderBrush="#CDE9DA"
+        BorderThickness="1">
+
+                    <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Center">
+
+                        <TextBlock Text="Home"
+                   Margin="12,0"
+                   FontWeight="SemiBold"
+                   Foreground="#1F4E3D"
+                   VerticalAlignment="Center"/>
+
+                        <TextBlock Text="My Orders"
+                   Margin="12,0"
+                   FontWeight="SemiBold"
+                   Foreground="#1F4E3D"
+                   VerticalAlignment="Center"/>
+
+                        <TextBlock Text="Messages"
+                   Margin="12,0"
+                   FontWeight="SemiBold"
+                   Foreground="#1F4E3D"
+                   VerticalAlignment="Center"/>
+
+                        <TextBlock Text="Wishlist"
+                   Margin="12,0"
+                   FontWeight="SemiBold"
+                   Foreground="#1F4E3D"
+                   VerticalAlignment="Center"/>
+
+                        <TextBlock Text="Cart"
+                   Margin="12,0"
+                   FontWeight="SemiBold"
+                   Foreground="#1F4E3D"
+                   VerticalAlignment="Center"/>
+
+                    </StackPanel>
+                </Border>
+
 
                 <!-- PROFILE DROPDOWN – at very right corner -->
                 <Menu Grid.Column="4"
@@ -353,7 +389,7 @@
                                 CornerRadius="12"
                                 ClipToBounds="True">
 
-                                <Image Source="/asp.jpg"
+                                <Image Source="/Images/asp.jpg"
                                     Stretch="UniformToFill"/>
                             </Border>
 
@@ -514,7 +550,6 @@ BorderThickness="1" Height="316">
            FontSize="11"
            Foreground="Gray"
            Margin="0,4,0,8"/>
-
                             <Separator Margin="0,6"/>
 
                             <!-- SELLER INFO SECTION -->
@@ -547,5 +582,30 @@ BorderThickness="1" Height="316">
                 </UniformGrid>
             </ScrollViewer>
         </Grid>
+        <Border
+            Background="White"
+            CornerRadius="20"
+            Padding="10,6"
+            Margin="897,0,0,0"
+            VerticalAlignment="Center"
+            BorderBrush="#DCEAE3"
+            BorderThickness="1"
+            MaxWidth="350" HorizontalAlignment="Left" Width="186">
+
+            <DockPanel>
+
+                <TextBlock Text="🔍"
+                    VerticalAlignment="Center"
+                    Margin="0,0,8,0"
+                    Foreground="#7C8A84"/>
+
+                <TextBox BorderThickness="0"
+                    Background="Transparent"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    Foreground="#1F4E3D"
+                    Text="Search products..."/>
+            </DockPanel>
+        </Border>
     </Grid>
 </Window>
