@@ -9,10 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\asp.jpg" />
+    <None Remove="Images\beets.jpg" />
+    <None Remove="Images\carrot.jpg" />
     <None Remove="Images\farm_background.png" />
     <None Remove="Images\logo2.png" />
     <None Remove="Images\new.png" />
-    <None Remove="Images\reg.png" />
+    <None Remove="Images\potato.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +32,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\asp.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\beets.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\carrot.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\farm_background.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -38,7 +50,7 @@
     <Resource Include="Images\new.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\reg.png">
+    <Resource Include="Images\potato.jpg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
