@@ -22,13 +22,11 @@ namespace Marketplace_System.Views
         {
             string name = txtName.Text.Trim();            string password = txtPassword.Password;
             string city = txtCity.Text.Trim();
-            string accountType = (cmbAccountType.SelectedItem as ComboBoxItem)?.Content?.ToString();
 
             // Basic validation
             if (string.IsNullOrWhiteSpace(name) ||
                 string.IsNullOrWhiteSpace(password) ||
-                string.IsNullOrWhiteSpace(city) ||
-                cmbAccountType.SelectedIndex == 0)
+                string.IsNullOrWhiteSpace(city))
             {
                 MessageBox.Show(
                     "Please complete all required fields.",
@@ -38,16 +36,7 @@ namespace Marketplace_System.Views
                 return;
             }
 
-            // Consent check
-            if (chkConsent.IsChecked != true)
-            {
-                MessageBox.Show(
-                    "You must agree to the Terms & Privacy Policy to continue.",
-                    "Consent Required",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
-                return;
-            }
+         
 
             // ✅ STEP 1 SUCCESS
             MessageBox.Show(

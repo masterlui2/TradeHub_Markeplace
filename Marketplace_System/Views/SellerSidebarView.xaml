@@ -1,0 +1,128 @@
+﻿<UserControl x:Class="Marketplace_System.Views.SellerSidebarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+
+    <Border Background="White"
+            CornerRadius="18"
+            Padding="15"
+            Margin="0,0,20,0">
+
+        <StackPanel>
+
+            <!-- HEADER -->
+            <TextBlock Text="Seller Tools"
+                       FontWeight="Bold"
+                       FontSize="16"
+                       Foreground="#1F4E3D"
+                       Margin="0,0,0,15"/>
+
+            <!-- SELLER DASHBOARD -->
+            <Border Background="#E6F4EC"
+                    CornerRadius="12"
+                    Padding="10"
+                    Margin="0,0,0,8">
+
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="32"
+                             Height="32"
+                             Fill="#2E7D5B"
+                             VerticalAlignment="Center"/>
+
+                    <TextBlock Text="Seller Dashboard"
+                               Margin="12,0,0,0"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- CREATE LISTING -->
+            <Border CornerRadius="12"
+                    Padding="10"
+                    Margin="0,0,0,8">
+
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="32"
+                             Height="32"
+                             Fill="#F0F3F2"
+                             VerticalAlignment="Center"/>
+
+                    <TextBlock Text="Create Listing"
+                               Margin="12,0,0,0"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- YOUR LISTINGS -->
+            <Border CornerRadius="12"
+                    Padding="10"
+                    Margin="0,0,0,8">
+
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="32"
+                             Height="32"
+                             Fill="#F0F3F2"
+                             VerticalAlignment="Center"/>
+
+                    <TextBlock Text="Your Listings"
+                               Margin="12,0,0,0"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ANNOUNCEMENTS -->
+            <Border CornerRadius="12"
+                    Padding="10"
+                    Margin="0,0,0,8">
+
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="32"
+                             Height="32"
+                             Fill="#F0F3F2"
+                             VerticalAlignment="Center"/>
+
+                    <TextBlock Text="Announcements"
+                               Margin="12,0,0,0"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- INSIGHTS -->
+            <Border CornerRadius="12"
+                    Padding="10"
+                    Margin="0,0,0,8">
+
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="32"
+                             Height="32"
+                             Fill="#F0F3F2"
+                             VerticalAlignment="Center"/>
+
+                    <TextBlock Text="Insights"
+                               Margin="12,0,0,0"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Separator Margin="0,20"/>
+
+            <!-- PROFILE -->
+            <Border CornerRadius="12"
+                    Padding="10">
+
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="32"
+                             Height="32"
+                             Fill="#F0F3F2"
+                             VerticalAlignment="Center"/>
+
+                    <TextBlock Text="Marketplace Profile"
+                               Margin="12,0,0,0"
+                               VerticalAlignment="Center"
+                               FontWeight="SemiBold"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </Border>
+</UserControl>

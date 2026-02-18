@@ -2,58 +2,155 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="Transparent">
-    <Border Background="White"
-            CornerRadius="18"
-            Padding="24"
-            BorderBrush="#DCEAE3"
-            BorderThickness="1">
-        <StackPanel>
-            <TextBlock Text="Seller Dashboard"
-                       FontSize="26"
-                       FontWeight="Bold"
-                       Foreground="#1F4E3D"/>
-            <TextBlock Text="Manage your produce listings and monitor orders from one place."
-                       Margin="0,6,0,20"
-                       Foreground="#4A5F56"/>
 
-            <UniformGrid Columns="3" Margin="0,0,0,20">
-                <Border Background="#E6F4EC" CornerRadius="12" Padding="16" Margin="0,0,12,0">
-                    <StackPanel>
-                        <TextBlock Text="Active Listings" FontWeight="SemiBold" Foreground="#1F4E3D"/>
-                        <TextBlock Text="12" FontSize="24" FontWeight="Bold" Foreground="#2E7D5B"/>
-                    </StackPanel>
-                </Border>
-                <Border Background="#F3F8F4" CornerRadius="12" Padding="16" Margin="0,0,12,0">
-                    <StackPanel>
-                        <TextBlock Text="Pending Orders" FontWeight="SemiBold" Foreground="#1F4E3D"/>
-                        <TextBlock Text="4" FontSize="24" FontWeight="Bold" Foreground="#2E7D5B"/>
-                    </StackPanel>
-                </Border>
-                <Border Background="#F3F8F4" CornerRadius="12" Padding="16">
-                    <StackPanel>
-                        <TextBlock Text="Revenue (Today)" FontWeight="SemiBold" Foreground="#1F4E3D"/>
-                        <TextBlock Text="₱3,240" FontSize="24" FontWeight="Bold" Foreground="#2E7D5B"/>
-                    </StackPanel>
-                </Border>
-            </UniformGrid>
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
 
-            <TextBlock Text="Quick Actions"
-                       FontSize="18"
-                       FontWeight="SemiBold"
-                       Margin="0,0,0,10"/>
-            <StackPanel Orientation="Horizontal">
-                <Button Content="Create Listing"
-                        Padding="12,6"
-                        Margin="0,0,10,0"
-                        Background="#2E7D5B"
-                        Foreground="White"
-                        BorderThickness="0"/>
-                <Button Content="Manage Orders"
-                        Padding="12,6"
-                        Background="#E6F4EC"
-                        Foreground="#1F4E3D"
-                        BorderBrush="#CDE9DA"/>
-            </StackPanel>
+        <StackPanel Margin="0,0,10,0">
+
+            <!-- ================= OVERVIEW ================= -->
+            <Border Background="White"
+                    CornerRadius="18"
+                    Padding="20"
+                    BorderBrush="#DCEAE3"
+                    BorderThickness="1"
+                    Margin="0,0,0,20">
+
+                <StackPanel>
+
+                    <TextBlock Text="Seller Overview"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               Foreground="#1F4E3D"
+                               Margin="0,0,0,16"/>
+
+                    <UniformGrid Columns="2">
+
+                        <!-- Chats -->
+                        <Border Background="#F3F8F4"
+                                CornerRadius="14"
+                                Padding="16"
+                                Margin="0,0,10,0">
+
+                            <StackPanel>
+                                <TextBlock Text="7"
+                                           FontSize="28"
+                                           FontWeight="Bold"
+                                           Foreground="#2E7D5B"/>
+                                <TextBlock Text="Chats to Answer"
+                                           FontSize="14"
+                                           Foreground="#374151"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Rating -->
+                        <Border Background="#F3F8F4"
+                                CornerRadius="14"
+                                Padding="16"
+                                Margin="10,0,0,0">
+
+                            <StackPanel>
+                                <TextBlock Text="0 ★"
+                                           FontSize="28"
+                                           FontWeight="Bold"
+                                           Foreground="#2E7D5B"/>
+                                <TextBlock Text="Seller Rating"
+                                           FontSize="14"
+                                           Foreground="#374151"/>
+                                <TextBlock Text="0 Reviews"
+                                           FontSize="12"
+                                           Foreground="Gray"/>
+                            </StackPanel>
+                        </Border>
+
+                    </UniformGrid>
+                </StackPanel>
+            </Border>
+
+
+            <!-- ================= YOUR LISTINGS ================= -->
+            <Border Background="White"
+                    CornerRadius="18"
+                    Padding="20"
+                    BorderBrush="#DCEAE3"
+                    BorderThickness="1">
+
+                <StackPanel>
+
+                    <!-- Header -->
+                    <DockPanel Margin="0,0,0,16">
+
+                        <TextBlock Text="Your Listings"
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   Foreground="#1F4E3D"
+                                   DockPanel.Dock="Left"/>
+
+                        <Button Content="Create Listing"
+                                Padding="10,6"
+                                Background="#2E7D5B"
+                                Foreground="White"
+                                BorderThickness="0"
+                                FontWeight="SemiBold"
+                                HorizontalAlignment="Right"
+                                />
+                    </DockPanel>
+
+                    <!-- Listing Stats -->
+                    <UniformGrid Columns="3">
+
+                        <Border Background="#F3F8F4"
+                                CornerRadius="14"
+                                Padding="16"
+                                Margin="0,0,10,0">
+                            <StackPanel>
+                                <TextBlock Text="0"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Foreground="#2E7D5B"/>
+                                <TextBlock Text="Active"
+                                           FontSize="14"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#F3F8F4"
+                                CornerRadius="14"
+                                Padding="16"
+                                Margin="0,0,10,0">
+                            <StackPanel>
+                                <TextBlock Text="0"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Foreground="#2E7D5B"/>
+                                <TextBlock Text="Sold"
+                                           FontSize="14"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#F3F8F4"
+                                CornerRadius="14"
+                                Padding="16">
+                            <StackPanel>
+                                <TextBlock Text="0"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Foreground="#2E7D5B"/>
+                                <TextBlock Text="Drafts"
+                                           FontSize="14"/>
+                            </StackPanel>
+                        </Border>
+
+                    </UniformGrid>
+
+                    <TextBlock Text="See all listings"
+                               Foreground="#2E7D5B"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center"
+                               Margin="0,18,0,0"/>
+
+                </StackPanel>
+            </Border>
+
         </StackPanel>
-    </Border>
+    </ScrollViewer>
 </UserControl>

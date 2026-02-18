@@ -84,7 +84,7 @@
 
 
                 <!-- PROFILE DROPDOWN – at very right corner -->
-                <Menu Grid.Column="4"
+                <Menu Grid.Column="2"
               Background="Transparent"
               VerticalAlignment="Center"
               HorizontalAlignment="Right">
@@ -120,190 +120,179 @@
             </Grid.ColumnDefinitions>
 
             <!-- ===== LEFT SIDEBAR (FarmHub Style) ===== -->
-            <Border Grid.Column="0"
-        Background="White"
-        CornerRadius="18"
-        Padding="15"
-        Margin="0,0,20,0">
+            <ContentControl x:Name="SidebarHost" Grid.Column="0">
+                <ContentControl.Content>
+                    <Border Background="White"
+                            CornerRadius="18"
+                            Padding="15"
+                            Margin="0,0,20,0">
 
-                <StackPanel>
+                        <StackPanel>
 
-                    <!-- BROWSE MARKET -->
-                    <Border Background="#E6F4EC"
-                CornerRadius="12"
-                Padding="10"
-                Margin="0,0,0,8">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="32" Height="32"
-                         Fill="#2E7D5B"
-                         VerticalAlignment="Center"/>
-                            <TextBlock Text="Browse Produce"
-                           FontWeight="SemiBold"
-                           Margin="12,0,0,0"
-                           VerticalAlignment="Center"/>
+                            <!-- BROWSE MARKET -->
+                            <Border Background="#E6F4EC"
+                                    CornerRadius="12"
+                                    Padding="10"
+                                    Margin="0,0,0,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="32" Height="32"
+                                             Fill="#2E7D5B"
+                                             VerticalAlignment="Center"/>
+                                    <TextBlock Text="Browse Produce"
+                                               FontWeight="SemiBold"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- MY ORDERS -->
+                            <Border Padding="10"
+                                    CornerRadius="12"
+                                    Margin="0,0,0,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="32" Height="32"
+                                             Fill="#F0F3F2"
+                                             VerticalAlignment="Center"/>
+                                    <TextBlock Text="My Orders"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- CART -->
+                            <Border Padding="10"
+                                    CornerRadius="12"
+                                    Margin="0,0,0,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="32" Height="32"
+                                             Fill="#F0F3F2"
+                                             VerticalAlignment="Center"/>
+                                    <TextBlock Text="My Cart"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- WISHLIST -->
+                            <Border Padding="10"
+                                    CornerRadius="12"
+                                    Margin="0,0,0,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="32" Height="32"
+                                             Fill="#F0F3F2"
+                                             VerticalAlignment="Center"/>
+                                    <TextBlock Text="Saved Items"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- SELL SECTION -->
+                            <Separator Margin="0,15"/>
+
+                            <TextBlock Text="Seller Tools"
+                                       FontWeight="Bold"
+                                       Foreground="#1F4E3D"
+                                       Margin="0,0,0,10"/>
+
+                            <!-- CREATE LISTING -->
+                            <Border Background="#E6F4EC"
+                                    CornerRadius="12"
+                                    Padding="10"
+                                    Margin="0,0,0,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="32" Height="32"
+                                             Fill="#2E7D5B"
+                                             VerticalAlignment="Center"/>
+                                    <TextBlock Text="Create Listing"
+                                               FontWeight="SemiBold"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- MANAGE LISTINGS -->
+                            <Button x:Name="SellingNavButton"
+                                    Click="SellingNavButton_Click"
+                                    Padding="10"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    HorizontalContentAlignment="Stretch"
+                                    Cursor="Hand">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="32" Height="32"
+                                             Fill="#F0F3F2"
+                                             VerticalAlignment="Center"/>
+                                    <TextBlock Text="Selling"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Separator Margin="0,20"/>
+
+                            <TextBlock Text="Categories"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Margin="0,0,0,12"/>
+
+                            <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="30" Height="30" Fill="#F0F3F2"/>
+                                    <TextBlock Text="Vegetables"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="30" Height="30" Fill="#F0F3F2"/>
+                                    <TextBlock Text="Fruits"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="30" Height="30" Fill="#F0F3F2"/>
+                                    <TextBlock Text="Leafy Greens"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="30" Height="30" Fill="#F0F3F2"/>
+                                    <TextBlock Text="Root Crops"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="30" Height="30" Fill="#F0F3F2"/>
+                                    <TextBlock Text="Milk &amp; Eggs"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Padding="8" CornerRadius="10">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="30" Height="30" Fill="#F0F3F2"/>
+                                    <TextBlock Text="Organic Products"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
                     </Border>
-
-                    <!-- MY ORDERS -->
-                    <Button x:Name="SellingNavButton"
-                            Click="SellingNavButton_Click"
-                            Padding="10"
-                            Margin="0,0,0,0"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            HorizontalContentAlignment="Stretch"
-                            Cursor="Hand">
-                        
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="32" Height="32"
-                         Fill="#F0F3F2"
-                                     VerticalAlignment="Center"/>
-                            <TextBlock Text="My Orders"
-                           Margin="12,0,0,0"
-                                       VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                    <!-- CART -->
-                    <Border Padding="10"
-                CornerRadius="12"
-                Margin="0,0,0,8">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="32" Height="32"
-                         Fill="#F0F3F2"
-                         VerticalAlignment="Center"/>
-                            <TextBlock Text="My Cart"
-                           Margin="12,0,0,0"
-                           VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- WISHLIST -->
-                    <Border Padding="10"
-                CornerRadius="12"
-                Margin="0,0,0,8">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="32" Height="32"
-                         Fill="#F0F3F2"
-                         VerticalAlignment="Center"/>
-                            <TextBlock Text="Saved Items"
-                           Margin="12,0,0,0"
-                           VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- SELL SECTION -->
-                    <Separator Margin="0,15"/>
-
-                    <TextBlock Text="Seller Tools"
-                   FontWeight="Bold"
-                   Foreground="#1F4E3D"
-                   Margin="0,0,0,10"/>
-
-                    <!-- CREATE LISTING -->
-                    <Border Background="#E6F4EC"
-                CornerRadius="12"
-                Padding="10"
-                Margin="0,0,0,8">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="32" Height="32"
-                         Fill="#2E7D5B"
-                         VerticalAlignment="Center"/>
-                            <TextBlock Text="Create Listing"
-                           FontWeight="SemiBold"
-                           Margin="12,0,0,0"
-                           VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- MANAGE LISTINGS -->
-                    <Button x:Name="SellingPageNavButton"
-        Click="SellingNavButton_Click"
-        Padding="10"
-        Margin="0,0,0,8"
-        Background="Transparent"
-        BorderThickness="0"
-        HorizontalContentAlignment="Stretch"
-        Cursor="Hand">
-
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="32" Height="32"
-                         Fill="#F0F3F2"
-                         VerticalAlignment="Center"/>
-                            <TextBlock Text="Selling"
-                           Margin="12,0,0,0"
-                           VerticalAlignment="Center"/>
-                        </StackPanel>
-
-                    </Button>
-                    <Separator Margin="0,20"/>
-
-                    <TextBlock Text="Categories"
-           FontSize="16"
-           FontWeight="Bold"
-           Margin="0,0,0,12"/>
-
-                    <!-- VEGETABLES -->
-                    <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="30" Height="30" Fill="#F0F3F2"/>
-                            <TextBlock Text="Vegetables"
-                   Margin="12,0,0,0"
-                   VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- FRUITS -->
-                    <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="30" Height="30" Fill="#F0F3F2"/>
-                            <TextBlock Text="Fruits"
-                   Margin="12,0,0,0"
-                   VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- LEAFY GREENS -->
-                    <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="30" Height="30" Fill="#F0F3F2"/>
-                            <TextBlock Text="Leafy Greens"
-                   Margin="12,0,0,0"
-                   VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- ROOT CROPS -->
-                    <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="30" Height="30" Fill="#F0F3F2"/>
-                            <TextBlock Text="Root Crops"
-                   Margin="12,0,0,0"
-                   VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- MILK & EGGS -->
-                    <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="30" Height="30" Fill="#F0F3F2"/>
-                            <TextBlock Text="Milk &amp; Eggs"
-                   Margin="12,0,0,0"
-                   VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- ORGANIC PRODUCTS -->
-                    <Border Padding="8" CornerRadius="10">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="30" Height="30" Fill="#F0F3F2"/>
-                            <TextBlock Text="Organic Products"
-                   Margin="12,0,0,0"
-                   VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-
-                </StackPanel>
-            </Border>
+                </ContentControl.Content>
+            </ContentControl>
 
             <!-- ===== PRODUCT GRID – EXACTLY 3 CARDS PER ROW ===== -->
             <ContentControl x:Name="MainContentHost" Grid.Column="1">
@@ -313,14 +302,14 @@
                                   RenderTransformOrigin="0.59,0.538">
 
                         <!-- UniformGrid with Columns="3" forces 3 cards per row -->
-                <UniformGrid Columns="3"
+                        <UniformGrid Columns="3"
                              Margin="0,0,0,10" Width="930">
 
-                    <!-- Card 1: Asparagus -->
+                            <!-- Card 1: Asparagus -->
 
-                    <!-- Card 2: Carrots -->
-                    <!-- PRODUCT CARD -->
-                    <Border
+                            <!-- Card 2: Carrots -->
+                            <!-- PRODUCT CARD -->
+                            <Border
         Margin="32,0,-5,0"
         Background="White"
         CornerRadius="18"
@@ -328,68 +317,68 @@
         BorderBrush="#DCEAE3"
         BorderThickness="1">
 
-                        <StackPanel>
+                                <StackPanel>
 
-                            <!-- PRODUCT IMAGE -->
-                            <Border Height="150"
+                                    <!-- PRODUCT IMAGE -->
+                                    <Border Height="150"
         Background="#F3F8F4"
         CornerRadius="12"
         ClipToBounds="True">
 
-                                <Image Source="/Images/carrot.jpg"
+                                        <Image Source="/Images/carrot.jpg"
            Stretch="UniformToFill"/>
-                            </Border>
+                                    </Border>
 
 
-                            <!-- PRODUCT NAME -->
-                            <TextBlock Text="Fresh Carrots"
+                                    <!-- PRODUCT NAME -->
+                                    <TextBlock Text="Fresh Carrots"
                    FontSize="15"
                    FontWeight="SemiBold"
                    Margin="0,12,0,2"/>
 
-                            <!-- PRICE -->
-                            <TextBlock Text="₱210 per kilo"
+                                    <!-- PRICE -->
+                                    <TextBlock Text="₱210 per kilo"
                    FontSize="13"
                    Foreground="#2E7D5B"
                    FontWeight="Bold"/>
 
-                            <!-- IMPORTANT INFO -->
-                            <TextBlock Text="Approx. 12 pcs • In Stock"
+                                    <!-- IMPORTANT INFO -->
+                                    <TextBlock Text="Approx. 12 pcs • In Stock"
                    FontSize="11"
                    Foreground="Gray"
                    Margin="0,4,0,8"/>
 
-                            <Separator Margin="0,6"/>
+                                    <Separator Margin="0,6"/>
 
-                            <!-- SELLER INFO SECTION -->
-                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                    <!-- SELLER INFO SECTION -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
 
-                                <!-- PROFILE CIRCLE -->
-                                <Ellipse Width="32"
+                                        <!-- PROFILE CIRCLE -->
+                                        <Ellipse Width="32"
                      Height="32"
                      Fill="#CFEDE1"/>
 
-                                <StackPanel Margin="8,0,0,0">
-                                    <TextBlock Text="Juan Dela Cruz"
+                                        <StackPanel Margin="8,0,0,0">
+                                            <TextBlock Text="Juan Dela Cruz"
                            FontSize="12"
                            FontWeight="SemiBold"/>
-                                    <TextBlock Text="Davao City"
+                                            <TextBlock Text="Davao City"
                            FontSize="11"
                            Foreground="Gray"/>
-                                </StackPanel>
-                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
 
-                            <!-- ACTION BUTTON -->
-                            <Button Content="Add to Cart"
+                                    <!-- ACTION BUTTON -->
+                                    <Button Content="Add to Cart"
                 Margin="0,10,0,0"
                 Background="#2E7D5B"
                 Foreground="White"
                 BorderThickness="0"
                 Padding="6"/>
-                        </StackPanel>
-                    </Border>
-                    
-                    <Border
+                                </StackPanel>
+                            </Border>
+
+                            <Border
                         Margin="32,0,13,0"
                         Background="White"
                         CornerRadius="18"
@@ -397,67 +386,67 @@
                         BorderBrush="#DCEAE3"
                         BorderThickness="1">
 
-                        <StackPanel>
+                                <StackPanel>
 
-                            <!-- PRODUCT IMAGE -->
-                            <Border Height="150"
+                                    <!-- PRODUCT IMAGE -->
+                                    <Border Height="150"
                                 Background="#F3F8F4"
                                 CornerRadius="12"
                                 ClipToBounds="True">
 
-                                <Image Source="/Images/asp.jpg"
+                                        <Image Source="/Images/asp.jpg"
                                     Stretch="UniformToFill"/>
-                            </Border>
+                                    </Border>
 
 
-                            <!-- PRODUCT NAME -->
-                            <TextBlock Text="Fresh Asparagus"
+                                    <!-- PRODUCT NAME -->
+                                    <TextBlock Text="Fresh Asparagus"
                                 FontSize="15"
                                 FontWeight="SemiBold"
                                 Margin="0,12,0,2"/>
 
-                            <!-- PRICE -->
-                            <TextBlock Text="₱210 per kilo"
+                                    <!-- PRICE -->
+                                    <TextBlock Text="₱210 per kilo"
                                 FontSize="13"
                                 Foreground="#2E7D5B"
                                 FontWeight="Bold"/>
 
-                            <!-- IMPORTANT INFO -->
-                            <TextBlock Text="Approx. 12 pcs • In Stock"
+                                    <!-- IMPORTANT INFO -->
+                                    <TextBlock Text="Approx. 12 pcs • In Stock"
                                 FontSize="11"
                                 Foreground="Gray"
                                 Margin="0,4,0,8"/>
 
-                            <Separator Margin="0,6"/>
+                                    <Separator Margin="0,6"/>
 
-                            <!-- SELLER INFO SECTION -->
-                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                    <!-- SELLER INFO SECTION -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
 
-                                <!-- PROFILE CIRCLE -->
-                                <Ellipse Width="32"
+                                        <!-- PROFILE CIRCLE -->
+                                        <Ellipse Width="32"
                                     Height="32"
                                     Fill="#CFEDE1"/>
 
-                                <StackPanel Margin="8,0,0,0">
-                                    <TextBlock Text="Juan Dela Cruz"
+                                        <StackPanel Margin="8,0,0,0">
+                                            <TextBlock Text="Juan Dela Cruz"
                                         FontSize="12"
                                         FontWeight="SemiBold"/>
-                                    <TextBlock Text="Davao City"
+                                            <TextBlock Text="Davao City"
                                         FontSize="11"
                                         Foreground="Gray"/>
-                                </StackPanel>
-                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
 
-                            <!-- ACTION BUTTON -->
-                            <Button Content="Add to Cart"
+                                    <!-- ACTION BUTTON -->
+                                    <Button Content="Add to Cart"
                                 Margin="0,10,0,0"
                                 Background="#2E7D5B"
                                 Foreground="White"
                                 BorderThickness="0"
                                 Padding="6"/>
-                        </StackPanel>
-                    </Border>
-                    <Border
+                                </StackPanel>
+                            </Border>
+                            <Border
 Margin="11,0,37,0"
 Background="White"
 CornerRadius="18"
@@ -465,70 +454,70 @@ Padding="12"
 BorderBrush="#DCEAE3"
 BorderThickness="1">
 
-                        <StackPanel>
+                                <StackPanel>
 
-                            <!-- PRODUCT IMAGE -->
-                            <Border Height="150"
+                                    <!-- PRODUCT IMAGE -->
+                                    <Border Height="150"
                             Background="#F3F8F4"
                             CornerRadius="12"
                             ClipToBounds="True">
 
-                                <Image Source="/Images/potato.jpg"
+                                        <Image Source="/Images/potato.jpg"
                         Stretch="UniformToFill"/>
-                            </Border>
+                                    </Border>
 
 
-                            <!-- PRODUCT NAME -->
-                            <TextBlock Text="Fresh Potatoes"
+                                    <!-- PRODUCT NAME -->
+                                    <TextBlock Text="Fresh Potatoes"
            FontSize="15"
            FontWeight="SemiBold"
            Margin="0,12,0,2"/>
 
-                            <!-- PRICE -->
-                            <TextBlock Text="₱210 per kilo"
+                                    <!-- PRICE -->
+                                    <TextBlock Text="₱210 per kilo"
            FontSize="13"
            Foreground="#2E7D5B"
            FontWeight="Bold"/>
 
-                            <!-- IMPORTANT INFO -->
-                            <TextBlock Text="Approx. 12 pcs • In Stock"
+                                    <!-- IMPORTANT INFO -->
+                                    <TextBlock Text="Approx. 12 pcs • In Stock"
            FontSize="11"
            Foreground="Gray"
            Margin="0,4,0,8"/>
 
-                            <Separator Margin="0,6"/>
+                                    <Separator Margin="0,6"/>
 
-                            <!-- SELLER INFO SECTION -->
-                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                    <!-- SELLER INFO SECTION -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
 
-                                <!-- PROFILE CIRCLE -->
-                                <Ellipse Width="32"
+                                        <!-- PROFILE CIRCLE -->
+                                        <Ellipse Width="32"
              Height="32"
              Fill="#CFEDE1"/>
 
-                                <StackPanel Margin="8,0,0,0">
-                                    <TextBlock Text="Juan Dela Cruz"
+                                        <StackPanel Margin="8,0,0,0">
+                                            <TextBlock Text="Juan Dela Cruz"
                    FontSize="12"
                    FontWeight="SemiBold"/>
-                                    <TextBlock Text="Davao City"
+                                            <TextBlock Text="Davao City"
                    FontSize="11"
                    Foreground="Gray"/>
-                                </StackPanel>
-                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
 
-                            <!-- ACTION BUTTON -->
-                            <Button Content="Add to Cart"
+                                    <!-- ACTION BUTTON -->
+                                    <Button Content="Add to Cart"
         Margin="0,10,0,0"
         Background="#2E7D5B"
         Foreground="White"
         BorderThickness="0"
         Padding="6"/>
-                        </StackPanel>
-                    </Border>
+                                </StackPanel>
+                            </Border>
 
-                    <!-- Card 3: Beets -->
+                            <!-- Card 3: Beets -->
 
-                    <Border
+                            <Border
 Margin="32,0,-5,0"
 Background="White"
 CornerRadius="18"
@@ -536,71 +525,72 @@ Padding="12"
 BorderBrush="#DCEAE3"
 BorderThickness="1" Height="316">
 
-                        <StackPanel>
+                                <StackPanel>
 
-                            <!-- PRODUCT IMAGE -->
-                            <Border Height="150"
+                                    <!-- PRODUCT IMAGE -->
+                                    <Border Height="150"
                             Background="#F3F8F4"
                             CornerRadius="12"
                             ClipToBounds="True">
 
-                                <Image Source="/Images/beets.jpg"
+                                        <Image Source="/Images/beets.jpg"
                             Stretch="UniformToFill"/>
-                            </Border>
+                                    </Border>
 
 
-                            <!-- PRODUCT NAME -->
-                            <TextBlock Text="Fresh Beets"
+                                    <!-- PRODUCT NAME -->
+                                    <TextBlock Text="Fresh Beets"
            FontSize="15"
            FontWeight="SemiBold"
            Margin="0,12,0,2"/>
 
-                            <!-- PRICE -->
-                            <TextBlock Text="₱210 per kilo"
+                                    <!-- PRICE -->
+                                    <TextBlock Text="₱210 per kilo"
            FontSize="13"
            Foreground="#2E7D5B"
            FontWeight="Bold"/>
 
-                            <!-- IMPORTANT INFO -->
-                            <TextBlock Text="Approx. 12 pcs • In Stock"
+                                    <!-- IMPORTANT INFO -->
+                                    <TextBlock Text="Approx. 12 pcs • In Stock"
            FontSize="11"
            Foreground="Gray"
            Margin="0,4,0,8"/>
-                            <Separator Margin="0,6"/>
+                                    <Separator Margin="0,6"/>
 
-                            <!-- SELLER INFO SECTION -->
-                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                    <!-- SELLER INFO SECTION -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
 
-                                <!-- PROFILE CIRCLE -->
-                                <Ellipse Width="32"
+                                        <!-- PROFILE CIRCLE -->
+                                        <Ellipse Width="32"
              Height="32"
              Fill="#CFEDE1"/>
 
-                                <StackPanel Margin="8,0,0,0">
-                                    <TextBlock Text="Juan Dela Cruz"
+                                        <StackPanel Margin="8,0,0,0">
+                                            <TextBlock Text="Juan Dela Cruz"
                    FontSize="12"
                    FontWeight="SemiBold"/>
-                                    <TextBlock Text="Davao City"
+                                            <TextBlock Text="Davao City"
                    FontSize="11"
                    Foreground="Gray"/>
-                                </StackPanel>
-                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
 
-                            <!-- ACTION BUTTON -->
-                            <Button Content="Add to Cart"
+                                    <!-- ACTION BUTTON -->
+                                    <Button Content="Add to Cart"
         Margin="0,10,0,0"
         Background="#2E7D5B"
         Foreground="White"
         BorderThickness="0"
         Padding="6"/>
-                        </StackPanel>
-                    </Border>
-                </UniformGrid>
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
                     </ScrollViewer>
                 </ContentControl.Content>
             </ContentControl>
-         
-        </Grid>
+
+     
+    </Grid>
         <Border
             Background="White"
             CornerRadius="20"

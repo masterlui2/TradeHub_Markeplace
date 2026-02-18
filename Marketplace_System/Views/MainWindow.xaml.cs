@@ -15,9 +15,8 @@ namespace Marketplace_System
 
         private void SellingNavButton_Click(object sender, RoutedEventArgs e)
         {
-
+            SidebarHost.Content = new SellerSidebarView();
             MainContentHost.Content = new SellerDashboardView();
-
         }
     }
 }
