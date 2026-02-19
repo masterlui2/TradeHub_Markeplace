@@ -32,7 +32,7 @@
                 <Image Source="pack://application:,,,/Images/logo2.png"
                Stretch="Uniform"
                Grid.Column="0"
-               Margin="-22,-29,935,-32" Grid.ColumnSpan="2"/>
+               Margin="-30,-28,898,-34" Grid.ColumnSpan="2"/>
                 <!-- Optional right margin to separate from nav -->
 
                 <!-- NAVIGATION LINKS – centered in remaining space -->
@@ -56,12 +56,6 @@
                    VerticalAlignment="Center"/>
 
                         <TextBlock Text="My Orders"
-                   Margin="12,0"
-                   FontWeight="SemiBold"
-                   Foreground="#1F4E3D"
-                   VerticalAlignment="Center"/>
-
-                        <TextBlock Text="Messages"
                    Margin="12,0"
                    FontWeight="SemiBold"
                    Foreground="#1F4E3D"
@@ -144,7 +138,19 @@
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
-
+                            <!-- MY ORDERS -->
+                            <Border Padding="10"
+                              CornerRadius="12"
+                              Margin="0,0,0,8">
+                              <StackPanel Orientation="Horizontal">
+                              <Ellipse Width="32" Height="32"
+                               Fill="#F0F3F2"
+                               VerticalAlignment="Center"/>
+                              <TextBlock Text="Inbox"
+                             Margin="12,0,0,0"
+                             VerticalAlignment="Center"/>
+                                        </StackPanel>
+                            </Border>
                             <!-- MY ORDERS -->
                             <Border Padding="10"
                                     CornerRadius="12"
@@ -173,20 +179,7 @@
                                 </StackPanel>
                             </Border>
 
-                            <!-- WISHLIST -->
-                            <Border Padding="10"
-                                    CornerRadius="12"
-                                    Margin="0,0,0,8">
-                                <StackPanel Orientation="Horizontal">
-                                    <Ellipse Width="32" Height="32"
-                                             Fill="#F0F3F2"
-                                             VerticalAlignment="Center"/>
-                                    <TextBlock Text="Saved Items"
-                                               Margin="12,0,0,0"
-                                               VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Border>
-
+                        
                             <!-- SELL SECTION -->
                             <Separator Margin="0,15"/>
 
