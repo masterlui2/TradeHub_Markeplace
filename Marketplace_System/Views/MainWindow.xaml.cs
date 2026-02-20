@@ -18,5 +18,10 @@ namespace Marketplace_System
             SidebarHost.Content = new SellerSidebarView();
             MainContentHost.Content = new SellerDashboardView();
         }
+
+        private void InboxNavButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContentHost.Content = new InboxPanelView();
+        }
     }
 }
