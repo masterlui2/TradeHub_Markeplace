@@ -36,10 +36,42 @@
                 <!-- Optional right margin to separate from nav -->
 
                 <!-- NAVIGATION LINKS – centered in remaining space -->
+                        <Border Grid.Column="1"
+Background="#E8F6ED"
+CornerRadius="20"
+Padding="14,8"
+HorizontalAlignment="Center"
+VerticalAlignment="Center"
+BorderBrush="#CDE9DA"
+BorderThickness="1">
+
+            <StackPanel Orientation="Horizontal"
+        HorizontalAlignment="Center">
+
+                <TextBlock Text="Home"
+           Margin="12,0"
+           FontWeight="SemiBold"
+           Foreground="#1F4E3D"
+           VerticalAlignment="Center"/>
+
+                <TextBlock Text="My Orders"
+           Margin="12,0"
+           FontWeight="SemiBold"
+           Foreground="#1F4E3D"
+           VerticalAlignment="Center"/>
+
+                <TextBlock Text="Cart"
+           Margin="12,0"
+           FontWeight="SemiBold"
+           Foreground="#1F4E3D"
+           VerticalAlignment="Center"/>
+
+            </StackPanel>
+        </Border>
                 <!-- NAVIGATION CONTAINER -->
                 <Border Grid.Column="1"
         Background="#E8F6ED"
-        CornerRadius="20"
+        CornerRadius="13"
         Padding="14,8"
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
@@ -66,6 +98,10 @@
                    FontWeight="SemiBold"
                    Foreground="#1F4E3D"
                    VerticalAlignment="Center"/>
+                        <TextBlock Text="Inbox"
+                            FontWeight="SemiBold"
+                            Foreground="#1F4E3D"
+                   />
 
                     </StackPanel>
                 </Border>
@@ -188,21 +224,28 @@
                                        Margin="0,0,0,10"/>
 
                             <!-- CREATE LISTING -->
-                            <Border Background="#E6F4EC"
-                                    CornerRadius="12"
-                                    Padding="10"
-                                    Margin="0,0,0,8">
-                                <StackPanel Orientation="Horizontal">
-                                    <Ellipse Width="32" Height="32"
-                                             Fill="#2E7D5B"
-                                             VerticalAlignment="Center"/>
-                                    <TextBlock Text="Create Listing"
-                                               FontWeight="SemiBold"
-                                               Margin="12,0,0,0"
-                                               VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Border>
-
+                            <Button x:Name="CreateListingNavButton"
+                                    Click="CreateListingNavButton_Click"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Padding="0"
+                                    Margin="0,0,0,8"
+                                    HorizontalContentAlignment="Stretch"
+                                    Cursor="Hand">
+                                <Border Background="#E6F4EC"
+                                        CornerRadius="12"
+                                        Padding="10">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Ellipse Width="32" Height="32"
+                                                 Fill="#2E7D5B"
+                                                 VerticalAlignment="Center"/>
+                                        <TextBlock Text="Create Listing"
+                                                   FontWeight="SemiBold"
+                                                   Margin="12,0,0,0"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                            </Button>
                             <!-- MANAGE LISTINGS -->
                             <Button x:Name="SellingNavButton"
                                     Click="SellingNavButton_Click"

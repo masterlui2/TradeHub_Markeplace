@@ -85,8 +85,9 @@
                                    FontWeight="Bold"
                                    Foreground="#1F4E3D"
                                    DockPanel.Dock="Left"/>
-
+                        
                         <Button Content="Create Listing"
+                                Click="CreateListingButton_Click"
                                 Padding="10,6"
                                 Background="#2E7D5B"
                                 Foreground="White"
