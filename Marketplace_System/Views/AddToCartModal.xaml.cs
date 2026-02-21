@@ -7,6 +7,7 @@ namespace Marketplace_System.Views
     /// </summary>
     public partial class AddToCartModal : Window
     {
+
         public AddToCartModal(string productName, string price, string stockDetails, string sellerName)
         {
             InitializeComponent();
