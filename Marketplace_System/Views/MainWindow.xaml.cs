@@ -26,6 +26,16 @@ namespace Marketplace_System
             MainContentHost.Content = new InboxPanelView();
         }
 
+        private void MyOrdersNavButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContentHost.Content = new MyOrdersPanelView();
+        }
+
+        private void MyCartNavButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContentHost.Content = new MyCartPanelView();
+        }
+
 
         private void CreateListingNavButton_Click(object sender, RoutedEventArgs e)
         {

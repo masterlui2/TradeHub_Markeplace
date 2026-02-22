@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="Marketplace_System.Views.MyOrdersPanelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F3F8F4">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,0,0,10">
+            <TextBlock Text="My Orders" FontSize="28" FontWeight="SemiBold" Foreground="#1F4E3D"/>
+            <TextBlock Text="Track your active and recent purchases." Margin="0,6,0,18" Foreground="#5F6B6A"/>
+
+            <Border Background="White" CornerRadius="16" Padding="18" Margin="0,0,0,12" BorderBrush="#DCEAE3" BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Order #FH-10231" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock Text="Fresh Carrots • 2 kilos" Margin="0,4,0,0" Foreground="#5F6B6A"/>
+                        <TextBlock Text="Seller: Juan Dela Cruz" Margin="0,3,0,0" Foreground="#5F6B6A"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                        <TextBlock Text="Preparing" Background="#FFF1C6" Foreground="#856404" Padding="10,4" FontWeight="SemiBold" TextAlignment="Center"/>
+                        <TextBlock Text="ETA: Tomorrow" Margin="0,10,0,0" Foreground="#5F6B6A" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Background="White" CornerRadius="16" Padding="18" Margin="0,0,0,12" BorderBrush="#DCEAE3" BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Order #FH-10216" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock Text="Organic Beets • 3 bundles" Margin="0,4,0,0" Foreground="#5F6B6A"/>
+                        <TextBlock Text="Seller: Maria Santos" Margin="0,3,0,0" Foreground="#5F6B6A"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                        <TextBlock Text="Delivered" Background="#DFF3E7" Foreground="#1F7A4D" Padding="10,4" FontWeight="SemiBold" TextAlignment="Center"/>
+                        <TextBlock Text="Delivered: Aug 12" Margin="0,10,0,0" Foreground="#5F6B6A" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
