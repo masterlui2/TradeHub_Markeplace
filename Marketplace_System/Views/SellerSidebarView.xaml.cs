@@ -1,10 +1,13 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Marketplace_System.Views
 {
     public partial class SellerSidebarView : UserControl
     {
+        private static readonly Brush ActiveBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E6F4EC"));
+
         public SellerSidebarView()
         {
             InitializeComponent();
@@ -21,6 +24,41 @@ namespace Marketplace_System.Views
             }
 
             modal.ShowDialog();
+        }
+
+        private void ManageOrdersButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveSellerButton(ManageOrdersButton);
+            ShowSellerSection("orders");
+        }
+
+        private void MessagesButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveSellerButton(MessagesButton);
+            ShowSellerSection("messages");
+        }
+
+        private void SalesInsightsButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveSellerButton(SalesInsightsButton);
+            ShowSellerSection("insights");
+        }
+
+        private void SetActiveSellerButton(Button activeButton)
+        {
+            ManageOrdersButton.Background = Brushes.Transparent;
+            MessagesButton.Background = Brushes.Transparent;
+            SalesInsightsButton.Background = Brushes.Transparent;
+
+            activeButton.Background = ActiveBackground;
+        }
+
+        private void ShowSellerSection(string section)
+        {
+            if (Window.GetWindow(this) is MainWindow mainWindow)
+            {
+                mainWindow.ShowSellerSection(section);
+            }
         }
     }
 }

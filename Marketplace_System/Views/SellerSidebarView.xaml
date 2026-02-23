@@ -10,138 +10,137 @@
             Margin="0,0,20,0">
         <StackPanel>
 
-            <!-- HEADER -->
             <TextBlock Text="Seller Tools"
-               FontWeight="Bold"
-               FontSize="16"
-               Foreground="#1F4E3D"
-               Margin="0,0,0,15"/>
+                       FontWeight="Bold"
+                       FontSize="16"
+                       Foreground="#1F4E3D"
+                       Margin="0,0,0,15"/>
 
-            <!-- SELLER DASHBOARD -->
             <Border Background="#E6F4EC"
-            CornerRadius="12"
-            Padding="10"
-            Margin="0,0,0,8">
+                    CornerRadius="12"
+                    Padding="10"
+                    Margin="0,0,0,8">
 
                 <StackPanel Orientation="Horizontal">
                     <fa:FontAwesome Icon="Dashboard"
-                            Width="18"
-                            Height="14"
-                            Foreground="#2E7D5B"
-                            VerticalAlignment="Center"/>
+                                    Width="18"
+                                    Height="14"
+                                    Foreground="#2E7D5B"
+                                    VerticalAlignment="Center"/>
 
                     <TextBlock Text="Seller Dashboard"
-                       Margin="12,0,0,0"
-                       FontWeight="SemiBold"
-                       VerticalAlignment="Center"/>
+                               Margin="12,0,0,0"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"/>
                 </StackPanel>
             </Border>
 
-            <!-- CREATE LISTING -->
             <Button Click="CreateListingButton_Click"
-            Background="Transparent"
-            BorderThickness="0"
-            Padding="10"
-            Margin="0,0,0,8"
-            HorizontalContentAlignment="Stretch"
-            Cursor="Hand">
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Padding="10"
+                    Margin="0,0,0,8"
+                    HorizontalContentAlignment="Stretch"
+                    Cursor="Hand">
 
                 <StackPanel Orientation="Horizontal">
                     <fa:FontAwesome Icon="PlusCircle"
-                            Width="19"
-                            Height="13"
-                            Foreground="#5F6B6A"
-                            VerticalAlignment="Center"/>
+                                    Width="19"
+                                    Height="13"
+                                    Foreground="#5F6B6A"
+                                    VerticalAlignment="Center"/>
 
                     <TextBlock Text="Create Listing"
-                       Margin="12,0,0,0"
-                       VerticalAlignment="Center"/>
+                               Margin="12,0,0,0"
+                               VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 
-            <!-- ORDERS -->
-            <Button Background="Transparent"
-            BorderThickness="0"
-            Padding="10"
-            Margin="0,0,0,8"
-            HorizontalContentAlignment="Stretch"
-            Cursor="Hand">
+            <Button x:Name="ManageOrdersButton"
+                    Click="ManageOrdersButton_Click"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Padding="10"
+                    Margin="0,0,0,8"
+                    HorizontalContentAlignment="Stretch"
+                    Cursor="Hand">
 
                 <StackPanel Orientation="Horizontal">
                     <fa:FontAwesome Icon="ShoppingBag"
-                            Width="20"
-                            Height="14"
-                            Foreground="#5F6B6A"
-                            VerticalAlignment="Center"/>
+                                    Width="20"
+                                    Height="14"
+                                    Foreground="#5F6B6A"
+                                    VerticalAlignment="Center"/>
 
                     <TextBlock Text="Manage Orders"
-                       Margin="12,0,0,0"
-                       VerticalAlignment="Center"/>
+                               Margin="12,0,0,0"
+                               VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 
-            <!-- MESSAGES -->
-            <Button Background="Transparent"
-            BorderThickness="0"
-            Padding="10"
-            Margin="0,0,0,8"
-            HorizontalContentAlignment="Stretch"
-            Cursor="Hand">
+            <Button x:Name="MessagesButton"
+                    Click="MessagesButton_Click"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Padding="10"
+                    Margin="0,0,0,8"
+                    HorizontalContentAlignment="Stretch"
+                    Cursor="Hand">
 
                 <StackPanel Orientation="Horizontal">
                     <fa:FontAwesome Icon="Envelope"
-                            Width="18"
-                            Height="10"
-                            Foreground="#5F6B6A"
-                            VerticalAlignment="Center"/>
+                                    Width="18"
+                                    Height="10"
+                                    Foreground="#5F6B6A"
+                                    VerticalAlignment="Center"/>
 
                     <TextBlock Text="Messages"
-                       Margin="12,0,0,0"
-                       VerticalAlignment="Center"/>
+                               Margin="12,0,0,0"
+                               VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 
-            <!-- INSIGHTS -->
-            <Button Background="Transparent"
-            BorderThickness="0"
-            Padding="10"
-            Margin="0,0,0,8"
-            HorizontalContentAlignment="Stretch"
-            Cursor="Hand">
+            <Button x:Name="SalesInsightsButton"
+                    Click="SalesInsightsButton_Click"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Padding="10"
+                    Margin="0,0,0,8"
+                    HorizontalContentAlignment="Stretch"
+                    Cursor="Hand">
 
                 <StackPanel Orientation="Horizontal">
                     <fa:FontAwesome Icon="LineChart"
-                            Width="20"
-                            Height="12"
-                            Foreground="#5F6B6A"
-                            VerticalAlignment="Center"/>
+                                    Width="20"
+                                    Height="12"
+                                    Foreground="#5F6B6A"
+                                    VerticalAlignment="Center"/>
 
                     <TextBlock Text="Sales Insights"
-                       Margin="12,0,0,0"
-                       VerticalAlignment="Center"/>
+                               Margin="12,0,0,0"
+                               VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 
             <Separator Margin="0,20"/>
 
-            <!-- PROFILE -->
             <Button Background="Transparent"
-            BorderThickness="0"
-            Padding="10"
-            HorizontalContentAlignment="Stretch"
-            Cursor="Hand">
+                    BorderThickness="0"
+                    Padding="10"
+                    HorizontalContentAlignment="Stretch"
+                    Cursor="Hand">
 
                 <StackPanel Orientation="Horizontal">
                     <fa:FontAwesome Icon="User"
-                            Width="17"
-                            Height="12"
-                            Foreground="#5F6B6A"
-                            VerticalAlignment="Center"/>
+                                    Width="17"
+                                    Height="12"
+                                    Foreground="#5F6B6A"
+                                    VerticalAlignment="Center"/>
 
                     <TextBlock Text="Marketplace Profile"
-                       Margin="12,0,0,0"
-                       VerticalAlignment="Center"
-                       FontWeight="SemiBold"/>
+                               Margin="12,0,0,0"
+                               VerticalAlignment="Center"
+                               FontWeight="SemiBold"/>
                 </StackPanel>
             </Button>
 

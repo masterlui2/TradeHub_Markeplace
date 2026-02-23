@@ -118,7 +118,26 @@ namespace Marketplace_System
         private void SellingNavButton_Click(object sender, RoutedEventArgs e)
         {
             SidebarHost.Content = new SellerSidebarView();
-            MainContentHost.Content = new SellerDashboardView();
+            ShowSellerSection("dashboard");
+        }
+
+        public void ShowSellerSection(string section)
+        {
+            switch (section)
+            {
+                case "orders":
+                    MainContentHost.Content = new SellerManageOrdersView();
+                    break;
+                case "messages":
+                    MainContentHost.Content = new SellerMessagesView();
+                    break;
+                case "insights":
+                    MainContentHost.Content = new SellerSalesInsightsView();
+                    break;
+                default:
+                    MainContentHost.Content = new SellerDashboardView();
+                    break;
+            }
         }
 
         private void BrowseProductsNavButton_Click(object sender, RoutedEventArgs e)
