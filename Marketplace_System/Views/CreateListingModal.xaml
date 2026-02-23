@@ -43,7 +43,28 @@
 
                     <TextBlock Text="Product Name" FontWeight="SemiBold" Margin="0,0,0,4"/>
                     <TextBox x:Name="ProductNameTextBox" Height="36" Margin="0,0,0,10"/>
+                    <!-- CATEGORY DROPDOWN -->
+                    <TextBlock Text="Category"
+           FontWeight="SemiBold"
+           Margin="0,0,0,4"/>
 
+                    <ComboBox x:Name="CategoryComboBox"
+          Height="36"
+          Margin="0,0,0,10"
+          FontSize="14"
+          Background="White"
+          BorderBrush="#D1D5DB"
+          BorderThickness="1"
+          Padding="6">
+
+                        <ComboBoxItem Content="Vegetables"/>
+                        <ComboBoxItem Content="Fruits"/>
+                        <ComboBoxItem Content="Leafy Greens"/>
+                        <ComboBoxItem Content="Root Crops"/>
+                        <ComboBoxItem Content="Milk &amp; Eggs"/>
+                        <ComboBoxItem Content="Organic Products"/>
+
+                    </ComboBox>
                     <Grid Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>

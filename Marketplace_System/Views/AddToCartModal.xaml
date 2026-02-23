@@ -3,20 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Add to Cart"
         Width="430"
-        Height="684"
+        Height="631"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="#F3F8F4"
         WindowStyle="ToolWindow"
         ShowInTaskbar="False">
 
-    <Border Margin="12,12,12,11"
+    <Border Margin="12,12,12,23"
             Background="White"
             CornerRadius="20"
             Padding="20"
             BorderBrush="#DCEAE3"
             BorderThickness="1">
-        <StackPanel>
+        <StackPanel Height="567" VerticalAlignment="Top">
 
             <!-- Header -->
             <StackPanel Margin="0,0,0,16">
@@ -110,145 +110,84 @@
                 </StackPanel>
             </Border>
 
-            <!-- Quantity and Offer Section -->
+            <!-- Quantity Section -->
             <Border Background="White"
-                    CornerRadius="16"
-                    Padding="16"
-                    BorderBrush="#E0EFE7"
-                    BorderThickness="1"
-                    Margin="0,0,0,20">
-                <StackPanel>
-                    <!-- Quantity and Offer Section -->
-                    <Border Background="White"
         CornerRadius="16"
         Padding="16"
         BorderBrush="#E0EFE7"
         BorderThickness="1"
-        Margin="0,0,0,20" Height="157">
-                        <StackPanel>
+        Margin="0,0,0,20">
 
-                            <!-- Quantity (kilos) -->
-                            <StackPanel Margin="0,0,0,16">
-                                <TextBlock Text="Quantity (kilos)"
-                       FontSize="14"
-                       FontWeight="SemiBold"
-                       Foreground="#374151"
-                       Margin="0,0,0,6"/>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <!-- TextBox wrapped in Border for rounded corners -->
-                                    <Border CornerRadius="8"
-                        BorderBrush="#D1D5DB"
+                <StackPanel>
+
+                    <!-- Quantity -->
+                    <TextBlock Text="Quantity (kilos)"
+                   FontSize="14"
+                   FontWeight="SemiBold"
+                   Foreground="#374151"
+                   Margin="0,0,0,6"/>
+
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border CornerRadius="8"
+                    BorderBrush="#D1D5DB"
+                    BorderThickness="1"
+                    Background="White">
+
+                            <TextBox x:Name="QuantityTextBox"
+                         Text="1"
+                         FontSize="16"
+                         Padding="6"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         TextChanged="QuantityTextBox_TextChanged"/>
+                        </Border>
+
+                        <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        Margin="8,0,0,0">
+
+                            <Button Content="+"
+                        Width="36"
+                        Height="36"
+                        Background="#E6F4EC"
+                        BorderBrush="#CDE9DA"
                         BorderThickness="1"
-                        Background="White">
-                                        <TextBox x:Name="QuantityTextBox"
-                             Text="1"
-                             FontSize="16"
-                             Padding="6"
-                             BorderThickness="0"
-                             Background="Transparent"
-                             HorizontalAlignment="Stretch"
-                             TextChanged="QuantityTextBox_TextChanged"/>
-                                        <!-- Added event -->
-                                    </Border>
-                                    <StackPanel Grid.Column="1"
-                            Orientation="Horizontal"
-                            Margin="8,0,0,0">
-                                        <!-- Plus Button -->
-                                        <Border CornerRadius="8"
-                            Background="#E6F4EC"
-                            BorderBrush="#CDE9DA"
-                            BorderThickness="1"
-                            Width="36"
-                            Height="36"
-                            Margin="0,0,6,0">
-                                            <Button Content="+"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Foreground="#1F4E3D"
-                                FontSize="16"
-                                FontWeight="Bold"
-                                Click="IncreaseQuantity_Click"
-                                Cursor="Hand"/>
-                                        </Border>
-                                        <!-- Minus Button -->
-                                        <Border CornerRadius="8"
-                            Background="#E6F4EC"
-                            BorderBrush="#CDE9DA"
-                            BorderThickness="1"
-                            Width="36"
-                            Height="36">
-                                            <Button Content="-"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Foreground="#1F4E3D"
-                                FontSize="16"
-                                FontWeight="Bold"
-                                Click="DecreaseQuantity_Click"
-                                Cursor="Hand"/>
-                                        </Border>
-                                    </StackPanel>
-                                </Grid>
-                            </StackPanel>
+                        Click="IncreaseQuantity_Click"/>
 
-                            <!-- 🆕 TOTAL PAYMENT -->
-                            <Grid Margin="0,8,0,16">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="Total:"
+                            <Button Content="-"
+                        Width="36"
+                        Height="36"
+                        Margin="6,0,0,0"
+                        Background="#E6F4EC"
+                        BorderBrush="#CDE9DA"
+                        BorderThickness="1"
+                        Click="DecreaseQuantity_Click"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Total -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Total:"
                        FontSize="16"
-                       FontWeight="SemiBold"
-                       Foreground="#374151"
-                       VerticalAlignment="Center"/>
-                                <TextBlock x:Name="TotalPaymentText"
+                       FontWeight="SemiBold"/>
+
+                        <TextBlock x:Name="TotalPaymentText"
                        Grid.Column="1"
-                       Text="$0.00"
                        FontSize="20"
                        FontWeight="Bold"
                        Foreground="#2E7D5B"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center"/>
-                            </Grid>
-
-                            <!-- Offer (optional) - remains unchanged -->
-                            <StackPanel>
-                                <!-- your existing offer content -->
-                            </StackPanel>
-
-                        </StackPanel>
-                    </Border>
-                    <!-- Quantity (kilos) -->
-                    <StackPanel Margin="0,0,0,16">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <!-- TextBox wrapped in Border for rounded corners -->
-                            <StackPanel Grid.Column="1"
-                                        Orientation="Horizontal"
-                                        Margin="8,0,0,0">
-                                <!-- Plus Button with rounded corners using Border -->
-                                <!-- Minus Button with rounded corners using Border -->
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>
-
-                    <!-- Offer (optional) -->
-                    <StackPanel>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                        </Grid>
-                    </StackPanel>
+                       HorizontalAlignment="Right"/>
+                    </Grid>
 
                 </StackPanel>
             </Border>

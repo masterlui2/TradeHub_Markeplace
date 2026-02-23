@@ -16,15 +16,19 @@ namespace Marketplace_System.Views
         {
             InitializeComponent();
 
+            Loaded += AddToCartModal_Loaded;
+
             ProductNameText.Text = productName;
             PriceText.Text = price;
             StockText.Text = stockDetails;
             SellerNameText.Text = sellerName;
 
             _unitPrice = ExtractPriceValue(price);
+        }
+        private void AddToCartModal_Loaded(object sender, RoutedEventArgs e)
+        {
             UpdateTotalPayment();
         }
-
         private void QuantityTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             UpdateTotalPayment();
@@ -85,6 +89,9 @@ namespace Marketplace_System.Views
 
         private void UpdateTotalPayment()
         {
+            if (TotalPaymentText == null)
+                return;
+
             int quantity = GetValidatedQuantity();
             decimal total = quantity * _unitPrice;
             TotalPaymentText.Text = total.ToString("C2", CultureInfo.CurrentCulture);
@@ -92,8 +99,7 @@ namespace Marketplace_System.Views
 
         private static decimal ExtractPriceValue(string priceText)
         {
-            Match match = Regex.Match(priceText, @"\d+(\.\d+)?");
-            if (match.Success && decimal.TryParse(match.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal priceValue))
+Match match = Regex.Match(priceText, @"[\d,.]+");            if (match.Success && decimal.TryParse(match.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal priceValue))
             {
                 return priceValue;
             }
