@@ -145,7 +145,7 @@
                         <MenuItem Header="My Profile"/>
                         <MenuItem Header="Settings"/>
                         <Separator/>
-                        <MenuItem Header="Logout"/>
+                        <MenuItem Header="Logout" Click="LogoutMenuItem_Click"/>
                     </MenuItem>
                 </Menu>
             </Grid>

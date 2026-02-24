@@ -17,7 +17,7 @@ namespace Marketplace_System
         private static readonly Brush ActiveBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E6F4EC"));
 
         private object? _browseProductsContent;
-
+        private object? _buyerSidebarContent;
         public MainWindow()
         {
             InitializeComponent();
@@ -43,9 +43,19 @@ namespace Marketplace_System
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             _browseProductsContent = MainContentHost.Content;
+            _buyerSidebarContent = SidebarHost.Content;
             ActivateBrowseProductsView();
+            {
+                ActivateBuyerSidebar();
+            }
         }
-
+        private void ActivateBuyerSidebar()
+        {
+            if (_buyerSidebarContent is not null)
+            {
+                SidebarHost.Content = _buyerSidebarContent;
+            }
+        }
         private void ActivateBrowseProductsView()
         {
             if (_browseProductsContent is not null)
@@ -54,6 +64,10 @@ namespace Marketplace_System
             }
 
             SetActiveNav("browse");
+        }
+        public void ReturnToBuyerBrowse()
+        {
+            ActivateBrowseProductsView();
         }
 
         private void SetActiveNav(string activeItem)
@@ -172,7 +186,9 @@ namespace Marketplace_System
 
         private void InboxNavButton_Click(object sender, RoutedEventArgs e)
         {
+            ActivateBuyerSidebar();
             MainContentHost.Content = new InboxPanelView();
+            SetActiveNav("inbox");
         }
 
         private void AddToCartButton_Click(object sender, RoutedEventArgs e)
@@ -199,16 +215,34 @@ namespace Marketplace_System
 
 private void MyOrdersNavButton_Click(object sender, RoutedEventArgs e)
         {
+            ActivateBuyerSidebar();
             MainContentHost.Content = new MyOrdersPanelView();
             SetActiveNav("orders");
         }
 
         private void MyCartNavButton_Click(object sender, RoutedEventArgs e)
         {
+            ActivateBuyerSidebar();
             MainContentHost.Content = new MyCartPanelView();
             SetActiveNav("cart");
         }
+        private void LogoutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show(
+                "Are you sure you want to logout?",
+                "Confirm Logout",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
 
+            if (result != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.Show();
+            Close();
+        }
 
         private void CreateListingNavButton_Click(object sender, RoutedEventArgs e)
         {

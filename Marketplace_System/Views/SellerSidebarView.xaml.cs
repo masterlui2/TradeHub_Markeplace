@@ -49,10 +49,16 @@ namespace Marketplace_System.Views
             ManageOrdersButton.Background = Brushes.Transparent;
             MessagesButton.Background = Brushes.Transparent;
             SalesInsightsButton.Background = Brushes.Transparent;
-
+            BrowseProductsButton.Background = Brushes.Transparent;
             activeButton.Background = ActiveBackground;
         }
-
+        private void BrowseProductsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Window.GetWindow(this) is MainWindow mainWindow)
+            {
+                mainWindow.ReturnToBuyerBrowse();
+            }
+        }
         private void ShowSellerSection(string section)
         {
             if (Window.GetWindow(this) is MainWindow mainWindow)
