@@ -49,7 +49,6 @@ namespace Marketplace_System.Views
             ManageOrdersButton.Background = Brushes.Transparent;
             MessagesButton.Background = Brushes.Transparent;
             SalesInsightsButton.Background = Brushes.Transparent;
-            BrowseProductsButton.Background = Brushes.Transparent;
             activeButton.Background = ActiveBackground;
         }
         private void BrowseProductsButton_Click(object sender, RoutedEventArgs e)
@@ -58,6 +57,10 @@ namespace Marketplace_System.Views
             {
                 mainWindow.ReturnToBuyerBrowse();
             }
+        }
+        private void ReturnToBuyerButton_Click(object sender, RoutedEventArgs e)
+        {
+            BrowseProductsButton_Click(sender, e);
         }
         private void ShowSellerSection(string section)
         {

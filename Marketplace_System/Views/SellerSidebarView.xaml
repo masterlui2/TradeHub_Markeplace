@@ -121,8 +121,9 @@
                                VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button x:Name="BrowseProductsButton"
-                    Click="BrowseProductsButton_Click"
+          
+            <Button x:Name="ReturnToBuyerButton"
+                    Click="ReturnToBuyerButton_Click"
                     Background="Transparent"
                     BorderThickness="0"
                     Padding="10"
@@ -131,13 +132,13 @@
                     Cursor="Hand">
 
                 <StackPanel Orientation="Horizontal">
-                    <fa:FontAwesome Icon="ShoppingBasket"
-                                    Width="18"
+                    <fa:FontAwesome Icon="ArrowLeft"
+                                    Width="17"
                                     Height="12"
                                     Foreground="#5F6B6A"
                                     VerticalAlignment="Center"/>
 
-                    <TextBlock Text="Browse Products"
+                    <TextBlock Text="Return to Buyer View"
                                Margin="12,0,0,0"
                                VerticalAlignment="Center"
                                FontWeight="SemiBold"/>

@@ -58,6 +58,7 @@ namespace Marketplace_System
         }
         private void ActivateBrowseProductsView()
         {
+            ActivateBuyerSidebar();
             if (_browseProductsContent is not null)
             {
                 MainContentHost.Content = _browseProductsContent;
