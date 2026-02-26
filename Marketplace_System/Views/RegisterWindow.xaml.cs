@@ -1,32 +1,40 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
+using Marketplace_System.Services;
 
 namespace Marketplace_System.Views
 {
     public partial class RegisterWindow : Window
     {
+        private readonly AuthService _authService = new();
+
         public RegisterWindow()
         {
             InitializeComponent();
 
-            // Allow dragging the borderless window
             MouseLeftButtonDown += (s, e) =>
             {
                 if (e.ButtonState == MouseButtonState.Pressed)
+                {
                     DragMove();
+                }
             };
         }
 
-        private void btnRegister_Click(object sender, RoutedEventArgs e)
+        private async void btnRegister_Click(object sender, RoutedEventArgs e)
         {
-            string name = txtName.Text.Trim();            string password = txtPassword.Password;
+            string name = txtName.Text.Trim();
+            string email = txtEmail.Text.Trim();
+            string mobile = txtMobile.Text.Trim();
             string city = txtCity.Text.Trim();
+            string password = txtPassword.Password;
 
-            // Basic validation
             if (string.IsNullOrWhiteSpace(name) ||
-                string.IsNullOrWhiteSpace(password) ||
-                string.IsNullOrWhiteSpace(city))
+                string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(mobile) ||
+                string.IsNullOrWhiteSpace(city) ||
+                string.IsNullOrWhiteSpace(password))
             {
                 MessageBox.Show(
                     "Please complete all required fields.",
@@ -36,20 +44,45 @@ namespace Marketplace_System.Views
                 return;
             }
 
-         
+            if (!email.Contains('@'))
+            {
+                MessageBox.Show(
+                    "Please enter a valid email address.",
+                    "Registration Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
 
-            // ✅ STEP 1 SUCCESS
-            MessageBox.Show(
-                "Step 1 completed successfully!\nProceeding to the next step.",
-                "Success",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            try
+            {
+                var result = await _authService.RegisterAsync(name, email, mobile, city, password);
+                if (!result.Success)
+                {
+                    MessageBox.Show(result.Message, "Registration Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
 
-            // TODO:
-            // Navigate to Step 2 window
-            // var step2 = new RegisterStep2Window();
-            // step2.Show();
-            // Close();
+                SessionManager.SetCurrentUser(0, name);
+
+                MessageBox.Show(
+                    "Account created successfully!",
+                    "Success",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                MainWindow mainWindow = new(name);
+                mainWindow.Show();
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Unable to register right now.\n\n{ex.Message}",
+                    "Connection Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private void linkLogin_Click(object sender, RoutedEventArgs e)

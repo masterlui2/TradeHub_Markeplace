@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Marketplace_System.Views;
-
+using Marketplace_System.Services;
 namespace Marketplace_System
 {
     /// <summary>
@@ -18,9 +18,12 @@ namespace Marketplace_System
 
         private object? _browseProductsContent;
         private object? _buyerSidebarContent;
-        public MainWindow()
+        private readonly string _currentUserName;
+
+        public MainWindow(string? currentUserName = null)
         {
             InitializeComponent();
+            _currentUserName = string.IsNullOrWhiteSpace(currentUserName) ? SessionManager.CurrentUserFullName : currentUserName;
             Loaded += MainWindow_Loaded;
         }
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -44,6 +47,7 @@ namespace Marketplace_System
         {
             _browseProductsContent = MainContentHost.Content;
             _buyerSidebarContent = SidebarHost.Content;
+            TopProfileNameTextBlock.Text = _currentUserName;
             ActivateBrowseProductsView();
             {
                 ActivateBuyerSidebar();
@@ -239,7 +243,7 @@ private void MyOrdersNavButton_Click(object sender, RoutedEventArgs e)
             {
                 return;
             }
-
+            SessionManager.Clear();
             LoginWindow loginWindow = new LoginWindow();
             loginWindow.Show();
             Close();
@@ -255,7 +259,9 @@ private void MyOrdersNavButton_Click(object sender, RoutedEventArgs e)
             modal.ShowDialog();
         }
 
-        
-        
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -1,14 +1,17 @@
-﻿using System.Configuration;
-using System.Data;
+﻿using System;
 using System.Windows;
+using Marketplace_System.Data;
 
 namespace Marketplace_System
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-    }
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
 
+            using AppDbContext dbContext = new();
+           
+        }
+    }
 }

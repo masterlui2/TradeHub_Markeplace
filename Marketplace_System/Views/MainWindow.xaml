@@ -52,7 +52,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         BorderBrush="#CDE9DA"
-                        BorderThickness="1" Width="286" Height="41" Margin="263,0,0,0">
+                        BorderThickness="1" Width="332" Height="41" Margin="178,0,0,0">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Button x:Name="TopHomeNavButton"
                                 Click="TopHomeNavButton_Click"
@@ -100,7 +100,7 @@
         CornerRadius="15"
         Padding="10,5"
         BorderBrush="#DCEAE3"
-        BorderThickness="1" Margin="621,20,192,19" Grid.Column="1" Grid.ColumnSpan="2">
+        BorderThickness="1" Margin="580,20,36,19" Grid.Column="1">
 
                     <DockPanel>
 
@@ -126,23 +126,29 @@
                 <Menu Grid.Column="2"
               Background="Transparent"
               VerticalAlignment="Center"
-              HorizontalAlignment="Center" Height="38" Width="78">
-                    <MenuItem Background="Transparent" BorderThickness="0" Width="78">
+                           HorizontalAlignment="Center" Height="38" Width="220">
+                    <MenuItem Background="Transparent" BorderThickness="0" Width="171" Click="MenuItem_Click">
                         <MenuItem.Header>
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Border Width="38" Height="38" CornerRadius="19" Background="White">
                                     <TextBlock Text="👤" FontSize="20" HorizontalAlignment="Center"
                                        VerticalAlignment="Center" Foreground="#2E7D5B" RenderTransformOrigin="-0.119,0.449"/>
                                 </Border>
+                                <TextBlock x:Name="TopProfileNameTextBlock"
+                                           Text="Guest"
+                                           Margin="8,0,8,0"
+                                           VerticalAlignment="Center"
+                                           FontWeight="SemiBold"
+                                           Foreground="#1F4E3D"/>
                                 <Path Data="M0,0 L6,6 L12,0" Fill="White" VerticalAlignment="Center"
-                              Margin="8,0,0,0" Width="12" Height="6" Stretch="Uniform"/>
+                               Margin="0,0,0,0" Width="12" Height="6" Stretch="Uniform"/>
                             </StackPanel>
                         </MenuItem.Header>
                         <MenuItem.Resources>
                             <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}" Color="White"/>
                             <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}" Color="#1F4E3D"/>
                         </MenuItem.Resources>
-                        <MenuItem Header="My Profile"/>
+                        <MenuItem Header="My Profile" IsEnabled="False"/>
                         <MenuItem Header="Settings"/>
                         <Separator/>
                         <MenuItem Header="Logout" Click="LogoutMenuItem_Click"/>

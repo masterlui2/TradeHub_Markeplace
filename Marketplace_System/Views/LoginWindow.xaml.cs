@@ -1,31 +1,28 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Marketplace_System.Services;
 
 namespace Marketplace_System.Views
 {
     public partial class LoginWindow : Window
     {
-        // Variable to track password visibility
         private bool _isPasswordVisible = false;
+        private readonly AuthService _authService = new();
 
         public LoginWindow()
         {
             InitializeComponent();
-
-            // Add event handler for window dragging
-            this.MouseLeftButtonDown += (s, e) => this.DragMove();
-
-            // Initialize password visibility button
+            MouseLeftButtonDown += (s, e) => DragMove();
             btnShowPassword.Click += btnShowPassword_Click;
         }
 
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            string username = txtUsername.Text;
+            string username = txtUsername.Text.Trim();
             string password = txtPassword.Password;
 
-            // Simple validation for now
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 MessageBox.Show("Please enter both username and password!",
@@ -33,21 +30,29 @@ namespace Marketplace_System.Views
                 return;
             }
 
-            // Hardcoded login for testing (we'll connect to database later)
-            if (username == "admin" && password == "admin123")
+            try
             {
+                var user = await _authService.LoginAsync(username, password);
+                if (user is null)
+                {
+                    MessageBox.Show("Invalid username/email or password!",
+                        "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                SessionManager.SetCurrentUser(user.Id, user.FullName);
+
                 MessageBox.Show("Login Successful!", "Success",
                     MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // Open main window
-                MainWindow mainWindow = new MainWindow();
+                MainWindow mainWindow = new(user.FullName);
                 mainWindow.Show();
-                this.Close();
+                Close();
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Invalid username or password!",
-                    "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Unable to login right now.\n\n{ex.Message}",
+                    "Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -58,16 +63,14 @@ namespace Marketplace_System.Views
             Close();
         }
 
-        // New event handlers for the modern design
-
         private void MinimizeWindow_Click(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            WindowState = WindowState.Minimized;
         }
 
         private void CloseWindow_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void btnShowPassword_Click(object sender, RoutedEventArgs e)
@@ -76,7 +79,6 @@ namespace Marketplace_System.Views
 
             if (_isPasswordVisible)
             {
-                // Show the password in a TextBox
                 var visiblePasswordTextBox = new TextBox
                 {
                     Text = txtPassword.Password,
@@ -87,33 +89,22 @@ namespace Marketplace_System.Views
                     Foreground = System.Windows.Media.Brushes.Black
                 };
 
-                // Replace the PasswordBox with the TextBox
                 var parent = txtPassword.Parent as Grid;
                 if (parent != null)
                 {
-                    // Remove the PasswordBox
                     parent.Children.Remove(txtPassword);
-
-                    // Add the TextBox in the same position
                     Grid.SetColumn(visiblePasswordTextBox, 1);
                     parent.Children.Add(visiblePasswordTextBox);
-
-                    // Store the TextBox reference in a tag or variable for switching back
-                    // We'll store the original PasswordBox in the Tag of the parent Grid
                     parent.Tag = txtPassword;
-
-                    // Update the button text/icon
                     ((Button)sender).Content = new TextBlock { Text = "🔒", FontSize = 14 };
                 }
             }
             else
             {
-                // Switch back to PasswordBox
                 var parent = txtPassword.Parent as Grid;
                 if (parent != null && parent.Tag is PasswordBox originalPasswordBox)
                 {
-                    // Find the TextBox that replaced the PasswordBox
-                    TextBox visiblePasswordTextBox = null;
+                    TextBox? visiblePasswordTextBox = null;
                     foreach (var child in parent.Children)
                     {
                         if (child is TextBox textBox && Grid.GetColumn(textBox) == 1)
@@ -125,22 +116,13 @@ namespace Marketplace_System.Views
 
                     if (visiblePasswordTextBox != null)
                     {
-                        // Update the password in the original PasswordBox
                         originalPasswordBox.Password = visiblePasswordTextBox.Text;
-
-                        // Remove the TextBox
                         parent.Children.Remove(visiblePasswordTextBox);
-
-                        // Add the original PasswordBox back
                         parent.Children.Add(originalPasswordBox);
-
-                        // Update the button text/icon
                         ((Button)sender).Content = new TextBlock { Text = "👁️", FontSize = 14 };
                     }
                 }
             }
         }
-
-       
     }
 }
