@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Marketplace_System.Views;
+using Marketplace_System.Data;
+using Marketplace_System.Models;
 using Marketplace_System.Services;
+using Marketplace_System.Views;
+
 namespace Marketplace_System
 {
     /// <summary>
@@ -20,17 +26,36 @@ namespace Marketplace_System
         private object? _buyerSidebarContent;
         private readonly string _currentUserName;
 
+        public ObservableCollection<BrowseProductCard> BrowseProducts { get; } = new();
+
         public MainWindow(string? currentUserName = null)
         {
             InitializeComponent();
-            _currentUserName = string.IsNullOrWhiteSpace(currentUserName) ? SessionManager.CurrentUserFullName : currentUserName;
+
+            _currentUserName = string.IsNullOrWhiteSpace(currentUserName)
+                ? SessionManager.CurrentUserFullName
+                : currentUserName;
+
+            DataContext = this;
+            LoadBrowseProducts();
             Loaded += MainWindow_Loaded;
         }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            _browseProductsContent = MainContentHost.Content;
+            _buyerSidebarContent = SidebarHost.Content;
+            TopProfileNameTextBlock.Text = _currentUserName;
+
+            ActivateBrowseProductsView();
+            ActivateBuyerSidebar();
+        }
+
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (SearchTextBox.Text == "Search products")
             {
-                SearchTextBox.Text = "";
+                SearchTextBox.Text = string.Empty;
                 SearchTextBox.Foreground = Brushes.Black;
             }
         }
@@ -43,16 +68,7 @@ namespace Marketplace_System
                 SearchTextBox.Foreground = Brushes.Gray;
             }
         }
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            _browseProductsContent = MainContentHost.Content;
-            _buyerSidebarContent = SidebarHost.Content;
-            TopProfileNameTextBlock.Text = _currentUserName;
-            ActivateBrowseProductsView();
-            {
-                ActivateBuyerSidebar();
-            }
-        }
+
         private void ActivateBuyerSidebar()
         {
             if (_buyerSidebarContent is not null)
@@ -60,9 +76,11 @@ namespace Marketplace_System
                 SidebarHost.Content = _buyerSidebarContent;
             }
         }
+
         private void ActivateBrowseProductsView()
         {
             ActivateBuyerSidebar();
+
             if (_browseProductsContent is not null)
             {
                 MainContentHost.Content = _browseProductsContent;
@@ -70,6 +88,7 @@ namespace Marketplace_System
 
             SetActiveNav("browse");
         }
+
         public void ReturnToBuyerBrowse()
         {
             ActivateBrowseProductsView();
@@ -77,13 +96,14 @@ namespace Marketplace_System
 
         private void SetActiveNav(string activeItem)
         {
+            // Reset top buttons
             List<Button> topButtons = new()
-            {
-                TopHomeNavButton,
-                TopOrdersNavButton,
-                TopCartNavButton,
-                TopInboxNavButton
-            };
+    {
+        TopHomeNavButton,
+        TopOrdersNavButton,
+        TopCartNavButton,
+        TopInboxNavButton
+    };
 
             foreach (Button button in topButtons)
             {
@@ -91,13 +111,14 @@ namespace Marketplace_System
                 button.Foreground = InactiveForeground;
             }
 
+            // Reset sidebar buttons
             List<Button> sidebarButtons = new()
-            {
-                BrowseProductsNavButton,
-                MyOrdersNavButton,
-                MyCartNavButton,
-                InboxNavButton
-            };
+    {
+        BrowseProductsNavButton,
+        MyOrdersNavButton,
+        MyCartNavButton,
+        InboxNavButton
+    };
 
             foreach (Button button in sidebarButtons)
             {
@@ -105,26 +126,30 @@ namespace Marketplace_System
                 button.Foreground = InactiveForeground;
             }
 
+            // Activate selected
             switch (activeItem)
             {
-                case "browse":
+                case "home":
                     TopHomeNavButton.Background = ActiveBackground;
                     TopHomeNavButton.Foreground = ActiveForeground;
                     BrowseProductsNavButton.Background = ActiveBackground;
                     BrowseProductsNavButton.Foreground = ActiveForeground;
                     break;
+
                 case "orders":
                     TopOrdersNavButton.Background = ActiveBackground;
                     TopOrdersNavButton.Foreground = ActiveForeground;
                     MyOrdersNavButton.Background = ActiveBackground;
                     MyOrdersNavButton.Foreground = ActiveForeground;
                     break;
+
                 case "cart":
                     TopCartNavButton.Background = ActiveBackground;
                     TopCartNavButton.Foreground = ActiveForeground;
                     MyCartNavButton.Background = ActiveBackground;
                     MyCartNavButton.Foreground = ActiveForeground;
                     break;
+
                 case "inbox":
                     TopInboxNavButton.Background = ActiveBackground;
                     TopInboxNavButton.Foreground = ActiveForeground;
@@ -135,133 +160,170 @@ namespace Marketplace_System
         }
 
         private void SellingNavButton_Click(object sender, RoutedEventArgs e)
-        {
-            SidebarHost.Content = new SellerSidebarView();
-            ShowSellerSection("dashboard");
-        }
+{
+    SidebarHost.Content = new SellerSidebarView();
+    ShowSellerSection("dashboard");
+}
 
-        public void ShowSellerSection(string section)
-        {
-            switch (section)
-            {
-                case "orders":
-                    MainContentHost.Content = new SellerManageOrdersView();
-                    break;
-                case "messages":
-                    MainContentHost.Content = new SellerMessagesView();
-                    break;
-                case "insights":
-                    MainContentHost.Content = new SellerSalesInsightsView();
-                    break;
-                default:
-                    MainContentHost.Content = new SellerDashboardView();
-                    break;
-            }
-        }
+public void ShowSellerSection(string section)
+{
+    MainContentHost.Content = section switch
+    {
+        "orders" => new SellerManageOrdersView(),
+        "messages" => new SellerMessagesView(),
+        "insights" => new SellerSalesInsightsView(),
+        _ => new SellerDashboardView()
+    };
+}
 
-        private void BrowseProductsNavButton_Click(object sender, RoutedEventArgs e)
-        {
-            ActivateBrowseProductsView();
-        }
+private void BrowseProductsNavButton_Click(object sender, RoutedEventArgs e) => ActivateBrowseProductsView();
+private void LogoButton_Click(object sender, RoutedEventArgs e) => ActivateBrowseProductsView();
+private void TopHomeNavButton_Click(object sender, RoutedEventArgs e) => ActivateBrowseProductsView();
+private void TopOrdersNavButton_Click(object sender, RoutedEventArgs e) => MyOrdersNavButton_Click(sender, e);
+private void TopCartNavButton_Click(object sender, RoutedEventArgs e) => MyCartNavButton_Click(sender, e);
+private void TopInboxNavButton_Click(object sender, RoutedEventArgs e) => InboxNavButton_Click(sender, e);
 
-        private void LogoButton_Click(object sender, RoutedEventArgs e)
-        {
-            ActivateBrowseProductsView();
-        }
+private void InboxNavButton_Click(object sender, RoutedEventArgs e)
+{
+    ActivateBuyerSidebar();
+    MainContentHost.Content = new InboxPanelView();
+    SetActiveNav("inbox");
+}
 
-        private void TopHomeNavButton_Click(object sender, RoutedEventArgs e)
-        {
-            ActivateBrowseProductsView();
-        }
+private void AddToCartButton_Click(object sender, RoutedEventArgs e)
+{
+    if (sender is not Button { DataContext: BrowseProductCard product })
+    {
+        return;
+    }
 
-        private void TopOrdersNavButton_Click(object sender, RoutedEventArgs e)
-        {
-            MyOrdersNavButton_Click(sender, e);
-        }
+    AddToCartModal modal = new AddToCartModal(product.ProductName, product.PriceText, product.StockText, product.SellerName)
+    {
+        Owner = this
+    };
 
-        private void TopCartNavButton_Click(object sender, RoutedEventArgs e)
-        {
-            MyCartNavButton_Click(sender, e);
-        }
-
-        private void TopInboxNavButton_Click(object sender, RoutedEventArgs e)
-        {
-            InboxNavButton_Click(sender, e);
-        }
-
-        private void InboxNavButton_Click(object sender, RoutedEventArgs e)
-        {
-            ActivateBuyerSidebar();
-            MainContentHost.Content = new InboxPanelView();
-            SetActiveNav("inbox");
-        }
-
-        private void AddToCartButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is not Button button || button.Tag is not string rawDetails)
-            {
-                return;
-            }
-
-            string[] details = rawDetails.Split('|');
-            if (details.Length < 4)
-            {
-                return;
-            }
-
-            AddToCartModal modal = new AddToCartModal(details[0], details[1], details[2], details[3])
-            {
-                Owner = this
-            };
-
-            modal.ShowDialog();
-        }
-   
+    modal.ShowDialog();
+}
 
 private void MyOrdersNavButton_Click(object sender, RoutedEventArgs e)
+{
+    ActivateBuyerSidebar();
+    MainContentHost.Content = new MyOrdersPanelView();
+    SetActiveNav("orders");
+}
+
+private void MyCartNavButton_Click(object sender, RoutedEventArgs e)
+{
+    ActivateBuyerSidebar();
+    MainContentHost.Content = new MyCartPanelView();
+    SetActiveNav("cart");
+}
+
+private void LogoutMenuItem_Click(object sender, RoutedEventArgs e)
+{
+    MessageBoxResult result = MessageBox.Show(
+        "Are you sure you want to logout?",
+        "Confirm Logout",
+        MessageBoxButton.YesNo,
+        MessageBoxImage.Question);
+
+    if (result != MessageBoxResult.Yes)
+    {
+        return;
+    }
+
+    SessionManager.Clear();
+    LoginWindow loginWindow = new LoginWindow();
+    loginWindow.Show();
+    Close();
+}
+
+private void CreateListingNavButton_Click(object sender, RoutedEventArgs e)
+{
+    CreateListingModal modal = new CreateListingModal
+    {
+        Owner = this
+    };
+
+    modal.ShowDialog();
+    LoadBrowseProducts();
+}
+
+private void LoadBrowseProducts()
+{
+    BrowseProducts.Clear();
+
+    List<ProductListing> listings;
+    try
+    {
+        using AppDbContext dbContext = new AppDbContext();
+        listings = dbContext.ProductListings
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(24)
+            .ToList();
+    }
+    catch
+    {
+        listings = new List<ProductListing>();
+    }
+
+    if (listings.Count == 0)
+    {
+        foreach (BrowseProductCard fallback in GetFallbackProducts())
         {
-            ActivateBuyerSidebar();
-            MainContentHost.Content = new MyOrdersPanelView();
-            SetActiveNav("orders");
+            BrowseProducts.Add(fallback);
         }
 
-        private void MyCartNavButton_Click(object sender, RoutedEventArgs e)
-        {
-            ActivateBuyerSidebar();
-            MainContentHost.Content = new MyCartPanelView();
-            SetActiveNav("cart");
-        }
-        private void LogoutMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBoxResult result = MessageBox.Show(
-                "Are you sure you want to logout?",
-                "Confirm Logout",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
+        return;
+    }
 
-            if (result != MessageBoxResult.Yes)
+    foreach (ProductListing listing in listings)
+    {
+        BrowseProducts.Add(new BrowseProductCard
+        {
+            ProductName = listing.ProductName,
+            PriceText = $"₱{listing.PricePerKilo:N2} per kilo",
+            StockText = $"{listing.AvailableKilos} kilo(s) available • In Stock",
+            SellerName = string.IsNullOrWhiteSpace(_currentUserName) ? "FarmHub Seller" : _currentUserName,
+            SellerLocation = "Davao City",
+            ImagePath = ResolveListingImagePath(listing.ImagePath)
+        });
+    }
+}
+
+private static string ResolveListingImagePath(string? imagePath)
+{
+    if (!string.IsNullOrWhiteSpace(imagePath) && File.Exists(imagePath))
+    {
+        return imagePath;
+    }
+
+    return "/Images/new.png";
+}
+
+private static List<BrowseProductCard> GetFallbackProducts()
+{
+    return new List<BrowseProductCard>
             {
-                return;
-            }
-            SessionManager.Clear();
-            LoginWindow loginWindow = new LoginWindow();
-            loginWindow.Show();
-            Close();
-        }
-
-        private void CreateListingNavButton_Click(object sender, RoutedEventArgs e)
-        {
-            CreateListingModal modal = new CreateListingModal
-            {
-                Owner = this
+                new() { ProductName = "Fresh Carrots", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/carrot.jpg" },
+                new() { ProductName = "Fresh Asparagus", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/asp.jpg" },
+                new() { ProductName = "Fresh Potatoes", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/potato.jpg" },
+                new() { ProductName = "Fresh Beets", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/beets.jpg" }
             };
+}
 
-            modal.ShowDialog();
-        }
+private void MenuItem_Click(object sender, RoutedEventArgs e)
+{
+}
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+public sealed class BrowseProductCard
+{
+    public string ProductName { get; init; } = string.Empty;
+    public string PriceText { get; init; } = string.Empty;
+    public string StockText { get; init; } = string.Empty;
+    public string SellerName { get; init; } = string.Empty;
+    public string SellerLocation { get; init; } = string.Empty;
+    public string ImagePath { get; init; } = "/Images/new.png";
+}
     }
 }

@@ -125,7 +125,7 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="👤"
+                                <TextBlock Text="✉"
                                            FontSize="16"
                                            VerticalAlignment="Center"
                                            Margin="15,0"/>
