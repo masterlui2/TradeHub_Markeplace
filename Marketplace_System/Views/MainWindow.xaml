@@ -279,16 +279,16 @@
 
                             <!-- CREATE LISTING -->
                             <Button x:Name="CreateListingNavButton"
-        Click="CreateListingNavButton_Click"
-        Background="Transparent"
-        BorderThickness="0"
-        Padding="0"
-        Margin="0,0,0,8"
-        HorizontalContentAlignment="Stretch"
-        Cursor="Hand">
-                                <Border Background="#E6F4EC"
-            CornerRadius="12"
-            Padding="10">
+                            Click="CreateListingNavButton_Click"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Padding="0"
+                            Margin="0,0,0,8"
+                            HorizontalContentAlignment="Stretch"
+                            Cursor="Hand">
+                                <Border 
+                            CornerRadius="12"
+                            Padding="10">               
                                     <StackPanel Orientation="Horizontal">
                                         <fa:FontAwesome Icon="PlusCircle"
                             Width="21"
@@ -466,7 +466,19 @@
                                            FontSize="11"
                                            Foreground="Gray"
                                            Margin="0,4,0,8"/>
-
+                                            <Border Background="#E6F4EC" CornerRadius="10" Padding="8,3" HorizontalAlignment="Left" Margin="0,0,0,4">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsMyProduct}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="Own product" FontSize="10" FontWeight="SemiBold" Foreground="#1F4E3D"/>
+                                            </Border>
                                             <Separator Margin="0,6"/>
 
                                             <StackPanel Orientation="Horizontal" Margin="0,6,0,0">

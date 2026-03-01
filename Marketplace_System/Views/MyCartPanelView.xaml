@@ -11,46 +11,49 @@
 
         <StackPanel>
             <TextBlock Text="My Cart" FontSize="28" FontWeight="SemiBold" Foreground="#1F4E3D"/>
-            <TextBlock Text="Review your selected produce before checkout." Margin="0,6,0,18" Foreground="#5F6B6A"/>
+            <TextBlock Text="Items saved from the marketplace." Margin="0,6,0,18" Foreground="#5F6B6A"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1">
-            <Border Background="White" CornerRadius="16" Padding="16" Margin="0,0,0,10" BorderBrush="#DCEAE3" BorderThickness="1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="Fresh Asparagus" FontSize="16" FontWeight="SemiBold"/>
-                        <TextBlock Text="1 kilo" Margin="0,4,0,0" Foreground="#5F6B6A"/>
-                    </StackPanel>
-                    <TextBlock Grid.Column="1" Text="₱210" VerticalAlignment="Center" FontWeight="Bold" Foreground="#2E7D5B"/>
-                </Grid>
-            </Border>
+        <Grid Grid.Row="1">
+            <TextBlock x:Name="EmptyCartTextBlock"
+                       Text="Your cart is currently empty."
+                       Foreground="#6B7280"
+                       FontStyle="Italic"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Visibility="Collapsed"/>
 
-            <Border Background="White" CornerRadius="16" Padding="16" Margin="0,0,0,10" BorderBrush="#DCEAE3" BorderThickness="1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="Fresh Potatoes" FontSize="16" FontWeight="SemiBold"/>
-                        <TextBlock Text="2 kilos" Margin="0,4,0,0" Foreground="#5F6B6A"/>
-                    </StackPanel>
-                    <TextBlock Grid.Column="1" Text="₱300" VerticalAlignment="Center" FontWeight="Bold" Foreground="#2E7D5B"/>
-                </Grid>
-            </Border>
-        </StackPanel>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="CartItemsControl">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White" CornerRadius="16" Padding="16" Margin="0,0,0,10" BorderBrush="#DCEAE3" BorderThickness="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding ProductName}" FontSize="16" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding QuantityText}" Margin="0,4,0,0" Foreground="#5F6B6A"/>
+                                        <TextBlock Text="{Binding SellerText}" Margin="0,2,0,0" Foreground="#7B8A86" FontSize="12"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1" Text="{Binding TotalText}" VerticalAlignment="Center" FontWeight="Bold" Foreground="#2E7D5B"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
 
         <Border Grid.Row="2" Background="White" CornerRadius="16" Padding="16" BorderBrush="#DCEAE3" BorderThickness="1" Margin="0,12,0,0">
             <DockPanel LastChildFill="False">
                 <StackPanel DockPanel.Dock="Left">
                     <TextBlock Text="Total" Foreground="#5F6B6A"/>
-                    <TextBlock Text="₱510" FontSize="24" FontWeight="Bold" Foreground="#1F4E3D"/>
+                    <TextBlock x:Name="CartTotalTextBlock" Text="₱0.00" FontSize="24" FontWeight="Bold" Foreground="#1F4E3D"/>
                 </StackPanel>
-                <Button Content="Proceed to Checkout" DockPanel.Dock="Right" Background="#2E7D5B" Foreground="White" BorderThickness="0" Padding="18,10" FontWeight="SemiBold" Cursor="Hand"/>
+                <Button Content="Proceed to Checkout" DockPanel.Dock="Right" Background="#2E7D5B" Foreground="White" BorderThickness="0" Padding="18,10" FontWeight="SemiBold" Cursor="Hand" IsEnabled="False"/>
             </DockPanel>
         </Border>
     </Grid>

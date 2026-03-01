@@ -28,6 +28,13 @@ namespace Marketplace_System.Models
         [MaxLength(500)]
         public string? ImagePath { get; set; }
 
+        [Required]
+        public int SellerUserId { get; set; }
+
+        [Required]
+        [MaxLength(120)]
+        public string SellerName { get; set; } = string.Empty;
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

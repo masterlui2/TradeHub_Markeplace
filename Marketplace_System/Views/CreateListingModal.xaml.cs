@@ -6,7 +6,8 @@ using System.Windows.Media.Imaging;
 using Marketplace_System.Data;
 using Marketplace_System.Models;
 using Microsoft.Win32;
-
+using System.Linq;
+using Marketplace_System.Services;
 namespace Marketplace_System.Views
 {
     /// <summary>
@@ -14,12 +15,49 @@ namespace Marketplace_System.Views
     /// </summary>
     public partial class CreateListingModal : Window
     {
+        private readonly int? _editingListingId;
         private string? _uploadedImagePath;
         public int? CreatedListingId { get; private set; }
         public CreateListingModal()
         {
             InitializeComponent();
             CategoryComboBox.SelectedIndex = 0;
+            _editingListingId = null;
+        }
+
+        public CreateListingModal(ProductListing listing) : this()
+        {
+            _editingListingId = listing.Id;
+            ProductNameTextBox.Text = listing.ProductName;
+            PricePerKiloTextBox.Text = listing.PricePerKilo.ToString(CultureInfo.InvariantCulture);
+            AvailableKilosTextBox.Text = listing.AvailableKilos.ToString(CultureInfo.InvariantCulture);
+            PickupAddressTextBox.Text = listing.PickupAddress;
+            _uploadedImagePath = listing.ImagePath;
+
+            ComboBoxItem? categoryItem = CategoryComboBox.Items
+                .OfType<ComboBoxItem>()
+                .FirstOrDefault(item => string.Equals(item.Content?.ToString(), listing.Category, StringComparison.OrdinalIgnoreCase));
+
+            if (categoryItem is not null)
+            {
+                CategoryComboBox.SelectedItem = categoryItem;
+            }
+
+            if (!string.IsNullOrWhiteSpace(listing.ImagePath))
+            {
+                try
+                {
+                    ProductPreviewImage.Source = new BitmapImage(new Uri(listing.ImagePath, UriKind.RelativeOrAbsolute));
+                }
+                catch
+                {
+                    // Ignore image preview failure for invalid path.
+                }
+            }
+
+            PublishListingButton.Content = "Save Changes";
+            TitleTextBlock.Text = "Edit Listing";
+            SubtitleTextBlock.Text = "Update your product details";
         }
 
         private void UploadImageButton_Click(object sender, RoutedEventArgs e)
@@ -83,20 +121,34 @@ namespace Marketplace_System.Views
                 return;
             }
 
-            ProductListing listing = new ProductListing
-            {
-                ProductName = productName,
-                Category = category,
-                PricePerKilo = pricePerKilo,
-                AvailableKilos = availableKilos,
-                PickupAddress = pickupAddress,
-                ImagePath = _uploadedImagePath
-            };
+          
 
             try
             {
                 using AppDbContext dbContext = new AppDbContext();
-                dbContext.ProductListings.Add(listing);
+                ProductListing listing;
+                if (_editingListingId.HasValue)
+                {
+                    listing = dbContext.ProductListings.FirstOrDefault(x => x.Id == _editingListingId.Value && x.SellerUserId == SessionManager.CurrentUserId)
+                        ?? throw new InvalidOperationException("Listing not found or not owned by the current seller.");
+                }
+                else
+                {
+                    listing = new ProductListing
+                    {
+                        SellerUserId = SessionManager.CurrentUserId,
+                        SellerName = SessionManager.CurrentUserFullName
+                    };
+                    dbContext.ProductListings.Add(listing);
+                }
+
+                listing.ProductName = productName;
+                listing.Category = category;
+                listing.PricePerKilo = pricePerKilo;
+                listing.AvailableKilos = availableKilos;
+                listing.PickupAddress = pickupAddress;
+                listing.ImagePath = _uploadedImagePath;
+                listing.SellerName = SessionManager.CurrentUserFullName;
                 dbContext.SaveChanges();
                 CreatedListingId = listing.Id;
             }
@@ -111,15 +163,11 @@ namespace Marketplace_System.Views
             }
 
             MessageBox.Show(
-                $"Listing published successfully!\n\n" +
-                $"Product: {productName}\n" +
-                $"Category: {category}\n" +
-                $"Price: ₱{pricePerKilo:N2} / kilo\n" +
-                $"Stock: {availableKilos} kilo(s)",
+                 _editingListingId.HasValue ? "Listing updated successfully!" : "Listing published successfully!",
                 "Listing Saved",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
-
+            DialogResult = true;
             Close();
         }
 

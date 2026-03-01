@@ -1,29 +1,30 @@
 ﻿using System.Globalization;
-using System.Text.RegularExpressions;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-
+using Marketplace_System.Data;
+using Marketplace_System.Models;
+using Marketplace_System.Services;
+using static Marketplace_System.MainWindow;
 namespace Marketplace_System.Views
 {
-    /// <summary>
-    /// Interaction logic for AddToCartModal.xaml
-    /// </summary>
+
     public partial class AddToCartModal : Window
     {
-        private readonly decimal _unitPrice;
+        private readonly BrowseProductCard _product;
 
-        public AddToCartModal(string productName, string price, string stockDetails, string sellerName)
+        public AddToCartModal(BrowseProductCard product)
+
+
         {
             InitializeComponent();
 
             Loaded += AddToCartModal_Loaded;
-
-            ProductNameText.Text = productName;
-            PriceText.Text = price;
-            StockText.Text = stockDetails;
-            SellerNameText.Text = sellerName;
-
-            _unitPrice = ExtractPriceValue(price);
+            _product = product;
+            ProductNameText.Text = product.ProductName;
+            PriceText.Text = product.PriceText;
+            StockText.Text = product.StockText;
+            SellerNameText.Text = product.SellerName;
         }
 
         private void AddToCartModal_Loaded(object sender, RoutedEventArgs e)
@@ -51,13 +52,45 @@ namespace Marketplace_System.Views
         private void AddToCartButton_Click(object sender, RoutedEventArgs e)
         {
             int quantity = GetValidatedQuantity();
-            decimal total = quantity * _unitPrice;
+            if (quantity > _product.StockKilos && _product.StockKilos > 0)
+            {
+                MessageBox.Show($"Only {_product.StockKilos} kilo(s) are available.", "Not Enough Stock", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-            MessageBox.Show(
-                $"Added {quantity} kilo(s) of {ProductNameText.Text} to cart.\nTotal: {total:C2}",
-                "Added to Cart",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            try
+            {
+                using AppDbContext dbContext = new();
+                CartItem? existing = dbContext.CartItems.FirstOrDefault(c =>
+                    c.BuyerUserId == SessionManager.CurrentUserId && c.ProductListingId == _product.ProductId);
+
+                if (existing is null)
+                {
+                    dbContext.CartItems.Add(new CartItem
+                    {
+                        ProductName = _product.ProductName,
+                        QuantityKilos = quantity,
+                        UnitPrice = _product.PricePerKilo,
+                        BuyerUserId = SessionManager.CurrentUserId,
+                        SellerUserId = _product.SellerId,
+                        ProductListingId = _product.ProductId
+                    });
+                }
+                else
+                {
+                    existing.QuantityKilos += quantity;
+                }
+
+                dbContext.SaveChanges();
+            }
+            catch
+            {
+                MessageBox.Show("Unable to save this cart item right now.", "Add to Cart Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            decimal total = quantity * _product.PricePerKilo;
+            MessageBox.Show($"Added {quantity} kilo(s) of {_product.ProductName} to cart.\nTotal: ₱{total:N2}", "Added to Cart", MessageBoxButton.OK, MessageBoxImage.Information);
 
             DialogResult = true;
             Close();
@@ -70,11 +103,7 @@ namespace Marketplace_System.Views
 
         private void MessageSellerButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(
-                "Message composer will open here so you can chat with the seller.",
-                "Message Seller",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            MessageBox.Show("Message composer will open here so you can chat with the seller.", "Message Seller", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private int GetValidatedQuantity()
@@ -91,21 +120,15 @@ namespace Marketplace_System.Views
         private void UpdateTotalPayment()
         {
             if (TotalPaymentText == null)
-                return;
+          
 
-            int quantity = GetValidatedQuantity();
-            decimal total = quantity * _unitPrice;
-            TotalPaymentText.Text = total.ToString("C2", CultureInfo.CurrentCulture);
-        }
-
-        private static decimal ExtractPriceValue(string priceText)
-        {
-Match match = Regex.Match(priceText, @"[\d,.]+");            if (match.Success && decimal.TryParse(match.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal priceValue))
             {
-                return priceValue;
+                return;
             }
 
-            return 0m;
+            int quantity = GetValidatedQuantity();
+            decimal total = quantity * _product.PricePerKilo;
+            TotalPaymentText.Text = $"₱{total:N2}";
         }
     }
 }

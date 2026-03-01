@@ -25,7 +25,6 @@ namespace Marketplace_System
         private object? _browseProductsContent;
         private object? _buyerSidebarContent;
         private readonly string _currentUserName;
-        private readonly HashSet<int> _myListingIds = new();
         public ObservableCollection<BrowseProductCard> BrowseProducts { get; } = new();
 
         public MainWindow(string? currentUserName = null)
@@ -85,25 +84,14 @@ namespace Marketplace_System
             {
                 MainContentHost.Content = _browseProductsContent;
             }
-
+            LoadBrowseProducts();
             SetActiveNav("browse");
         }
 
-        public void ReturnToBuyerBrowse()
-        {
-            ActivateBrowseProductsView();
-        }
-
+        public void ReturnToBuyerBrowse() => ActivateBrowseProductsView();
         private void SetActiveNav(string activeItem)
         {
-            // Reset top buttons
-            List<Button> topButtons = new()
-    {
-        TopHomeNavButton,
-        TopOrdersNavButton,
-        TopCartNavButton,
-        TopInboxNavButton
-    };
+            List<Button> topButtons = new() { TopHomeNavButton, TopOrdersNavButton, TopCartNavButton, TopInboxNavButton };
 
             foreach (Button button in topButtons)
             {
@@ -111,14 +99,7 @@ namespace Marketplace_System
                 button.Foreground = InactiveForeground;
             }
 
-            // Reset sidebar buttons
-            List<Button> sidebarButtons = new()
-    {
-        BrowseProductsNavButton,
-        MyOrdersNavButton,
-        MyCartNavButton,
-        InboxNavButton
-    };
+            List<Button> sidebarButtons = new() { BrowseProductsNavButton, MyOrdersNavButton, MyCartNavButton, InboxNavButton };
 
             foreach (Button button in sidebarButtons)
             {
@@ -130,6 +111,7 @@ namespace Marketplace_System
             switch (activeItem)
             {
                 case "home":
+                case "browse":
                     TopHomeNavButton.Background = ActiveBackground;
                     TopHomeNavButton.Foreground = ActiveForeground;
                     BrowseProductsNavButton.Background = ActiveBackground;
@@ -160,185 +142,180 @@ namespace Marketplace_System
         }
 
         private void SellingNavButton_Click(object sender, RoutedEventArgs e)
-{
-    SidebarHost.Content = new SellerSidebarView();
-    ShowSellerSection("dashboard");
-}
+        {
+            SidebarHost.Content = new SellerSidebarView();
+            ShowSellerSection("dashboard");
+        }
 
-public void ShowSellerSection(string section)
-{
-    MainContentHost.Content = section switch
-    {
-        "orders" => new SellerManageOrdersView(),
-        "messages" => new SellerMessagesView(),
-        "insights" => new SellerSalesInsightsView(),
-        _ => new SellerDashboardView()
-    };
-}
+        public void ShowSellerSection(string section)
+        {
+            MainContentHost.Content = section switch
+            {
+                "orders" => new SellerManageOrdersView(),
+                "messages" => new SellerMessagesView(),
+                "insights" => new SellerSalesInsightsView(),
+                _ => new SellerDashboardView()
+            };
+        }
 
-private void BrowseProductsNavButton_Click(object sender, RoutedEventArgs e) => ActivateBrowseProductsView();
-private void LogoButton_Click(object sender, RoutedEventArgs e) => ActivateBrowseProductsView();
-private void TopHomeNavButton_Click(object sender, RoutedEventArgs e) => ActivateBrowseProductsView();
-private void TopOrdersNavButton_Click(object sender, RoutedEventArgs e) => MyOrdersNavButton_Click(sender, e);
-private void TopCartNavButton_Click(object sender, RoutedEventArgs e) => MyCartNavButton_Click(sender, e);
-private void TopInboxNavButton_Click(object sender, RoutedEventArgs e) => InboxNavButton_Click(sender, e);
+        private void BrowseProductsNavButton_Click(object sender, RoutedEventArgs e) => ActivateBrowseProductsView();
+        private void LogoButton_Click(object sender, RoutedEventArgs e) => ActivateBrowseProductsView();
+        private void TopHomeNavButton_Click(object sender, RoutedEventArgs e) => ActivateBrowseProductsView();
+        private void TopOrdersNavButton_Click(object sender, RoutedEventArgs e) => MyOrdersNavButton_Click(sender, e);
+        private void TopCartNavButton_Click(object sender, RoutedEventArgs e) => MyCartNavButton_Click(sender, e);
+        private void TopInboxNavButton_Click(object sender, RoutedEventArgs e) => InboxNavButton_Click(sender, e);
 
-private void InboxNavButton_Click(object sender, RoutedEventArgs e)
-{
-    ActivateBuyerSidebar();
-    MainContentHost.Content = new InboxPanelView();
-    SetActiveNav("inbox");
-}
+        private void InboxNavButton_Click(object sender, RoutedEventArgs e)
+        {
+            ActivateBuyerSidebar();
+            MainContentHost.Content = new InboxPanelView();
+            SetActiveNav("inbox");
+        }
 
         private void AddToCartButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is not Button { DataContext: BrowseProductCard product })
+            {
                 return;
-
+            }
             if (product.IsMyProduct)
             {
-                MessageBox.Show(
-                    "This is your own listing, so it can't be added to your cart.",
-                    "My Product",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                MessageBox.Show("This is your own listing, so it can't be added to your cart.", "Own Product", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            AddToCartModal modal = new AddToCartModal(
-                product.ProductName,
-                product.PriceText,
-                product.StockText,
-                product.SellerName)
+            AddToCartModal modal = new(product)
             {
                 Owner = this
             };
 
-            modal.ShowDialog();
+            bool? result = modal.ShowDialog();
+            if (result == true)
+            {
+                MainContentHost.Content = new MyCartPanelView();
+                SetActiveNav("cart");
+            }
         }
 
         private void MyOrdersNavButton_Click(object sender, RoutedEventArgs e)
-{
-    ActivateBuyerSidebar();
-    MainContentHost.Content = new MyOrdersPanelView();
-    SetActiveNav("orders");
-}
-
-private void MyCartNavButton_Click(object sender, RoutedEventArgs e)
-{
-    ActivateBuyerSidebar();
-    MainContentHost.Content = new MyCartPanelView();
-    SetActiveNav("cart");
-}
-
-private void LogoutMenuItem_Click(object sender, RoutedEventArgs e)
-{
-    MessageBoxResult result = MessageBox.Show(
-        "Are you sure you want to logout?",
-        "Confirm Logout",
-        MessageBoxButton.YesNo,
-        MessageBoxImage.Question);
-
-    if (result != MessageBoxResult.Yes)
-    {
-        return;
-    }
-
-    SessionManager.Clear();
-    LoginWindow loginWindow = new LoginWindow();
-    loginWindow.Show();
-    Close();
-}
-
-private void CreateListingNavButton_Click(object sender, RoutedEventArgs e)
-{
-    CreateListingModal modal = new CreateListingModal
-    {
-        Owner = this
-    };
-
-    modal.ShowDialog();
-    LoadBrowseProducts();
-}
-
-private void LoadBrowseProducts()
-{
-    BrowseProducts.Clear();
-
-    List<ProductListing> listings;
-    try
-    {
-        using AppDbContext dbContext = new AppDbContext();
-        listings = dbContext.ProductListings
-            .OrderByDescending(p => p.CreatedAt)
-            .Take(24)
-            .ToList();
-    }
-    catch
-    {
-        listings = new List<ProductListing>();
-    }
-
-    if (listings.Count == 0)
-    {
-        foreach (BrowseProductCard fallback in GetFallbackProducts())
         {
-            BrowseProducts.Add(fallback);
+            ActivateBuyerSidebar();
+            MainContentHost.Content = new MyOrdersPanelView();
+            SetActiveNav("orders");
         }
 
-        return;
-    }
-
-    foreach (ProductListing listing in listings)
-    {
-        BrowseProducts.Add(new BrowseProductCard
+        private void MyCartNavButton_Click(object sender, RoutedEventArgs e)
         {
-            ProductName = listing.ProductName,
-            PriceText = $"₱{listing.PricePerKilo:N2} per kilo",
-            StockText = $"{listing.AvailableKilos} kilo(s) available • In Stock",
-            SellerName = "FarmHub Seller",
-            SellerLocation = "Davao City",
-            ImagePath = ResolveListingImagePath(listing.ImagePath),
-            IsMyProduct = _myListingIds.Contains(listing.Id)
-        });
-    }
-}
+            ActivateBuyerSidebar();
+            MainContentHost.Content = new MyCartPanelView();
+            SetActiveNav("cart");
+        }
 
-private static string ResolveListingImagePath(string? imagePath)
-{
-    if (!string.IsNullOrWhiteSpace(imagePath) && File.Exists(imagePath))
-    {
-        return imagePath;
-    }
-
-    return "/Images/new.png";
-}
-
-private static List<BrowseProductCard> GetFallbackProducts()
-{
-    return new List<BrowseProductCard>
+        private void LogoutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to logout?", "Confirm Logout", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result != MessageBoxResult.Yes)
             {
-                  new() { ProductName = "Fresh Carrots", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/carrot.jpg", IsMyProduct = false },
-                new() { ProductName = "Fresh Asparagus", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/asp.jpg", IsMyProduct = false },
-                new() { ProductName = "Fresh Potatoes", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/potato.jpg", IsMyProduct = false },
-                new() { ProductName = "Fresh Beets", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/beets.jpg", IsMyProduct = false }
-            };
-}
+                return;
+            }
 
-private void MenuItem_Click(object sender, RoutedEventArgs e)
-{
-}
-
-public sealed class BrowseProductCard
-{
-    public string ProductName { get; init; } = string.Empty;
-    public string PriceText { get; init; } = string.Empty;
-    public string StockText { get; init; } = string.Empty;
-    public string SellerName { get; init; } = string.Empty;
-    public string SellerLocation { get; init; } = string.Empty;
-    public string ImagePath { get; init; } = "/Images/new.png";
-     public bool IsMyProduct { get; init; }
-    public string ActionButtonText => IsMyProduct ? "My product" : "Add to Cart";
+            SessionManager.Clear();
+            LoginWindow loginWindow = new();
+            loginWindow.Show();
+            Close();
         }
+
+        private void CreateListingNavButton_Click(object sender, RoutedEventArgs e)
+        {
+            CreateListingModal modal = new() { Owner = this };
+            modal.ShowDialog();
+            LoadBrowseProducts();
+        }
+
+        private void LoadBrowseProducts()
+        {
+            BrowseProducts.Clear();
+
+            List<ProductListing> listings;
+            try
+            {
+                using AppDbContext dbContext = new();
+                listings = dbContext.ProductListings
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Take(24)
+                    .ToList();
+            }
+            catch
+            {
+                listings = new List<ProductListing>();
+            }
+
+            if (listings.Count == 0)
+            {
+                foreach (BrowseProductCard fallback in GetFallbackProducts())
+                {
+                    BrowseProducts.Add(fallback);
+                }
+
+                return;
+            }
+
+            foreach (ProductListing listing in listings)
+            {
+                bool isMyProduct = listing.SellerUserId != 0 && listing.SellerUserId == SessionManager.CurrentUserId;
+                BrowseProducts.Add(new BrowseProductCard
+                {
+                    ProductId = listing.Id,
+                    ProductName = listing.ProductName,
+                    PricePerKilo = listing.PricePerKilo,
+                    StockKilos = listing.AvailableKilos,
+                    PriceText = $"₱{listing.PricePerKilo:N2} per kilo",
+                    StockText = $"{listing.AvailableKilos} kilo(s) available • In Stock",
+                    SellerId = listing.SellerUserId,
+                    SellerName = string.IsNullOrWhiteSpace(listing.SellerName) ? "FarmHub Seller" : listing.SellerName,
+                    SellerLocation = listing.PickupAddress,
+                    ImagePath = ResolveListingImagePath(listing.ImagePath),
+                    IsMyProduct = isMyProduct
+                });
+            }
+        }
+
+        private static string ResolveListingImagePath(string? imagePath)
+        {
+            if (!string.IsNullOrWhiteSpace(imagePath) && File.Exists(imagePath))
+            {
+                return imagePath;
+            }
+
+            return "/Images/new.png";
+        }
+
+        private static List<BrowseProductCard> GetFallbackProducts() => new()
+        {
+            new() { ProductId = 0, ProductName = "Fresh Carrots", PricePerKilo = 210m, StockKilos = 12, PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerId = 0, SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/carrot.jpg", IsMyProduct = false },
+            new() { ProductId = 0, ProductName = "Fresh Asparagus", PricePerKilo = 210m, StockKilos = 12, PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerId = 0, SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/asp.jpg", IsMyProduct = false },
+            new() { ProductId = 0, ProductName = "Fresh Potatoes", PricePerKilo = 210m, StockKilos = 12, PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerId = 0, SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/potato.jpg", IsMyProduct = false },
+            new() { ProductId = 0, ProductName = "Fresh Beets", PricePerKilo = 210m, StockKilos = 12, PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerId = 0, SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/beets.jpg", IsMyProduct = false }
+        };
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+        }
+    }
+
+    public sealed class BrowseProductCard
+    {
+        public int ProductId { get; init; }
+        public int SellerId { get; init; }
+        public string ProductName { get; init; } = string.Empty;
+        public decimal PricePerKilo { get; init; }
+        public int StockKilos { get; init; }
+        public string PriceText { get; init; } = string.Empty;
+        public string StockText { get; init; } = string.Empty;
+        public string SellerName { get; init; } = string.Empty;
+        public string SellerLocation { get; init; } = string.Empty;
+        public string ImagePath { get; init; } = "/Images/new.png";
+        public bool IsMyProduct { get; init; }
+        public string ActionButtonText => IsMyProduct ? "Own product" : "Add to Cart";
     }
 }

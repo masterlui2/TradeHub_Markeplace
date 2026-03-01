@@ -24,38 +24,34 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Create New Farm Listing"
-                       FontSize="24"
-                       FontWeight="Bold"
-                       Foreground="#1F4E3D"/>
+            <StackPanel>
+                <TextBlock x:Name="TitleTextBlock"
+                           Text="Create New Farm Listing"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Foreground="#1F4E3D"/>
+                <TextBlock x:Name="SubtitleTextBlock"
+                           Text="Add your fresh produce to the marketplace"
+                           Foreground="#6B7280"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
 
             <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="0,0,-18,10">
                 <StackPanel>
-                    <Border Background="#F3F8F4" CornerRadius="12" Padding="14" Margin="0,0,0,14">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="54" Height="54" Fill="#CFEDE1"/>
-                            <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="Juan Dela Cruz" FontWeight="Bold" FontSize="15"/>
-                                <TextBlock Text="Davao City • Verified Seller" Foreground="#6B7280"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
+                 
 
                     <TextBlock Text="Product Name" FontWeight="SemiBold" Margin="0,0,0,4"/>
                     <TextBox x:Name="ProductNameTextBox" Height="36" Margin="0,0,0,10" Width="682"/>
-                    <!-- CATEGORY DROPDOWN -->
-                    <TextBlock Text="Category"
-           FontWeight="SemiBold"
-           Margin="0,0,0,4"/>
-
+                    <TextBlock Text="Category" FontWeight="SemiBold" Margin="0,0,0,4"/>
                     <ComboBox x:Name="CategoryComboBox"
-          Height="36"
-          Margin="0,0,0,10"
-          FontSize="14"
-          Background="White"
-          BorderBrush="#D1D5DB"
-          BorderThickness="1"
-          Padding="6" Width="679">
+                                 Height="36"
+                              Margin="0,0,0,10"
+                              FontSize="14"
+                              Background="White"
+                              BorderBrush="#D1D5DB"
+                              BorderThickness="1"
+                              Padding="6"
+                              Width="679">
 
                         <ComboBoxItem Content="Vegetables"/>
                         <ComboBoxItem Content="Fruits"/>
@@ -120,7 +116,8 @@
                         Background="#E5E7EB"
                         Foreground="#111827"
                         BorderThickness="0"/>
-                <Button Content="Publish Listing"
+                <Button x:Name="PublishListingButton"
+                        Content="Publish Listing"
                         Click="PublishListingButton_Click"
                         Padding="14,7"
                         Background="#2E7D5B"

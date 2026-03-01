@@ -3,155 +3,130 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="Transparent">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled">
+    <!-- ONE ROOT ELEMENT ONLY -->
+    <Grid>
 
-        <StackPanel Margin="0,0,10,0">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
 
-            <!-- ================= OVERVIEW ================= -->
-            <Border Background="White"
-                    CornerRadius="18"
-                    Padding="20"
-                    BorderBrush="#DCEAE3"
-                    BorderThickness="1"
-                    Margin="0,0,0,20">
+            <StackPanel Margin="0,0,10,0">
 
-                <StackPanel>
+                <!-- MAIN CARD -->
+                <Border Background="White"
+                        CornerRadius="18"
+                        Padding="20"
+                        BorderBrush="#DCEAE3"
+                        BorderThickness="1"
+                        Margin="0,0,0,20">
 
-                    <TextBlock Text="Seller Overview"
-                               FontSize="22"
-                               FontWeight="Bold"
-                               Foreground="#1F4E3D"
-                               Margin="0,0,0,16"/>
+                    <StackPanel>
 
-                    <UniformGrid Columns="2">
+                        <!-- HEADER -->
+                        <DockPanel Margin="0,0,0,16">
+                            <TextBlock Text="Your Listings"
+                                       FontSize="22"
+                                       FontWeight="Bold"
+                                       Foreground="#1F4E3D"
+                                       DockPanel.Dock="Left" Width="152"/>
 
-                        <!-- Chats -->
-                        <Border Background="#F3F8F4"
-                                CornerRadius="14"
-                                Padding="16"
-                                Margin="0,0,10,0">
+                            <Button Content="Create Listing"
+                                    Click="CreateListingButton_Click"
+                                    Padding="10,6"
+                                    Background="#2E7D5B"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    FontWeight="SemiBold"
+                                    HorizontalAlignment="Right"/>
+                        </DockPanel>
 
-                            <StackPanel>
-                                <TextBlock Text="7"
-                                           FontSize="28"
-                                           FontWeight="Bold"
-                                           Foreground="#2E7D5B"/>
-                                <TextBlock Text="Chats to Answer"
-                                           FontSize="14"
-                                           Foreground="#374151"/>
-                            </StackPanel>
-                        </Border>
+                        <!-- EMPTY MESSAGE -->
+                        <TextBlock x:Name="EmptyListingsTextBlock"
+                                   Text="You have no listings yet."
+                                   Foreground="#6B7280"
+                                   FontStyle="Italic"
+                                   Margin="0,0,0,10"
+                                   Visibility="Collapsed"/>
 
-                        <!-- Rating -->
-                        <Border Background="#F3F8F4"
-                                CornerRadius="14"
-                                Padding="16"
-                                Margin="10,0,0,0">
+                        <!-- LISTINGS -->
+                        <ItemsControl x:Name="ListingsControl">
 
-                            <StackPanel>
-                                <TextBlock Text="0 ★"
-                                           FontSize="28"
-                                           FontWeight="Bold"
-                                           Foreground="#2E7D5B"/>
-                                <TextBlock Text="Seller Rating"
-                                           FontSize="14"
-                                           Foreground="#374151"/>
-                                <TextBlock Text="0 Reviews"
-                                           FontSize="12"
-                                           Foreground="Gray"/>
-                            </StackPanel>
-                        </Border>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
 
-                    </UniformGrid>
-                </StackPanel>
-            </Border>
+                                    <Border Background="#F9FDFA"
+                                            CornerRadius="14"
+                                            Padding="14"
+                                            BorderBrush="#E0EFE7"
+                                            BorderThickness="1"
+                                            Margin="0,0,0,10">
 
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
 
-            <!-- ================= YOUR LISTINGS ================= -->
-            <Border Background="White"
-                    CornerRadius="18"
-                    Padding="20"
-                    BorderBrush="#DCEAE3"
-                    BorderThickness="1">
+                                            <!-- LEFT CONTENT -->
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding ProductName}"
+                                                           FontSize="16"
+                                                           FontWeight="SemiBold"/>
 
-                <StackPanel>
+                                                <TextBlock Text="{Binding MetaText}"
+                                                           Margin="0,4,0,0"
+                                                           Foreground="#4B5563"/>
 
-                    <!-- Header -->
-                    <DockPanel Margin="0,0,0,16">
+                                                <TextBlock Text="{Binding PickupAddress}"
+                                                           Margin="0,4,0,0"
+                                                           Foreground="#6B7280"
+                                                           FontSize="12"/>
+                                            </StackPanel>
 
-                        <TextBlock Text="Your Listings"
-                                   FontSize="22"
-                                   FontWeight="Bold"
-                                   Foreground="#1F4E3D"
-                                   DockPanel.Dock="Left"/>
-                        
-                        <Button Content="Create Listing"
-                                Click="CreateListingButton_Click"
-                                Padding="10,6"
-                                Background="#2E7D5B"
-                                Foreground="White"
-                                BorderThickness="0"
-                                FontWeight="SemiBold"
-                                HorizontalAlignment="Right"
-                                />
-                    </DockPanel>
+                                            <!-- ACTION BUTTONS -->
+                                            <StackPanel Grid.Column="1"
+                                                        Orientation="Horizontal"
+                                                        VerticalAlignment="Center">
 
-                    <!-- Listing Stats -->
-                    <UniformGrid Columns="3">
+                                                <Button Content="View"
+                                                        Click="ViewListing_Click"
+                                                        Tag="{Binding ListingId}"
+                                                        Margin="0,0,6,0"
+                                                        Padding="10,4"
+                                                        Background="#E6F4EC"
+                                                        BorderThickness="0"/>
 
-                        <Border Background="#F3F8F4"
-                                CornerRadius="14"
-                                Padding="16"
-                                Margin="0,0,10,0">
-                            <StackPanel>
-                                <TextBlock Text="0"
-                                           FontSize="24"
-                                           FontWeight="Bold"
-                                           Foreground="#2E7D5B"/>
-                                <TextBlock Text="Active"
-                                           FontSize="14"/>
-                            </StackPanel>
-                        </Border>
+                                                <Button Content="Edit"
+                                                        Click="EditListing_Click"
+                                                        Tag="{Binding ListingId}"
+                                                        Margin="0,0,6,0"
+                                                        Padding="10,4"
+                                                        Background="#D8EAFE"
+                                                        BorderThickness="0"/>
 
-                        <Border Background="#F3F8F4"
-                                CornerRadius="14"
-                                Padding="16"
-                                Margin="0,0,10,0">
-                            <StackPanel>
-                                <TextBlock Text="0"
-                                           FontSize="24"
-                                           FontWeight="Bold"
-                                           Foreground="#2E7D5B"/>
-                                <TextBlock Text="Sold"
-                                           FontSize="14"/>
-                            </StackPanel>
-                        </Border>
+                                                <Button Content="Delete"
+                                                        Click="DeleteListing_Click"
+                                                        Tag="{Binding ListingId}"
+                                                        Padding="10,4"
+                                                        Background="#FEE2E2"
+                                                        BorderThickness="0"/>
+                                            </StackPanel>
 
-                        <Border Background="#F3F8F4"
-                                CornerRadius="14"
-                                Padding="16">
-                            <StackPanel>
-                                <TextBlock Text="0"
-                                           FontSize="24"
-                                           FontWeight="Bold"
-                                           Foreground="#2E7D5B"/>
-                                <TextBlock Text="Drafts"
-                                           FontSize="14"/>
-                            </StackPanel>
-                        </Border>
+                                        </Grid>
+                                    </Border>
 
-                    </UniformGrid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
 
-                    <TextBlock Text="See all listings"
-                               Foreground="#2E7D5B"
-                               FontWeight="SemiBold"
-                               HorizontalAlignment="Center"
-                               Margin="0,18,0,0"/>
+                        </ItemsControl>
 
-                </StackPanel>
-            </Border>
+                    </StackPanel>
 
-        </StackPanel>
-    </ScrollViewer>
+                </Border>
+
+            </StackPanel>
+
+        </ScrollViewer>
+
+    </Grid>
+
 </UserControl>
