@@ -15,7 +15,7 @@ namespace Marketplace_System.Views
     public partial class CreateListingModal : Window
     {
         private string? _uploadedImagePath;
-
+        public int? CreatedListingId { get; private set; }
         public CreateListingModal()
         {
             InitializeComponent();
@@ -98,6 +98,7 @@ namespace Marketplace_System.Views
                 using AppDbContext dbContext = new AppDbContext();
                 dbContext.ProductListings.Add(listing);
                 dbContext.SaveChanges();
+                CreatedListingId = listing.Id;
             }
             catch (Exception)
             {

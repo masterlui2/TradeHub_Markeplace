@@ -25,7 +25,7 @@ namespace Marketplace_System
         private object? _browseProductsContent;
         private object? _buyerSidebarContent;
         private readonly string _currentUserName;
-
+        private readonly HashSet<int> _myListingIds = new();
         public ObservableCollection<BrowseProductCard> BrowseProducts { get; } = new();
 
         public MainWindow(string? currentUserName = null)
@@ -190,22 +190,34 @@ private void InboxNavButton_Click(object sender, RoutedEventArgs e)
     SetActiveNav("inbox");
 }
 
-private void AddToCartButton_Click(object sender, RoutedEventArgs e)
-{
-    if (sender is not Button { DataContext: BrowseProductCard product })
-    {
-        return;
-    }
+        private void AddToCartButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button { DataContext: BrowseProductCard product })
+                return;
 
-    AddToCartModal modal = new AddToCartModal(product.ProductName, product.PriceText, product.StockText, product.SellerName)
-    {
-        Owner = this
-    };
+            if (product.IsMyProduct)
+            {
+                MessageBox.Show(
+                    "This is your own listing, so it can't be added to your cart.",
+                    "My Product",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
 
-    modal.ShowDialog();
-}
+            AddToCartModal modal = new AddToCartModal(
+                product.ProductName,
+                product.PriceText,
+                product.StockText,
+                product.SellerName)
+            {
+                Owner = this
+            };
 
-private void MyOrdersNavButton_Click(object sender, RoutedEventArgs e)
+            modal.ShowDialog();
+        }
+
+        private void MyOrdersNavButton_Click(object sender, RoutedEventArgs e)
 {
     ActivateBuyerSidebar();
     MainContentHost.Content = new MyOrdersPanelView();
@@ -284,9 +296,10 @@ private void LoadBrowseProducts()
             ProductName = listing.ProductName,
             PriceText = $"₱{listing.PricePerKilo:N2} per kilo",
             StockText = $"{listing.AvailableKilos} kilo(s) available • In Stock",
-            SellerName = string.IsNullOrWhiteSpace(_currentUserName) ? "FarmHub Seller" : _currentUserName,
+            SellerName = "FarmHub Seller",
             SellerLocation = "Davao City",
-            ImagePath = ResolveListingImagePath(listing.ImagePath)
+            ImagePath = ResolveListingImagePath(listing.ImagePath),
+            IsMyProduct = _myListingIds.Contains(listing.Id)
         });
     }
 }
@@ -305,10 +318,10 @@ private static List<BrowseProductCard> GetFallbackProducts()
 {
     return new List<BrowseProductCard>
             {
-                new() { ProductName = "Fresh Carrots", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/carrot.jpg" },
-                new() { ProductName = "Fresh Asparagus", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/asp.jpg" },
-                new() { ProductName = "Fresh Potatoes", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/potato.jpg" },
-                new() { ProductName = "Fresh Beets", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/beets.jpg" }
+                  new() { ProductName = "Fresh Carrots", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/carrot.jpg", IsMyProduct = false },
+                new() { ProductName = "Fresh Asparagus", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/asp.jpg", IsMyProduct = false },
+                new() { ProductName = "Fresh Potatoes", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/potato.jpg", IsMyProduct = false },
+                new() { ProductName = "Fresh Beets", PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/beets.jpg", IsMyProduct = false }
             };
 }
 
@@ -324,6 +337,8 @@ public sealed class BrowseProductCard
     public string SellerName { get; init; } = string.Empty;
     public string SellerLocation { get; init; } = string.Empty;
     public string ImagePath { get; init; } = "/Images/new.png";
-}
+     public bool IsMyProduct { get; init; }
+    public string ActionButtonText => IsMyProduct ? "My product" : "Add to Cart";
+        }
     }
 }

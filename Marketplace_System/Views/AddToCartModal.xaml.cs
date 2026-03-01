@@ -25,6 +25,7 @@ namespace Marketplace_System.Views
 
             _unitPrice = ExtractPriceValue(price);
         }
+
         private void AddToCartModal_Loaded(object sender, RoutedEventArgs e)
         {
             UpdateTotalPayment();
