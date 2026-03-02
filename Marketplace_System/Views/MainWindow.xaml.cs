@@ -154,6 +154,7 @@ namespace Marketplace_System
                 "orders" => new SellerManageOrdersView(),
                 "messages" => new SellerMessagesView(),
                 "insights" => new SellerSalesInsightsView(),
+                "create-listing" => new SellerDashboardView(),
                 _ => new SellerDashboardView()
             };
         }

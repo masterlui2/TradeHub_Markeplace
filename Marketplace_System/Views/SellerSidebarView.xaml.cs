@@ -15,15 +15,8 @@ namespace Marketplace_System.Views
 
         private void CreateListingButton_Click(object sender, RoutedEventArgs e)
         {
-            Window? ownerWindow = Window.GetWindow(this);
-            CreateListingModal modal = new CreateListingModal();
-
-            if (ownerWindow is not null)
-            {
-                modal.Owner = ownerWindow;
-            }
-
-            modal.ShowDialog();
+            SetActiveSellerButton(CreateListingButton);
+            ShowSellerSection("create-listing");
         }
 
         private void ManageOrdersButton_Click(object sender, RoutedEventArgs e)
@@ -46,6 +39,7 @@ namespace Marketplace_System.Views
 
         private void SetActiveSellerButton(Button activeButton)
         {
+            CreateListingButton.Background = Brushes.Transparent;
             ManageOrdersButton.Background = Brushes.Transparent;
             MessagesButton.Background = Brushes.Transparent;
             SalesInsightsButton.Background = Brushes.Transparent;

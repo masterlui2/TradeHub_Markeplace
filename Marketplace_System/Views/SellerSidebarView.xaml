@@ -35,7 +35,7 @@
                 </StackPanel>
             </Border>
 
-            <Button Click="CreateListingButton_Click"
+            <Button x:Name="CreateListingButton" Click="CreateListingButton_Click"
                     Background="Transparent"
                     BorderThickness="0"
                     Padding="10"

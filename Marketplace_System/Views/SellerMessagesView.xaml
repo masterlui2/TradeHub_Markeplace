@@ -5,71 +5,157 @@
 
     <Border Background="White"
             CornerRadius="18"
-            Padding="20"
+            Padding="18"
             BorderBrush="#DCEAE3"
             BorderThickness="1">
-        <StackPanel>
-            <TextBlock Text="Messages"
-                       FontSize="22"
-                       FontWeight="Bold"
-                       Foreground="#1F4E3D"
-                       Margin="0,0,0,14"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="290"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-            <TextBox Text="Search conversations..."
-                     Foreground="Gray"
-                     Background="#F9FAFB"
-                     BorderBrush="#E5E7EB"
-                     BorderThickness="1"
-                     Padding="10"
-                     Margin="0,0,0,16"/>
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Messages"
+                           FontSize="22"
+                           FontWeight="Bold"
+                           Foreground="#1F4E3D"
+                           Margin="0,0,0,12"/>
 
-            <Border Background="#F3F8F4" CornerRadius="12" Padding="12" Margin="0,0,0,10">
-                <StackPanel>
-                    <DockPanel>
-                        <TextBlock Text="Maria L."
-                                   FontWeight="SemiBold"/>
-                        <TextBlock Text="2m ago"
-                                   DockPanel.Dock="Right"
-                                   Foreground="Gray"
-                                   FontSize="12"/>
+                <TextBox Text="Search Marketplace chats"
+                         Foreground="Gray"
+                         Background="#F9FAFB"
+                         BorderBrush="#E5E7EB"
+                         BorderThickness="1"
+                         Padding="10"
+                         Margin="0,0,0,14"/>
+
+                <Border Background="#E6F4EC" CornerRadius="12" Padding="12" Margin="0,0,0,8">
+                    <StackPanel>
+                        <DockPanel>
+                            <TextBlock Text="Maria L." FontWeight="SemiBold"/>
+                            <TextBlock Text="2m" DockPanel.Dock="Right" FontSize="12" Foreground="#6B7280"/>
+                        </DockPanel>
+                        <TextBlock Text="Can I still get 8kg today?" Foreground="#374151" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="12" Padding="12" Margin="0,0,0,8">
+                    <StackPanel>
+                        <DockPanel>
+                            <TextBlock Text="Daniel C." FontWeight="SemiBold"/>
+                            <TextBlock Text="21m" DockPanel.Dock="Right" FontSize="12" Foreground="#6B7280"/>
+                        </DockPanel>
+                        <TextBlock Text="Thanks! Please send pickup pin." Foreground="#374151" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="12" Padding="12">
+                    <StackPanel>
+                        <DockPanel>
+                            <TextBlock Text="Ari N." FontWeight="SemiBold"/>
+                            <TextBlock Text="1h" DockPanel.Dock="Right" FontSize="12" Foreground="#6B7280"/>
+                        </DockPanel>
+                        <TextBlock Text="Do you have tomatoes left?" Foreground="#374151" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <Border Grid.Column="2"
+                    Background="#FCFEFD"
+                    CornerRadius="14"
+                    BorderBrush="#E5EFE8"
+                    BorderThickness="1"
+                    Padding="16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Grid.Row="0">
+                        <StackPanel>
+                            <TextBlock Text="Maria L." FontSize="16" FontWeight="SemiBold"/>
+                            <TextBlock Text="Active now" FontSize="12" Foreground="#6B7280"/>
+                        </StackPanel>
+                        <TextBlock Text="Marketplace chat" DockPanel.Dock="Right" Foreground="#6B7280" VerticalAlignment="Center"/>
                     </DockPanel>
-                    <TextBlock Text="Can you deliver the spinach by 4 PM?"
-                               Foreground="#374151"
-                               Margin="0,4,0,0"/>
-                </StackPanel>
-            </Border>
 
-            <Border BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="12" Padding="12" Margin="0,0,0,10">
-                <StackPanel>
-                    <DockPanel>
-                        <TextBlock Text="Daniel C."
-                                   FontWeight="SemiBold"/>
-                        <TextBlock Text="21m ago"
-                                   DockPanel.Dock="Right"
-                                   Foreground="Gray"
-                                   FontSize="12"/>
-                    </DockPanel>
-                    <TextBlock Text="Thanks! I'll confirm the order tonight."
-                               Foreground="#374151"
-                               Margin="0,4,0,0"/>
-                </StackPanel>
-            </Border>
+                    <Border Grid.Row="2"
+                            Background="White"
+                            CornerRadius="12"
+                            BorderBrush="#DCEAE3"
+                            BorderThickness="1"
+                            Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-            <Border BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="12" Padding="12">
-                <StackPanel>
-                    <DockPanel>
-                        <TextBlock Text="Ari N."
-                                   FontWeight="SemiBold"/>
-                        <TextBlock Text="1h ago"
-                                   DockPanel.Dock="Right"
-                                   Foreground="Gray"
-                                   FontSize="12"/>
+                            <Border Grid.Column="0" Background="#EAF5EF" CornerRadius="8">
+                                <TextBlock Text="IMG"
+                                           Foreground="#2E7D5B"
+                                           FontWeight="SemiBold"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Fresh Spinach"
+                                           FontWeight="SemiBold"
+                                           FontSize="14"/>
+                                <TextBlock Text="₱120 / kilo • 15 kilo(s) left"
+                                           Foreground="#374151"
+                                           Margin="0,2,0,0"/>
+                                <TextBlock Text="Pickup: Bankerohan Public Market"
+                                           Foreground="#6B7280"
+                                           FontSize="12"
+                                           Margin="0,2,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <StackPanel Grid.Row="4">
+                        <Border Background="#F3F8F4" CornerRadius="12" Padding="10" HorizontalAlignment="Left" MaxWidth="380" Margin="0,0,0,8">
+                            <TextBlock Text="Hi seller, is this spinach still available this afternoon?" TextWrapping="Wrap"/>
+                        </Border>
+
+                        <Border Background="#E6F4EC" CornerRadius="12" Padding="10" HorizontalAlignment="Right" MaxWidth="380" Margin="0,0,0,8">
+                            <TextBlock Text="Yes, still available. I can reserve 8kg for you." TextWrapping="Wrap"/>
+                        </Border>
+
+                        <Border Background="#F3F8F4" CornerRadius="12" Padding="10" HorizontalAlignment="Left" MaxWidth="380">
+                            <TextBlock Text="Great! Please send exact pickup location." TextWrapping="Wrap"/>
+                        </Border>
+                    </StackPanel>
+
+                    <DockPanel Grid.Row="6">
+                        <TextBox Text="Write a message..."
+                                 Foreground="#9CA3AF"
+                                 Background="White"
+                                 BorderBrush="#D1D5DB"
+                                 BorderThickness="1"
+                                 Padding="10"
+                                 MinHeight="40"
+                                 VerticalContentAlignment="Center"/>
+                        <Button Content="Send"
+                                DockPanel.Dock="Right"
+                                Margin="10,0,0,0"
+                                Padding="16,8"
+                                Background="#2E7D5B"
+                                Foreground="White"
+                                BorderThickness="0"
+                                FontWeight="SemiBold"/>
                     </DockPanel>
-                    <TextBlock Text="Do you have 10kg of tomatoes available?"
-                               Foreground="#374151"
-                               Margin="0,4,0,0"/>
-                </StackPanel>
+                </Grid>
             </Border>
-        </StackPanel>
+        </Grid>
     </Border>
 </UserControl>

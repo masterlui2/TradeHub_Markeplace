@@ -293,7 +293,6 @@
                                         <fa:FontAwesome Icon="PlusCircle"
                             Width="21"
                             Height="12"
-                            Foreground="#2E7D5B"
                             VerticalAlignment="Center"/>
                                         <TextBlock Text="Create Listing"
                        FontWeight="SemiBold"
