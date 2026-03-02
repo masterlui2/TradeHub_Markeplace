@@ -1,4 +1,6 @@
-﻿using Marketplace_System.Data;
+﻿using System.Text.RegularExpressions;
+using Marketplace_System.Data;
+using Marketplace_System.Data;
 using Marketplace_System.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +16,10 @@ namespace Marketplace_System.Services
             string password)
         {
             await using AppDbContext dbContext = new();
-
+            if (!IsStrongPassword(password))
+            {
+                return (false, "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
+            }
             string normalizedEmail = email.Trim().ToLowerInvariant();
             bool emailExists = await dbContext.Users.AnyAsync(u => u.Email == normalizedEmail);
             if (emailExists)
@@ -46,6 +51,20 @@ namespace Marketplace_System.Services
             return await dbContext.Users.FirstOrDefaultAsync(u =>
                 (u.Email == lookup || u.FullName.ToLower() == lookup) &&
                 u.PasswordHash == hashedPassword);
+        }
+        private static bool IsStrongPassword(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
+            {
+                return false;
+            }
+
+            bool hasUppercase = Regex.IsMatch(password, "[A-Z]");
+            bool hasLowercase = Regex.IsMatch(password, "[a-z]");
+            bool hasDigit = Regex.IsMatch(password, "\\d");
+            bool hasSpecialCharacter = Regex.IsMatch(password, "[^a-zA-Z0-9]");
+
+            return hasUppercase && hasLowercase && hasDigit && hasSpecialCharacter;
         }
     }
 }

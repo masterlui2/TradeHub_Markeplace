@@ -103,7 +103,25 @@ namespace Marketplace_System.Views
 
         private void MessageSellerButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Message composer will open here so you can chat with the seller.", "Message Seller", MessageBoxButton.OK, MessageBoxImage.Information);
+            try
+            {
+                bool sent = MessagingService.SendMessage(
+                    SessionManager.CurrentUserId,
+                    _product.SellerId,
+                    $"Hi {_product.SellerName}, is {_product.ProductName} still available?");
+
+                if (!sent)
+                {
+                    MessageBox.Show("Unable to start a chat with this seller.", "Message Seller", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                MessageBox.Show("Message sent. You can continue the conversation in Inbox.", "Message Seller", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch
+            {
+                MessageBox.Show("Unable to message seller right now.", "Message Seller", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private int GetValidatedQuantity()

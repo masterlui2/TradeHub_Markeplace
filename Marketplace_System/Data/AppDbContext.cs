@@ -1,4 +1,5 @@
-﻿using Marketplace_System.Models;
+﻿using System.Windows.Controls;
+using Marketplace_System.Models;
 using Microsoft.EntityFrameworkCore;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Menu;
 
@@ -9,6 +10,9 @@ namespace Marketplace_System.Data
         public DbSet<User> Users => Set<User>();
         public DbSet<ProductListing> ProductListings => Set<ProductListing>();
         public DbSet<CartItem> CartItems => Set<CartItem>();
+        public DbSet<Order> Orders => Set<Order>();
+        public DbSet<MessageThread> MessageThreads => Set<MessageThread>();
+        public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -44,6 +48,32 @@ namespace Marketplace_System.Data
 
             modelBuilder.Entity<CartItem>()
                 .HasIndex(c => c.ProductListingId);
+            modelBuilder.Entity<Order>()
+               .Property(o => o.UnitPrice)
+               .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Order>()
+                .HasIndex(o => o.OrderNumber)
+                .IsUnique();
+
+            modelBuilder.Entity<Order>()
+                .HasIndex(o => o.BuyerUserId);
+
+            modelBuilder.Entity<Order>()
+                .HasIndex(o => o.SellerUserId);
+
+            modelBuilder.Entity<MessageThread>()
+                .HasIndex(t => new { t.UserOneId, t.UserTwoId })
+                .IsUnique();
+
+            modelBuilder.Entity<MessageThread>()
+                .HasIndex(t => t.UpdatedAt);
+
+            modelBuilder.Entity<ChatMessage>()
+                .HasIndex(m => m.ThreadId);
+
+            modelBuilder.Entity<ChatMessage>()
+                .HasIndex(m => m.CreatedAt);
         }
     }
 }

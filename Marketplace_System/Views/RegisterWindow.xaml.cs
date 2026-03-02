@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using Marketplace_System.Services;
@@ -29,12 +30,13 @@ namespace Marketplace_System.Views
             string mobile = txtMobile.Text.Trim();
             string city = txtCity.Text.Trim();
             string password = txtPassword.Password;
-
+            string confirmPassword = txtConfirmPassword.Password;
             if (string.IsNullOrWhiteSpace(name) ||
                 string.IsNullOrWhiteSpace(email) ||
                 string.IsNullOrWhiteSpace(mobile) ||
                 string.IsNullOrWhiteSpace(city) ||
-                string.IsNullOrWhiteSpace(password))
+                string.IsNullOrWhiteSpace(password) ||
+                string.IsNullOrWhiteSpace(confirmPassword))
             {
                 MessageBox.Show(
                     "Please complete all required fields.",
@@ -53,6 +55,25 @@ namespace Marketplace_System.Views
                     MessageBoxImage.Warning);
                 return;
             }
+            if (password != confirmPassword)
+            {
+                MessageBox.Show(
+                    "Password and confirm password do not match.",
+                    "Registration Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!IsStrongPassword(password))
+            {
+                MessageBox.Show(
+                    "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
+                    "Registration Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
 
             try
             {
@@ -63,7 +84,6 @@ namespace Marketplace_System.Views
                     return;
                 }
 
-                SessionManager.SetCurrentUser(0, name);
 
                 MessageBox.Show(
                     "Account created successfully!",
@@ -71,8 +91,8 @@ namespace Marketplace_System.Views
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
 
-                MainWindow mainWindow = new(name);
-                mainWindow.Show();
+                LoginWindow loginWindow = new();
+                loginWindow.Show();
                 Close();
             }
             catch (Exception ex)
@@ -100,6 +120,20 @@ namespace Marketplace_System.Views
         private void CloseWindow_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+        private static bool IsStrongPassword(string password)
+        {
+            if (password.Length < 8)
+            {
+                return false;
+            }
+
+            bool hasUppercase = Regex.IsMatch(password, "[A-Z]");
+            bool hasLowercase = Regex.IsMatch(password, "[a-z]");
+            bool hasDigit = Regex.IsMatch(password, "\\d");
+            bool hasSpecialCharacter = Regex.IsMatch(password, "[^a-zA-Z0-9]");
+
+            return hasUppercase && hasLowercase && hasDigit && hasSpecialCharacter;
         }
     }
 }

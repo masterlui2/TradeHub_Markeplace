@@ -53,7 +53,17 @@
                     <TextBlock Text="Total" Foreground="#5F6B6A"/>
                     <TextBlock x:Name="CartTotalTextBlock" Text="₱0.00" FontSize="24" FontWeight="Bold" Foreground="#1F4E3D"/>
                 </StackPanel>
-                <Button Content="Proceed to Checkout" DockPanel.Dock="Right" Background="#2E7D5B" Foreground="White" BorderThickness="0" Padding="18,10" FontWeight="SemiBold" Cursor="Hand" IsEnabled="False"/>
+                <Button x:Name="CheckoutButton"
+                        Content="Proceed to Checkout"
+                        DockPanel.Dock="Right"
+                        Background="#2E7D5B"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Padding="18,10"
+                        FontWeight="SemiBold"
+                        Cursor="Hand"
+                        Click="CheckoutButton_Click"
+                        IsEnabled="False"/>
             </DockPanel>
         </Border>
     </Grid>
