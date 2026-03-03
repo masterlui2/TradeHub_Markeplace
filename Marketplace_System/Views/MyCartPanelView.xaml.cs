@@ -11,7 +11,6 @@ namespace Marketplace_System.Views
 {
     public partial class MyCartPanelView : UserControl
     {
-        private List<CartItem> _loadedCartItems = new();
         public MyCartPanelView()
         {
             InitializeComponent();
@@ -26,25 +25,24 @@ namespace Marketplace_System.Views
         private void LoadCartItems()
         {
             List<CartLineViewModel> cartLines = new();
-            _loadedCartItems = new();
 
             try
             {
                 using AppDbContext dbContext = new();
                 var usersById = dbContext.Users.ToDictionary(u => u.Id, u => u.FullName);
 
-                _loadedCartItems = dbContext.CartItems.Where(c => c.BuyerUserId == SessionManager.CurrentUserId)
-                      .ToList();
-
-                cartLines = _loadedCartItems
+                cartLines = dbContext.CartItems
+                    .Where(c => c.BuyerUserId == SessionManager.CurrentUserId)
                     .OrderByDescending(c => c.CreatedAt)
                     .Select(c => new CartLineViewModel
                     {
+                        CartItemId = c.Id,
                         ProductName = c.ProductName,
                         QuantityText = $"{c.QuantityKilos} kilo(s)",
                         SellerText = $"Seller: {usersById.GetValueOrDefault(c.SellerUserId, $"User #{c.SellerUserId}")}",
                         TotalText = $"₱{c.QuantityKilos * c.UnitPrice:N2}",
-                        TotalAmount = c.QuantityKilos * c.UnitPrice
+                        TotalAmount = c.QuantityKilos * c.UnitPrice,
+                        IsSelected = true
                     })
                     .ToList();
             }
@@ -55,19 +53,42 @@ namespace Marketplace_System.Views
 
             CartItemsControl.ItemsSource = cartLines;
             EmptyCartTextBlock.Visibility = cartLines.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-            CartTotalTextBlock.Text = $"₱{cartLines.Sum(c => c.TotalAmount):N2}";
-            CheckoutButton.IsEnabled = _loadedCartItems.Count > 0;
+            UpdateCheckoutState();
         }
+
+        private void CartSelectionChanged(object sender, RoutedEventArgs e)
+        {
+            UpdateCheckoutState();
+        }
+
+        private void FulfillmentMethodComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateCheckoutState();
+        }
+
+        private void UpdateCheckoutState()
+        {
+            List<CartLineViewModel> selectedLines = GetSelectedLines();
+            CartTotalTextBlock.Text = $"₱{selectedLines.Sum(c => c.TotalAmount):N2}";
+            CheckoutButton.IsEnabled = selectedLines.Count > 0 && FulfillmentMethodComboBox.SelectedItem is ComboBoxItem;
+        }
+
+        private List<CartLineViewModel> GetSelectedLines() =>
+            (CartItemsControl.ItemsSource as IEnumerable<CartLineViewModel> ?? Enumerable.Empty<CartLineViewModel>())
+            .Where(c => c.IsSelected)
+            .ToList();
 
         private void CheckoutButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_loadedCartItems.Count == 0)
+            List<CartLineViewModel> selectedLines = GetSelectedLines();
+            if (selectedLines.Count == 0 || FulfillmentMethodComboBox.SelectedItem is not ComboBoxItem selectedMethod)
             {
                 return;
             }
 
+            string fulfillmentMethod = selectedMethod.Content?.ToString() ?? Order.FulfillmentPickup;
             MessageBoxResult result = MessageBox.Show(
-                $"Place {_loadedCartItems.Count} item(s) as orders now?",
+                $"Place {selectedLines.Count} selected item(s) for {fulfillmentMethod.ToLowerInvariant()}?\nPayment will wait for seller confirmation.",
                 "Confirm Checkout",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
@@ -81,8 +102,9 @@ namespace Marketplace_System.Views
             {
                 using AppDbContext dbContext = new();
 
+                List<int> selectedCartItemIds = selectedLines.Select(l => l.CartItemId).ToList();
                 List<CartItem> checkoutItems = dbContext.CartItems
-                    .Where(c => c.BuyerUserId == SessionManager.CurrentUserId)
+                    .Where(c => c.BuyerUserId == SessionManager.CurrentUserId && selectedCartItemIds.Contains(c.Id))
                     .OrderBy(c => c.CreatedAt)
                     .ToList();
 
@@ -92,11 +114,11 @@ namespace Marketplace_System.Views
                     return;
                 }
 
+                DateTime now = DateTime.UtcNow;
                 foreach (CartItem item in checkoutItems)
                 {
-                    string orderNumber = $"FH-{DateTime.UtcNow:yyMMdd}-{item.Id:D4}"; 
+                    string orderNumber = $"FH-{now:yyMMdd}-{item.Id:D4}";
                     dbContext.Orders.Add(new Order
-
                     {
                         OrderNumber = orderNumber,
                         ProductName = item.ProductName,
@@ -105,11 +127,11 @@ namespace Marketplace_System.Views
                         BuyerUserId = item.BuyerUserId,
                         SellerUserId = item.SellerUserId,
                         ProductListingId = item.ProductListingId,
-                        Status = Order.StatusPaid,
-                        Notes = "Checkout confirmed by customer.",
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        PaidAt = DateTime.UtcNow
+                        Status = Order.StatusPendingPayment,
+                        FulfillmentMethod = fulfillmentMethod,
+                        Notes = "Buyer submitted checkout and payment proof. Awaiting seller confirmation.",
+                        CreatedAt = now,
+                        UpdatedAt = now
                     });
 
                     ProductListing? listing = dbContext.ProductListings.FirstOrDefault(p => p.Id == item.ProductListingId);
@@ -122,7 +144,8 @@ namespace Marketplace_System.Views
                 dbContext.CartItems.RemoveRange(checkoutItems);
                 dbContext.SaveChanges();
 
-                MessageBox.Show("Checkout complete. Orders are now paid and forwarded to sellers for preparation.", "Checkout Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Checkout submitted. Seller must confirm payment before the order moves forward.", "Checkout Submitted", MessageBoxButton.OK, MessageBoxImage.Information);
+                LoadCartItems();
             }
             catch
             {
@@ -132,11 +155,13 @@ namespace Marketplace_System.Views
 
         private sealed class CartLineViewModel
         {
+            public int CartItemId { get; init; }
             public string ProductName { get; init; } = string.Empty;
             public string QuantityText { get; init; } = string.Empty;
             public string SellerText { get; init; } = string.Empty;
             public string TotalText { get; init; } = string.Empty;
             public decimal TotalAmount { get; init; }
+            public bool IsSelected { get; set; }
         }
     }
 }

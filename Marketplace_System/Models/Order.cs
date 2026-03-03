@@ -11,7 +11,8 @@ namespace Marketplace_System.Models
         public const string StatusReadyForPickup = "Ready for pickup";
         public const string StatusCompleted = "Completed";
         public const string StatusCancelled = "Cancelled";
-
+        public const string FulfillmentPickup = "Pick up";
+        public const string FulfillmentDelivery = "Deliver";
         public int Id { get; set; }
 
         [Required]
@@ -40,7 +41,9 @@ namespace Marketplace_System.Models
         [Required]
         [MaxLength(32)]
         public string Status { get; set; } = StatusPendingPayment;
-
+        [Required]
+        [MaxLength(20)]
+        public string FulfillmentMethod { get; set; } = FulfillmentPickup;
         [MaxLength(300)]
         public string Notes { get; set; } = string.Empty;
 

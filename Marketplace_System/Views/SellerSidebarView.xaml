@@ -15,10 +15,15 @@
                        FontSize="16"
                        Margin="0,0,0,15"/>
 
-            <Border 
-                    CornerRadius="12"
+            <Button x:Name="DashboardButton"
+                    Click="DashboardButton_Click"
+                    Background="Transparent"
+                    BorderThickness="0"
                     Padding="10"
-                    Margin="0,0,0,8">
+                    Margin="0,0,0,8"
+                    HorizontalContentAlignment="Stretch"
+                    Cursor="Hand">
+
 
                 <StackPanel Orientation="Horizontal">
                     <fa:FontAwesome Icon="Dashboard"
@@ -31,7 +36,7 @@
                                FontWeight="SemiBold"
                                VerticalAlignment="Center"/>
                 </StackPanel>
-            </Border>
+            </Button>
 
             <Button x:Name="CreateListingButton" Click="CreateListingButton_Click"
                     Background="Transparent"

@@ -37,6 +37,7 @@ namespace Marketplace_System.Views
                         OrderNumber = o.OrderNumber,
                         ProductSummary = $"{o.ProductName} • {o.QuantityKilos} kilo(s)",
                         SellerName = $"Seller: {usersById.GetValueOrDefault(o.SellerUserId, $"User #{o.SellerUserId}")}",
+                        FulfillmentText = $"Method: {o.FulfillmentMethod}",
                         Status = o.Status,
                         TotalText = $"₱{o.QuantityKilos * o.UnitPrice:N2}",
                         LastUpdatedText = $"Updated: {o.UpdatedAt.ToLocalTime():MMM dd, yyyy hh:mm tt}"
@@ -57,6 +58,7 @@ namespace Marketplace_System.Views
             public string OrderNumber { get; init; } = string.Empty;
             public string ProductSummary { get; init; } = string.Empty;
             public string SellerName { get; init; } = string.Empty;
+            public string FulfillmentText { get; init; } = string.Empty;
             public string Status { get; init; } = string.Empty;
             public string TotalText { get; init; } = string.Empty;
             public string LastUpdatedText { get; init; } = string.Empty;

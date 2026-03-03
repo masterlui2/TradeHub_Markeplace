@@ -144,7 +144,7 @@ namespace Marketplace_System
         private void SellingNavButton_Click(object sender, RoutedEventArgs e)
         {
             SidebarHost.Content = new SellerSidebarView();
-            ShowSellerSection("create-listing");
+            ShowSellerSection("dashboard");
         }
 
         public void ShowSellerSection(string section)

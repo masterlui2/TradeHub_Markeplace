@@ -36,7 +36,7 @@ namespace Marketplace_System.Views
                     .OrderByDescending(o => o.UpdatedAt)
                     .ToList();
 
-                PaidCountText.Text = sellerOrders.Count(o => o.Status == Order.StatusPaid).ToString();
+                PendingCountText.Text = sellerOrders.Count(o => o.Status == Order.StatusPendingPayment).ToString();
                 PreparingCountText.Text = sellerOrders.Count(o => o.Status == Order.StatusPreparing).ToString();
                 ReadyCountText.Text = sellerOrders.Count(o => o.Status == Order.StatusReadyForPickup).ToString();
                 CompletedCountText.Text = sellerOrders.Count(o => o.Status == Order.StatusCompleted).ToString();
@@ -47,6 +47,7 @@ namespace Marketplace_System.Views
                     Status = o.Status,
                     OrderLine = $"{o.OrderNumber} • {o.ProductName} • {o.QuantityKilos}kg • ₱{o.QuantityKilos * o.UnitPrice:N2}",
                     BuyerLine = $"Buyer: {usersById.GetValueOrDefault(o.BuyerUserId, $"User #{o.BuyerUserId}")}",
+                    FulfillmentLine = $"Method: {o.FulfillmentMethod}",
                     TimelineLine = $"Last update: {o.UpdatedAt.ToLocalTime():MMM dd, yyyy hh:mm tt}",
                     ActionText = GetActionText(o.Status),
                     ActionVisibility = string.IsNullOrEmpty(GetActionText(o.Status)) ? Visibility.Collapsed : Visibility.Visible
@@ -54,7 +55,7 @@ namespace Marketplace_System.Views
             }
             catch
             {
-                PaidCountText.Text = "0";
+                PendingCountText.Text = "0";
                 PreparingCountText.Text = "0";
                 ReadyCountText.Text = "0";
                 CompletedCountText.Text = "0";
@@ -83,6 +84,11 @@ namespace Marketplace_System.Views
                 DateTime now = DateTime.UtcNow;
                 switch (order.Status)
                 {
+                    case Order.StatusPendingPayment:
+                        order.Status = Order.StatusPaid;
+                        order.PaidAt = now;
+                        order.Notes = "Seller confirmed buyer payment.";
+                        break;
                     case Order.StatusPaid:
                         order.Status = Order.StatusPreparing;
                         order.PreparingAt = now;
@@ -91,12 +97,16 @@ namespace Marketplace_System.Views
                     case Order.StatusPreparing:
                         order.Status = Order.StatusReadyForPickup;
                         order.ReadyForPickupAt = now;
-                        order.Notes = "Order is ready for pickup.";
+                        order.Notes = order.FulfillmentMethod == Order.FulfillmentDelivery
+                                                  ? "Order is packed and out for delivery scheduling."
+                                                  : "Order is ready for pickup.";
                         break;
                     case Order.StatusReadyForPickup:
                         order.Status = Order.StatusCompleted;
                         order.CompletedAt = now;
-                        order.Notes = "Order was picked up and completed.";
+                        order.Notes = order.FulfillmentMethod == Order.FulfillmentDelivery
+                                                   ? "Order was delivered and completed."
+                                                   : "Order was picked up and completed."; 
                         break;
                     default:
                         return;
@@ -115,6 +125,7 @@ namespace Marketplace_System.Views
 
         private static string GetActionText(string status) => status switch
         {
+            Order.StatusPendingPayment => "Confirm payment",
             Order.StatusPaid => "Start preparing",
             Order.StatusPreparing => "Mark ready",
             Order.StatusReadyForPickup => "Complete order",
@@ -126,6 +137,7 @@ namespace Marketplace_System.Views
             public int OrderId { get; init; }
             public string OrderLine { get; init; } = string.Empty;
             public string BuyerLine { get; init; } = string.Empty;
+            public string FulfillmentLine { get; init; } = string.Empty;
             public string Status { get; init; } = string.Empty;
             public string TimelineLine { get; init; } = string.Empty;
             public string ActionText { get; init; } = string.Empty;

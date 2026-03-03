@@ -13,6 +13,12 @@ namespace Marketplace_System.Views
             InitializeComponent();
         }
 
+        private void DashboardButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveSellerButton(DashboardButton);
+            ShowSellerSection("dashboard");
+        }
+
         private void CreateListingButton_Click(object sender, RoutedEventArgs e)
         {
             SetActiveSellerButton(CreateListingButton);
@@ -43,6 +49,7 @@ namespace Marketplace_System.Views
             ManageOrdersButton.Background = Brushes.Transparent;
             MessagesButton.Background = Brushes.Transparent;
             SalesInsightsButton.Background = Brushes.Transparent;
+            DashboardButton.Background = Brushes.Transparent;
             activeButton.Background = ActiveBackground;
         }
         private void BrowseProductsButton_Click(object sender, RoutedEventArgs e)

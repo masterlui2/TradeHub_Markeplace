@@ -14,15 +14,15 @@
                        FontWeight="Bold"
                        Foreground="#1F4E3D"
                        Margin="0,0,0,4"/>
-            <TextBlock Text="Move orders from paid to completed using a clean status flow."
+            <TextBlock Text="Confirm payment first, then progress orders to completion."
                        Foreground="#5F6B6A"
                        Margin="0,0,0,14"/>
 
             <UniformGrid Columns="4" Margin="0,0,0,18">
                 <Border Background="#F3F8F4" CornerRadius="12" Padding="14" Margin="0,0,10,0">
                     <StackPanel>
-                        <TextBlock x:Name="PaidCountText" Text="0" FontSize="24" FontWeight="Bold" Foreground="#2E7D5B"/>
-                        <TextBlock Text="Paid" Foreground="#374151"/>
+                        <TextBlock x:Name="PendingCountText" Text="0" FontSize="24" FontWeight="Bold" Foreground="#2E7D5B"/>
+                        <TextBlock Text="Pending payment" Foreground="#374151"/>
                     </StackPanel>
                 </Border>
                 <Border Background="#F3F8F4" CornerRadius="12" Padding="14" Margin="0,0,10,0">
@@ -34,7 +34,7 @@
                 <Border Background="#F3F8F4" CornerRadius="12" Padding="14" Margin="0,0,10,0">
                     <StackPanel>
                         <TextBlock x:Name="ReadyCountText" Text="0" FontSize="24" FontWeight="Bold" Foreground="#2E7D5B"/>
-                        <TextBlock Text="Ready for Pickup" Foreground="#374151"/>
+                        <TextBlock Text="Ready" Foreground="#374151"/>
                     </StackPanel>
                 </Border>
                 <Border Background="#F3F8F4" CornerRadius="12" Padding="14">
@@ -66,6 +66,7 @@
                                     <StackPanel>
                                         <TextBlock Text="{Binding OrderLine}" FontWeight="SemiBold"/>
                                         <TextBlock Text="{Binding BuyerLine}" Foreground="Gray" FontSize="12" Margin="0,3,0,0"/>
+                                        <TextBlock Text="{Binding FulfillmentLine}" Foreground="#2E7D5B" FontSize="12" Margin="0,3,0,0"/>
                                         <TextBlock Text="{Binding TimelineLine}" Foreground="#6B7280" FontSize="12" Margin="0,3,0,0"/>
                                     </StackPanel>
 
