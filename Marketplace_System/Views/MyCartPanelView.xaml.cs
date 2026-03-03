@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.EntityFrameworkCore;
 using Marketplace_System.Data;
 using Marketplace_System.Models;
 using Marketplace_System.Services;
@@ -17,21 +20,26 @@ namespace Marketplace_System.Views
             Loaded += MyCartPanelView_Loaded;
         }
 
-        private void MyCartPanelView_Loaded(object sender, RoutedEventArgs e)
+        private async void MyCartPanelView_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadCartItems();
+            await LoadCartItems();
         }
 
-        private void LoadCartItems()
+        private async Task LoadCartItems()
         {
             List<CartLineViewModel> cartLines = new();
+            string emptyStateMessage = "Your cart is currently empty.";
+
+            SetLoadingState(isLoading: true, message: "Loading cart items...");
 
             try
             {
+                using CancellationTokenSource timeoutCts = new(TimeSpan.FromSeconds(10));
                 using AppDbContext dbContext = new();
-                var usersById = dbContext.Users.ToDictionary(u => u.Id, u => u.FullName);
+                var usersById = await dbContext.Users
+                    .ToDictionaryAsync(u => u.Id, u => u.FullName, timeoutCts.Token);
 
-                cartLines = dbContext.CartItems
+                cartLines = await dbContext.CartItems
                     .Where(c => c.BuyerUserId == SessionManager.CurrentUserId)
                     .OrderByDescending(c => c.CreatedAt)
                     .Select(c => new CartLineViewModel
@@ -44,15 +52,40 @@ namespace Marketplace_System.Views
                         TotalAmount = c.QuantityKilos * c.UnitPrice,
                         IsSelected = true
                     })
-                    .ToList();
+                    .ToListAsync(timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                emptyStateMessage = "Loading timed out. Please try again.";
             }
             catch
             {
                 // Keep empty state if DB is unreachable.
+                emptyStateMessage = "Unable to load your cart right now.";
+            }
+            finally
+            {
+                SetLoadingState(isLoading: false);
             }
 
             CartItemsControl.ItemsSource = cartLines;
+            EmptyCartTextBlock.Text = emptyStateMessage;
             EmptyCartTextBlock.Visibility = cartLines.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            UpdateCheckoutState();
+        }
+
+        private void SetLoadingState(bool isLoading, string? message = null)
+        {
+            FulfillmentMethodComboBox.IsEnabled = !isLoading;
+
+            if (isLoading)
+            {
+                CheckoutButton.IsEnabled = false;
+                EmptyCartTextBlock.Text = message ?? "Loading...";
+                EmptyCartTextBlock.Visibility = Visibility.Visible;
+                return;
+            }
+
             UpdateCheckoutState();
         }
 
@@ -78,7 +111,7 @@ namespace Marketplace_System.Views
             .Where(c => c.IsSelected)
             .ToList();
 
-        private void CheckoutButton_Click(object sender, RoutedEventArgs e)
+        private async void CheckoutButton_Click(object sender, RoutedEventArgs e)
         {
             List<CartLineViewModel> selectedLines = GetSelectedLines();
             if (selectedLines.Count == 0 || FulfillmentMethodComboBox.SelectedItem is not ComboBoxItem selectedMethod)
@@ -110,7 +143,7 @@ namespace Marketplace_System.Views
 
                 if (checkoutItems.Count == 0)
                 {
-                    LoadCartItems();
+                    await LoadCartItems();
                     return;
                 }
 
@@ -145,7 +178,7 @@ namespace Marketplace_System.Views
                 dbContext.SaveChanges();
 
                 MessageBox.Show("Checkout submitted. Seller must confirm payment before the order moves forward.", "Checkout Submitted", MessageBoxButton.OK, MessageBoxImage.Information);
-                LoadCartItems();
+                await LoadCartItems();
             }
             catch
             {
