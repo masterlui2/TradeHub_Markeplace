@@ -1,7 +1,5 @@
-﻿using System.Windows.Controls;
-using Marketplace_System.Models;
+﻿using Marketplace_System.Models;
 using Microsoft.EntityFrameworkCore;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Menu;
 
 namespace Marketplace_System.Data
 {
@@ -27,8 +25,8 @@ namespace Marketplace_System.Data
                 .IsUnique();
 
             modelBuilder.Entity<ProductListing>()
-               .Property(p => p.PricePerKilo)
-               .HasColumnType("decimal(18,2)");
+                .Property(p => p.PricePerKilo)
+                .HasColumnType("decimal(18,2)");
 
             modelBuilder.Entity<ProductListing>()
                 .HasIndex(p => p.CreatedAt);
@@ -48,9 +46,10 @@ namespace Marketplace_System.Data
 
             modelBuilder.Entity<CartItem>()
                 .HasIndex(c => c.ProductListingId);
+
             modelBuilder.Entity<Order>()
-               .Property(o => o.UnitPrice)
-               .HasColumnType("decimal(18,2)");
+                .Property(o => o.UnitPrice)
+                .HasColumnType("decimal(18,2)");
 
             modelBuilder.Entity<Order>()
                 .HasIndex(o => o.OrderNumber)
@@ -61,6 +60,12 @@ namespace Marketplace_System.Data
 
             modelBuilder.Entity<Order>()
                 .HasIndex(o => o.SellerUserId);
+
+            modelBuilder.Entity<Order>()
+                .HasIndex(o => o.Status);
+
+            modelBuilder.Entity<Order>()
+                .HasIndex(o => o.UpdatedAt);
 
             modelBuilder.Entity<MessageThread>()
                 .HasIndex(t => new { t.UserOneId, t.UserTwoId })

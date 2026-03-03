@@ -94,8 +94,9 @@ namespace Marketplace_System.Views
 
                 foreach (CartItem item in checkoutItems)
                 {
-                    string orderNumber = $"FH-{DateTime.UtcNow:yyMMdd}-{item.Id:D4}";
+                    string orderNumber = $"FH-{DateTime.UtcNow:yyMMdd}-{item.Id:D4}"; 
                     dbContext.Orders.Add(new Order
+
                     {
                         OrderNumber = orderNumber,
                         ProductName = item.ProductName,
@@ -104,8 +105,11 @@ namespace Marketplace_System.Views
                         BuyerUserId = item.BuyerUserId,
                         SellerUserId = item.SellerUserId,
                         ProductListingId = item.ProductListingId,
-                        Status = "Pending payment",
-                        CreatedAt = DateTime.UtcNow
+                        Status = Order.StatusPaid,
+                        Notes = "Checkout confirmed by customer.",
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                        PaidAt = DateTime.UtcNow
                     });
 
                     ProductListing? listing = dbContext.ProductListings.FirstOrDefault(p => p.Id == item.ProductListingId);
@@ -118,8 +122,7 @@ namespace Marketplace_System.Views
                 dbContext.CartItems.RemoveRange(checkoutItems);
                 dbContext.SaveChanges();
 
-                MessageBox.Show("Checkout complete. Your orders are now in My Orders.", "Checkout Successful", MessageBoxButton.OK, MessageBoxImage.Information);
-                LoadCartItems();
+                MessageBox.Show("Checkout complete. Orders are now paid and forwarded to sellers for preparation.", "Checkout Successful", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch
             {

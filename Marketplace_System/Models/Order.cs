@@ -5,6 +5,13 @@ namespace Marketplace_System.Models
 {
     public class Order
     {
+        public const string StatusPendingPayment = "Pending payment";
+        public const string StatusPaid = "Paid";
+        public const string StatusPreparing = "Preparing";
+        public const string StatusReadyForPickup = "Ready for pickup";
+        public const string StatusCompleted = "Completed";
+        public const string StatusCancelled = "Cancelled";
+
         public int Id { get; set; }
 
         [Required]
@@ -32,8 +39,17 @@ namespace Marketplace_System.Models
 
         [Required]
         [MaxLength(32)]
-        public string Status { get; set; } = "Pending payment";
+        public string Status { get; set; } = StatusPendingPayment;
+
+        [MaxLength(300)]
+        public string Notes { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? PaidAt { get; set; }
+        public DateTime? PreparingAt { get; set; }
+        public DateTime? ReadyForPickupAt { get; set; }
+        public DateTime? CompletedAt { get; set; }
+        public DateTime? CancelledAt { get; set; }
     }
 }

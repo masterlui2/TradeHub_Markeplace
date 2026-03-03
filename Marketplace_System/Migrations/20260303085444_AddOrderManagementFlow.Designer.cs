@@ -4,6 +4,7 @@ using Marketplace_System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketplace_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260303085444_AddOrderManagementFlow")]
+    partial class AddOrderManagementFlow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,18 +35,9 @@ namespace Marketplace_System.Migrations
 
                     b.Property<int>("BuyerUserId")
                         .HasColumnType("int");
-                    b.Property<DateTime?>("CancelledAt")
-                       .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("datetime2");
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-                    b.Property<string>("Notes")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
 
                     b.Property<int>("ProductListingId")
                         .HasColumnType("int");
@@ -52,15 +46,10 @@ namespace Marketplace_System.Migrations
                         .IsRequired()
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
-                    b.Property<DateTime?>("PaidAt")
-                       .HasColumnType("datetime2");
+
                     b.Property<int>("QuantityKilos")
                         .HasColumnType("int");
-                    b.Property<DateTime?>("PreparingAt")
-                       .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("ReadyForPickupAt")
-                        .HasColumnType("datetime2");
                     b.Property<int>("SellerUserId")
                         .HasColumnType("int");
 
@@ -176,8 +165,7 @@ namespace Marketplace_System.Migrations
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
-                    b.Property<DateTime>("UpdatedAt")
-                     .HasColumnType("datetime2");
+
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -189,9 +177,7 @@ namespace Marketplace_System.Migrations
                         .IsUnique();
 
                     b.HasIndex("SellerUserId");
-                    b.HasIndex("Status");
 
-                    b.HasIndex("UpdatedAt");
                     b.ToTable("Orders");
                 });
 
