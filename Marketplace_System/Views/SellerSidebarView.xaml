@@ -13,10 +13,9 @@
             <TextBlock Text="Seller Tools"
                        FontWeight="Bold"
                        FontSize="16"
-                       Foreground="#1F4E3D"
                        Margin="0,0,0,15"/>
 
-            <Border Background="#E6F4EC"
+            <Border 
                     CornerRadius="12"
                     Padding="10"
                     Margin="0,0,0,8">
@@ -25,7 +24,6 @@
                     <fa:FontAwesome Icon="Dashboard"
                                     Width="18"
                                     Height="14"
-                                    Foreground="#2E7D5B"
                                     VerticalAlignment="Center"/>
 
                     <TextBlock Text="Seller Dashboard"

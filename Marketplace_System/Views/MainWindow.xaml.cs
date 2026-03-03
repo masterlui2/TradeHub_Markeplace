@@ -144,7 +144,7 @@ namespace Marketplace_System
         private void SellingNavButton_Click(object sender, RoutedEventArgs e)
         {
             SidebarHost.Content = new SellerSidebarView();
-            ShowSellerSection("dashboard");
+            ShowSellerSection("create-listing");
         }
 
         public void ShowSellerSection(string section)
@@ -154,7 +154,7 @@ namespace Marketplace_System
                 "orders" => new SellerManageOrdersView(),
                 "messages" => new SellerMessagesView(),
                 "insights" => new SellerSalesInsightsView(),
-                "create-listing" => new SellerDashboardView(),
+                "create-listing" => new SellerCreateListingsView(),
                 _ => new SellerDashboardView()
             };
         }
@@ -226,12 +226,7 @@ namespace Marketplace_System
             Close();
         }
 
-        private void CreateListingNavButton_Click(object sender, RoutedEventArgs e)
-        {
-            CreateListingModal modal = new() { Owner = this };
-            modal.ShowDialog();
-            LoadBrowseProducts();
-        }
+     
 
         private void LoadBrowseProducts()
         {
