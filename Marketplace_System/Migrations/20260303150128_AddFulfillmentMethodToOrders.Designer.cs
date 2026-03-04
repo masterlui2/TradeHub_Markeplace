@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketplace_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260303085444_AddOrderManagementFlow")]
-    partial class AddOrderManagementFlow
+    [Migration("20260303150128_AddFulfillmentMethodToOrders")]
+    partial class AddFulfillmentMethodToOrders
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -139,13 +139,35 @@ namespace Marketplace_System.Migrations
                     b.Property<int>("BuyerUserId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("CancelledAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("FulfillmentMethod")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("OrderNumber")
                         .IsRequired()
                         .HasMaxLength(24)
                         .HasColumnType("nvarchar(24)");
+
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("PreparingAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ProductListingId")
                         .HasColumnType("int");
@@ -158,6 +180,9 @@ namespace Marketplace_System.Migrations
                     b.Property<int>("QuantityKilos")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("ReadyForPickupAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("SellerUserId")
                         .HasColumnType("int");
 
@@ -169,6 +194,9 @@ namespace Marketplace_System.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BuyerUserId");
@@ -177,6 +205,10 @@ namespace Marketplace_System.Migrations
                         .IsUnique();
 
                     b.HasIndex("SellerUserId");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("UpdatedAt");
 
                     b.ToTable("Orders");
                 });

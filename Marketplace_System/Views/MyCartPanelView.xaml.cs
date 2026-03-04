@@ -36,21 +36,22 @@ namespace Marketplace_System.Views
             {
                 using CancellationTokenSource timeoutCts = new(TimeSpan.FromSeconds(10));
                 using AppDbContext dbContext = new();
-                var usersById = await dbContext.Users
-                    .ToDictionaryAsync(u => u.Id, u => u.FullName, timeoutCts.Token);
-
-                cartLines = await dbContext.CartItems
-                    .Where(c => c.BuyerUserId == SessionManager.CurrentUserId)
-                    .OrderByDescending(c => c.CreatedAt)
-                    .Select(c => new CartLineViewModel
-                    {
-                        CartItemId = c.Id,
-                        ProductName = c.ProductName,
-                        QuantityText = $"{c.QuantityKilos} kilo(s)",
-                        SellerText = $"Seller: {usersById.GetValueOrDefault(c.SellerUserId, $"User #{c.SellerUserId}")}",
-                        TotalText = $"₱{c.QuantityKilos * c.UnitPrice:N2}",
-                        TotalAmount = c.QuantityKilos * c.UnitPrice,
-                        IsSelected = true
+                cartLines = await (
+                      from cartItem in dbContext.CartItems.AsNoTracking()
+                      where cartItem.BuyerUserId == SessionManager.CurrentUserId
+                      join seller in dbContext.Users.AsNoTracking()
+                          on cartItem.SellerUserId equals seller.Id into sellerGroup
+                      from seller in sellerGroup.DefaultIfEmpty()
+                      orderby cartItem.CreatedAt descending
+                      select new CartLineViewModel
+                      {
+                          CartItemId = cartItem.Id,
+                          ProductName = cartItem.ProductName,
+                          QuantityText = cartItem.QuantityKilos + " kilo(s)",
+                          SellerText = "Seller: " + (seller != null ? seller.FullName : "User #" + cartItem.SellerUserId),
+                          TotalText = "₱" + (cartItem.QuantityKilos * cartItem.UnitPrice).ToString("N2"),
+                          TotalAmount = cartItem.QuantityKilos * cartItem.UnitPrice,
+                          IsSelected = true
                     })
                     .ToListAsync(timeoutCts.Token);
             }
