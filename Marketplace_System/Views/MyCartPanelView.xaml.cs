@@ -9,10 +9,12 @@ using Microsoft.EntityFrameworkCore;
 using Marketplace_System.Data;
 using Marketplace_System.Models;
 using Marketplace_System.Services;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Marketplace_System.Views
 {
-    public partial class MyCartPanelView : UserControl
+    public partial class MyCartPanelView : UserControl, INotifyPropertyChanged
     {
         public MyCartPanelView()
         {
@@ -28,165 +30,118 @@ namespace Marketplace_System.Views
         private async Task LoadCartItems()
         {
             List<CartLineViewModel> cartLines = new();
-            string emptyStateMessage = "Your cart is currently empty.";
+            string emptyStateMessage = "Your cart is currently empty";
             int currentUserId = SessionManager.CurrentUserId;
 
             if (currentUserId <= 0)
             {
                 CartItemsControl.ItemsSource = cartLines;
-                EmptyCartTextBlock.Text = "Your session has expired. Please login again.";
-                EmptyCartTextBlock.Visibility = Visibility.Visible;
+                EmptyCartTextBlock.Text = "Session expired. Please login again.";
+                EmptyCartBorder.Visibility = Visibility.Visible;
                 CheckoutButton.IsEnabled = false;
                 return;
             }
-
-            SetLoadingState(isLoading: true, message: "Loading cart items...");
 
             try
             {
                 using CancellationTokenSource timeoutCts = new(TimeSpan.FromSeconds(10));
                 using AppDbContext dbContext = new();
 
-                cartLines = await (
-                      from cartItem in dbContext.CartItems.AsNoTracking()
-                      where cartItem.BuyerUserId == currentUserId
-                      join seller in dbContext.Users.AsNoTracking()
-                          on cartItem.SellerUserId equals seller.Id into sellerGroup
-                      from seller in sellerGroup.DefaultIfEmpty()
-                      join productListing in dbContext.ProductListings.AsNoTracking()
-                         on cartItem.ProductListingId equals productListing.Id into listingGroup
-                      from productListing in listingGroup.DefaultIfEmpty()
-                      orderby cartItem.CreatedAt descending
-                      select new CartLineViewModel
-                      {
-                          CartItemId = cartItem.Id,
-                          ProductName = cartItem.ProductName,
-                          QuantityText = cartItem.QuantityKilos + " kilo(s)",
-                          SellerText = "Seller: " + (seller != null ? seller.FullName : "User #" + cartItem.SellerUserId),
-                          PickupAddressText = "Pickup address: " + (productListing != null ? productListing.PickupAddress : "Not provided"),
-                          DeliveryAddress = productListing != null ? productListing.PickupAddress : string.Empty,
-                          TotalText = "₱" + (cartItem.QuantityKilos * cartItem.UnitPrice).ToString("N2"),
-                          TotalAmount = cartItem.QuantityKilos * cartItem.UnitPrice,
-                          IsSelected = true,
-
-                          // Default value - user can change it in the item ComboBox (XAML binding)
-                          FulfillmentMethod = Order.FulfillmentPickup
-                      })
+                var cartItems = await dbContext.CartItems
+                    .AsNoTracking()
+                    .Where(c => c.BuyerUserId == currentUserId)
+                    .OrderByDescending(c => c.CreatedAt)
                     .ToListAsync(timeoutCts.Token);
+
+                foreach (var cartItem in cartItems)
+                {
+                    var seller = await dbContext.Users
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(u => u.Id == cartItem.SellerUserId, timeoutCts.Token);
+
+                    var productListing = await dbContext.ProductListings
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(p => p.Id == cartItem.ProductListingId, timeoutCts.Token);
+
+                    cartLines.Add(new CartLineViewModel
+                    {
+                        CartItemId = cartItem.Id,
+                        ProductName = cartItem.ProductName,
+                        QuantityKilos = cartItem.QuantityKilos,
+                        SellerName = seller?.FullName ?? $"User #{cartItem.SellerUserId}",
+                        PickupAddress = productListing?.PickupAddress ?? "Pickup address not set",
+                        UnitPrice = cartItem.UnitPrice,
+                        IsSelected = true
+                    });
+                }
             }
             catch (OperationCanceledException)
             {
                 emptyStateMessage = "Loading timed out. Please try again.";
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error loading cart: {ex.Message}");
                 emptyStateMessage = "Unable to load your cart right now.";
-            }
-            finally
-            {
-                SetLoadingState(isLoading: false);
             }
 
             CartItemsControl.ItemsSource = cartLines;
+            EmptyCartBorder.Visibility = cartLines.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
             EmptyCartTextBlock.Text = emptyStateMessage;
-            EmptyCartTextBlock.Visibility = cartLines.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-            UpdateCheckoutState();
-        }
-
-        private void SetLoadingState(bool isLoading, string? message = null)
-        {
-            if (CheckoutButton is null || EmptyCartTextBlock is null)
-            {
-                return;
-            }
-
-            if (isLoading)
-            {
-                CheckoutButton.IsEnabled = false;
-                EmptyCartTextBlock.Text = message ?? "Loading...";
-                EmptyCartTextBlock.Visibility = Visibility.Visible;
-                return;
-            }
-
-            UpdateCheckoutState();
-        }
-
-        private void CartSelectionChanged(object sender, RoutedEventArgs e)
-        {
             UpdateCheckoutState();
         }
 
         private void UpdateCheckoutState()
         {
-            if (CartTotalTextBlock is null || CheckoutButton is null)
-            {
-                return;
-            }
+            if (CartTotalTextBlock == null || CheckoutButton == null) return;
 
-            List<CartLineViewModel> selectedLines = GetSelectedLines();
-            CartTotalTextBlock.Text = $"₱{selectedLines.Sum(c => c.TotalAmount):N2}";
+            var selectedLines = GetSelectedLines();
+            decimal total = selectedLines.Sum(c => c.TotalAmount);
+
+            CartTotalTextBlock.Text = $"₱{total:N2}";
             CheckoutButton.IsEnabled = selectedLines.Count > 0;
         }
 
-        private List<CartLineViewModel> GetSelectedLines() =>
-            (CartItemsControl.ItemsSource as IEnumerable<CartLineViewModel> ?? Enumerable.Empty<CartLineViewModel>())
-            .Where(c => c?.IsSelected == true)
-            .ToList();
+        private List<CartLineViewModel> GetSelectedLines()
+        {
+            return (CartItemsControl.ItemsSource as IEnumerable<CartLineViewModel> ?? Enumerable.Empty<CartLineViewModel>())
+                .Where(c => c?.IsSelected == true)
+                .ToList();
+        }
 
         private async void CheckoutButton_Click(object sender, RoutedEventArgs e)
         {
-            List<CartLineViewModel> selectedLines = GetSelectedLines();
-            if (selectedLines.Count == 0)
-            {
-                return;
-            }
+            var selectedLines = GetSelectedLines();
+            if (selectedLines.Count == 0) return;
 
-            MessageBoxResult result = MessageBox.Show(
-                $"Place {selectedLines.Count} selected item(s)?\nEach item will use its selected fulfillment method.\nPayment will wait for seller confirmation.",
+            var result = MessageBox.Show(
+                $"Checkout {selectedLines.Count} item(s)?\n\n" +
+                $"• Pickup items: {selectedLines.Count(x => x.IsPickupSelected)}\n" +
+                $"• Delivery items: {selectedLines.Count(x => x.IsDeliverySelected)}",
                 "Confirm Checkout",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
 
-            if (result != MessageBoxResult.Yes)
-            {
-                return;
-            }
+            if (result != MessageBoxResult.Yes) return;
 
             try
             {
                 using AppDbContext dbContext = new();
+                var now = DateTime.UtcNow;
+                var cartItemIds = selectedLines.Select(x => x.CartItemId).ToList();
 
-                // fulfillment is per item (from ComboBox binding)
-                Dictionary<int, string> fulfillmentByCartItemId =
-                    selectedLines.ToDictionary(line => line.CartItemId, line => line.FulfillmentMethod);
-                Dictionary<int, string> deliveryAddressByCartItemId =
-                    selectedLines.ToDictionary(line => line.CartItemId, line => line.DeliveryAddress.Trim());
-                Dictionary<int, string> pickupAddressByCartItemId =
-                    selectedLines.ToDictionary(line => line.CartItemId, line => line.PickupAddressText.Replace("Pickup address:", string.Empty).Trim());
+                var cartItems = await dbContext.CartItems
+                    .Where(c => cartItemIds.Contains(c.Id))
+                    .ToListAsync();
 
-                List<int> selectedCartItemIds = fulfillmentByCartItemId.Keys.ToList();
-
-                List<CartItem> checkoutItems = dbContext.CartItems
-                    .Where(c => c.BuyerUserId == SessionManager.CurrentUserId && selectedCartItemIds.Contains(c.Id))
-                    .OrderBy(c => c.CreatedAt)
-                    .ToList();
-
-                if (checkoutItems.Count == 0)
+                foreach (var item in cartItems)
                 {
-                    await LoadCartItems();
-                    return;
-                }
+                    var viewModel = selectedLines.First(x => x.CartItemId == item.Id);
 
-                DateTime now = DateTime.UtcNow;
-
-                foreach (CartItem item in checkoutItems)
-                {
-                    string orderNumber = $"FH-{now:yyMMdd}-{item.Id:D4}";
-
-                    dbContext.Orders.Add(new Order
+                    var order = new Order
                     {
-                        OrderNumber = orderNumber,
+                        OrderNumber = $"ORD-{now:yyyyMMdd}-{item.Id:D4}",
                         ProductName = item.ProductName,
                         QuantityKilos = item.QuantityKilos,
                         UnitPrice = item.UnitPrice,
@@ -194,54 +149,162 @@ namespace Marketplace_System.Views
                         SellerUserId = item.SellerUserId,
                         ProductListingId = item.ProductListingId,
                         Status = Order.StatusPendingPayment,
-                        FulfillmentMethod = fulfillmentByCartItemId.TryGetValue(item.Id, out string? selectedMethod)
-                            ? selectedMethod
-                            : Order.FulfillmentPickup,
-                        Notes = $"Buyer submitted checkout and payment proof. Awaiting seller confirmation. Delivery address: {deliveryAddressByCartItemId.GetValueOrDefault(item.Id, "N/A")}. Pickup address: {pickupAddressByCartItemId.GetValueOrDefault(item.Id, "N/A")}",
+                        FulfillmentMethod = viewModel.IsDeliverySelected ? Order.FulfillmentDelivery : Order.FulfillmentPickup,
+                        Notes = viewModel.IsDeliverySelected
+                            ? $"Delivery to: {viewModel.AddressText}"
+                            : $"Pickup at: {viewModel.PickupAddress}",
                         CreatedAt = now,
                         UpdatedAt = now
-                    });
+                    };
 
-                    ProductListing? listing = dbContext.ProductListings.FirstOrDefault(p => p.Id == item.ProductListingId);
-                    if (listing is not null)
+                    dbContext.Orders.Add(order);
+
+                    // Update product stock
+                    var listing = await dbContext.ProductListings
+                        .FirstOrDefaultAsync(p => p.Id == item.ProductListingId);
+                    if (listing != null)
                     {
                         listing.AvailableKilos = Math.Max(0, listing.AvailableKilos - item.QuantityKilos);
                     }
                 }
 
-                dbContext.CartItems.RemoveRange(checkoutItems);
-                dbContext.SaveChanges();
+                dbContext.CartItems.RemoveRange(cartItems);
+                await dbContext.SaveChangesAsync();
 
                 MessageBox.Show(
-                    "Checkout submitted. Seller must confirm payment before the order moves forward.",
-                    "Checkout Submitted",
+                    "Checkout submitted successfully! The seller will confirm your order shortly.",
+                    "Checkout Complete",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
 
                 await LoadCartItems();
             }
-            catch
+            catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Unable to checkout right now. Please try again.",
+                    $"Unable to complete checkout: {ex.Message}",
                     "Checkout Failed",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
         }
 
-        private sealed class CartLineViewModel
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
-            public int CartItemId { get; init; }
-            public string ProductName { get; init; } = string.Empty;
-            public string QuantityText { get; init; } = string.Empty;
-            public string SellerText { get; init; } = string.Empty;
-            public string PickupAddressText { get; init; } = string.Empty;
-            public string DeliveryAddress { get; set; } = string.Empty;
-            public string TotalText { get; init; } = string.Empty;
-            public decimal TotalAmount { get; init; }
-            public bool IsSelected { get; set; }
-            public string FulfillmentMethod { get; set; } = Order.FulfillmentPickup;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public sealed class CartLineViewModel : INotifyPropertyChanged
+    {
+        private bool _isSelected;
+        private bool _isPickupSelected = true;
+        private bool _isDeliverySelected;
+        private string _addressText = string.Empty;
+        private string _sellerName = string.Empty;
+        private string _pickupAddress = string.Empty;
+
+        public int CartItemId { get; init; }
+        public string ProductName { get; init; } = string.Empty;
+        public int QuantityKilos { get; init; }
+
+        public string SellerName
+        {
+            get => _sellerName;
+            init => _sellerName = value;
+        }
+
+        public string PickupAddress
+        {
+            get => _pickupAddress;
+            init => _pickupAddress = value;
+        }
+
+        public decimal UnitPrice { get; init; }
+
+        public string QuantityText => $"{QuantityKilos} kilo(s)";
+        public string SellerText => $"Seller: {SellerName}";
+        public string TotalText => $"₱{TotalAmount:N2}";
+        public decimal TotalAmount => QuantityKilos * UnitPrice;
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsPickupSelected
+        {
+            get => _isPickupSelected;
+            set
+            {
+                if (_isPickupSelected != value)
+                {
+                    _isPickupSelected = value;
+                    if (value) IsDeliverySelected = false;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ShowAddressSection));
+                    OnPropertyChanged(nameof(AddressLabel));
+                    RefreshAddressText();
+                }
+            }
+        }
+
+        public bool IsDeliverySelected
+        {
+            get => _isDeliverySelected;
+            set
+            {
+                if (_isDeliverySelected != value)
+                {
+                    _isDeliverySelected = value;
+                    if (value) IsPickupSelected = false;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ShowAddressSection));
+                    OnPropertyChanged(nameof(AddressLabel));
+                    RefreshAddressText();
+                }
+            }
+        }
+
+        public string AddressText
+        {
+            get => _addressText;
+            set
+            {
+                if (_addressText != value)
+                {
+                    _addressText = value ?? string.Empty;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool ShowAddressSection => IsDeliverySelected;
+        public string AddressLabel => IsDeliverySelected ? "Delivery Address" : "Pickup Address";
+
+        private void RefreshAddressText()
+        {
+            if (!IsDeliverySelected && string.IsNullOrEmpty(AddressText))
+            {
+                AddressText = PickupAddress;
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

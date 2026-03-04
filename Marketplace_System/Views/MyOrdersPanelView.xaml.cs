@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Marketplace_System.Data;
 using Marketplace_System.Services;
-
+using Marketplace_System.Models;
 namespace Marketplace_System.Views
 {
     public partial class MyOrdersPanelView : UserControl
@@ -41,7 +43,7 @@ namespace Marketplace_System.Views
                         Status = o.Status,
                         TotalText = $"₱{o.QuantityKilos * o.UnitPrice:N2}",
                         LastUpdatedText = $"Updated: {o.UpdatedAt.ToLocalTime():MMM dd, yyyy hh:mm tt}",
-                        AddressText = o.Notes
+                        AddressText = BuildAddressText(o.FulfillmentMethod, o.Notes)
                     })
                     .ToList();
             }
@@ -53,7 +55,41 @@ namespace Marketplace_System.Views
             OrdersItemsControl.ItemsSource = orders;
             EmptyOrdersTextBlock.Visibility = orders.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         }
+        private static string BuildAddressText(string fulfillmentMethod, string notes)
+        {
+            string defaultLabel = fulfillmentMethod == Order.FulfillmentDelivery
+                ? "Delivery address: Not provided"
+                : "Pickup address: Not provided";
 
+            if (string.IsNullOrWhiteSpace(notes))
+            {
+                return defaultLabel;
+            }
+
+            string key = fulfillmentMethod == Order.FulfillmentDelivery
+                ? "Delivery address:"
+                : "Pickup address:";
+
+            int keyIndex = notes.IndexOf(key, StringComparison.OrdinalIgnoreCase);
+            if (keyIndex < 0)
+            {
+                return notes;
+            }
+
+            string value = notes[(keyIndex + key.Length)..].Trim();
+            int sentenceEnd = value.IndexOf('.');
+            if (sentenceEnd >= 0)
+            {
+                value = value[..sentenceEnd].Trim();
+            }
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                value = "Not provided";
+            }
+
+            return $"{key} {value}";
+        }
         private sealed class OrderLineViewModel
         {
             public string OrderNumber { get; init; } = string.Empty;

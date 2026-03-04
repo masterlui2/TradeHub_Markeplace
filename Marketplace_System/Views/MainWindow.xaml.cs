@@ -295,6 +295,11 @@ namespace Marketplace_System
 
         private void ApplySearchFilter()
         {
+            ApplyBrowseFilters();
+        }
+
+        private IEnumerable<BrowseProductCard> GetFilteredBrowseProducts()
+        {
             string keyword = SearchTextBox?.Text?.Trim() ?? string.Empty;
             if (string.Equals(keyword, "Search products", StringComparison.OrdinalIgnoreCase))
             {
@@ -302,31 +307,26 @@ namespace Marketplace_System
             }
 
             IEnumerable<BrowseProductCard> filtered = _allBrowseProducts;
+             if (!string.Equals(_activeCategory, "All", StringComparison.OrdinalIgnoreCase))
+            {
+                filtered = filtered.Where(product =>
+                    string.Equals(product.Category, _activeCategory, StringComparison.OrdinalIgnoreCase));
+            }
+
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-                filtered = _allBrowseProducts.Where(p =>
-                    p.ProductName.Contains(keyword, StringComparison.OrdinalIgnoreCase)
+                filtered = filtered.Where(p =>
+                p.ProductName.Contains(keyword, StringComparison.OrdinalIgnoreCase)
                     || p.SellerName.Contains(keyword, StringComparison.OrdinalIgnoreCase)
                     || p.SellerLocation.Contains(keyword, StringComparison.OrdinalIgnoreCase));
             }
 
-            BrowseProducts.Clear();
-            foreach (BrowseProductCard product in filtered)
-            {
-                BrowseProducts.Add(product);
-            }
-            ApplyBrowseFilters();
+            return filtered;
         }
 
         private void ApplyBrowseFilters()
         {
-            IEnumerable<BrowseProductCard> filteredProducts = _allBrowseProducts;
-
-            if (!string.Equals(_activeCategory, "All", StringComparison.OrdinalIgnoreCase))
-            {
-                filteredProducts = filteredProducts.Where(product =>
-                    string.Equals(product.Category, _activeCategory, StringComparison.OrdinalIgnoreCase));
-            }
+            IEnumerable<BrowseProductCard> filteredProducts = GetFilteredBrowseProducts();
 
             BrowseProducts.Clear();
             foreach (BrowseProductCard product in filteredProducts)
