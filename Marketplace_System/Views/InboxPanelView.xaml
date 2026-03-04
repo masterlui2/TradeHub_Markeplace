@@ -67,7 +67,14 @@
             <Setter Property="CornerRadius" Value="12"/>
             <Setter Property="MaxWidth" Value="400"/>
         </Style>
-
+        <Style x:Key="ProfileIconContainerStyle" TargetType="Border">
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Background" Value="#E8F0FE"/>
+            <Setter Property="CornerRadius" Value="15"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
         <Style x:Key="SendButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="90"/>
             <Setter Property="Height" Value="42"/>
@@ -166,33 +173,44 @@
                                 <Button Style="{StaticResource ThreadButtonStyle}"
                                         Click="ThreadButton_Click"
                                         Tag="{Binding ThreadId}">
-                                    <StackPanel>
-                                        <DockPanel>
-                                            <TextBlock Text="{Binding OtherUserName}"
-                                                       FontWeight="SemiBold"
-                                                       Foreground="{StaticResource TextPrimaryBrush}"
-                                                       FontSize="14"/>
-                                            <TextBlock Text="{Binding TimeText}"
-                                                       DockPanel.Dock="Right"
+                                    <DockPanel>
+                                        <Border Style="{StaticResource ProfileIconContainerStyle}">
+                                            <TextBlock Text="&#xE77B;"
+                                                       FontFamily="Segoe MDL2 Assets"
+                                                       Foreground="{StaticResource PrimaryBrush}"
+                                                       FontSize="14"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                        <StackPanel>
+                                            <DockPanel>
+                                                <TextBlock Text="{Binding OtherUserName}"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{StaticResource TextPrimaryBrush}"
+                                                           FontSize="14"/>
+                                                <TextBlock Text="{Binding TimeText}"
+                                                           DockPanel.Dock="Right"
+                                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                                           FontSize="11"/>
+                                            </DockPanel>
+                                            <TextBlock Text="{Binding Preview}"
+                                                       Margin="0,4,0,0"
                                                        Foreground="{StaticResource TextSecondaryBrush}"
-                                                       FontSize="11"/>
-                                        </DockPanel>
-                                        <TextBlock Text="{Binding Preview}"
-                                                   Margin="0,4,0,0"
-                                                   Foreground="{StaticResource TextSecondaryBrush}"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   FontSize="13"
-                                                   MaxHeight="40"/>
-                                        <!-- Unread Indicator (optional) -->
-                                        <Border x:Name="UnreadIndicator"
-                                                Visibility="{Binding HasUnread, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                Background="{StaticResource PrimaryBrush}"
-                                                CornerRadius="10"
-                                                Width="8"
-                                                Height="8"
-                                                HorizontalAlignment="Left"
-                                                Margin="0,4,0,0"/>
-                                    </StackPanel>
+                                                       TextTrimming="CharacterEllipsis"
+                                                       FontSize="13"
+                                                       MaxHeight="40"/>
+                                            <!-- Unread Indicator (optional) -->
+                                            <Border x:Name="UnreadIndicator"
+                                                    Visibility="{Binding HasUnread, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                    Background="{StaticResource PrimaryBrush}"
+                                                    CornerRadius="10"
+                                                    Width="8"
+                                                    Height="8"
+                                                    HorizontalAlignment="Left"
+                                                    Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                    </DockPanel>
+
                                 </Button>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -253,19 +271,31 @@
                     <ItemsControl x:Name="MessagesItemsControl">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Style="{StaticResource MessageBubbleStyle}"
-                                        Background="{Binding BubbleColor}"
-                                        HorizontalAlignment="{Binding HorizontalAlignment}">
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding Body}"
-                                                   TextWrapping="Wrap"
-                                                   Foreground="{StaticResource TextPrimaryBrush}"
-                                                   FontSize="14"
-                                                   LineHeight="20"/>
-                                        <TextBlock Text="{Binding TimeText}"
-                                                   Style="{StaticResource MessageTimeStyle}"/>
-                                    </StackPanel>
-                                </Border>
+                                <DockPanel Margin="0,0,0,8"
+                                           HorizontalAlignment="{Binding HorizontalAlignment}">
+                                    <Border Style="{StaticResource ProfileIconContainerStyle}"
+                                            Margin="0,0,8,0">
+                                        <TextBlock Text="&#xE77B;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   Foreground="{StaticResource PrimaryBrush}"
+                                                   FontSize="13"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    <Border Style="{StaticResource MessageBubbleStyle}"
+                                            Margin="0"
+                                            Background="{Binding BubbleColor}">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Body}"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                                       FontSize="14"
+                                                       LineHeight="20"/>
+                                            <TextBlock Text="{Binding TimeText}"
+                                                       Style="{StaticResource MessageTimeStyle}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DockPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

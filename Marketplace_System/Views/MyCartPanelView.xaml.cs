@@ -29,6 +29,16 @@ namespace Marketplace_System.Views
         {
             List<CartLineViewModel> cartLines = new();
             string emptyStateMessage = "Your cart is currently empty.";
+            int currentUserId = SessionManager.CurrentUserId;
+
+            if (currentUserId <= 0)
+            {
+                CartItemsControl.ItemsSource = cartLines;
+                EmptyCartTextBlock.Text = "Your session has expired. Please login again.";
+                EmptyCartTextBlock.Visibility = Visibility.Visible;
+                CheckoutButton.IsEnabled = false;
+                return;
+            }
 
             SetLoadingState(isLoading: true, message: "Loading cart items...");
 
@@ -36,9 +46,10 @@ namespace Marketplace_System.Views
             {
                 using CancellationTokenSource timeoutCts = new(TimeSpan.FromSeconds(10));
                 using AppDbContext dbContext = new();
+
                 cartLines = await (
                       from cartItem in dbContext.CartItems.AsNoTracking()
-                      where cartItem.BuyerUserId == SessionManager.CurrentUserId
+                      where cartItem.BuyerUserId == currentUserId
                       join seller in dbContext.Users.AsNoTracking()
                           on cartItem.SellerUserId equals seller.Id into sellerGroup
                       from seller in sellerGroup.DefaultIfEmpty()
@@ -51,8 +62,11 @@ namespace Marketplace_System.Views
                           SellerText = "Seller: " + (seller != null ? seller.FullName : "User #" + cartItem.SellerUserId),
                           TotalText = "₱" + (cartItem.QuantityKilos * cartItem.UnitPrice).ToString("N2"),
                           TotalAmount = cartItem.QuantityKilos * cartItem.UnitPrice,
-                          IsSelected = true
-                    })
+                          IsSelected = true,
+
+                          // Default value - user can change it in the item ComboBox (XAML binding)
+                          FulfillmentMethod = Order.FulfillmentPickup
+                      })
                     .ToListAsync(timeoutCts.Token);
             }
             catch (OperationCanceledException)
@@ -61,7 +75,6 @@ namespace Marketplace_System.Views
             }
             catch
             {
-                // Keep empty state if DB is unreachable.
                 emptyStateMessage = "Unable to load your cart right now.";
             }
             finally
@@ -72,12 +85,16 @@ namespace Marketplace_System.Views
             CartItemsControl.ItemsSource = cartLines;
             EmptyCartTextBlock.Text = emptyStateMessage;
             EmptyCartTextBlock.Visibility = cartLines.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
             UpdateCheckoutState();
         }
 
         private void SetLoadingState(bool isLoading, string? message = null)
         {
-            FulfillmentMethodComboBox.IsEnabled = !isLoading;
+            if (CheckoutButton is null || EmptyCartTextBlock is null)
+            {
+                return;
+            }
 
             if (isLoading)
             {
@@ -95,34 +112,33 @@ namespace Marketplace_System.Views
             UpdateCheckoutState();
         }
 
-        private void FulfillmentMethodComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            UpdateCheckoutState();
-        }
-
         private void UpdateCheckoutState()
         {
+            if (CartTotalTextBlock is null || CheckoutButton is null)
+            {
+                return;
+            }
+
             List<CartLineViewModel> selectedLines = GetSelectedLines();
             CartTotalTextBlock.Text = $"₱{selectedLines.Sum(c => c.TotalAmount):N2}";
-            CheckoutButton.IsEnabled = selectedLines.Count > 0 && FulfillmentMethodComboBox.SelectedItem is ComboBoxItem;
+            CheckoutButton.IsEnabled = selectedLines.Count > 0;
         }
 
         private List<CartLineViewModel> GetSelectedLines() =>
             (CartItemsControl.ItemsSource as IEnumerable<CartLineViewModel> ?? Enumerable.Empty<CartLineViewModel>())
-            .Where(c => c.IsSelected)
+            .Where(c => c?.IsSelected == true)
             .ToList();
 
         private async void CheckoutButton_Click(object sender, RoutedEventArgs e)
         {
             List<CartLineViewModel> selectedLines = GetSelectedLines();
-            if (selectedLines.Count == 0 || FulfillmentMethodComboBox.SelectedItem is not ComboBoxItem selectedMethod)
+            if (selectedLines.Count == 0)
             {
                 return;
             }
 
-            string fulfillmentMethod = selectedMethod.Content?.ToString() ?? Order.FulfillmentPickup;
             MessageBoxResult result = MessageBox.Show(
-                $"Place {selectedLines.Count} selected item(s) for {fulfillmentMethod.ToLowerInvariant()}?\nPayment will wait for seller confirmation.",
+                $"Place {selectedLines.Count} selected item(s)?\nEach item will use its selected fulfillment method.\nPayment will wait for seller confirmation.",
                 "Confirm Checkout",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
@@ -136,7 +152,12 @@ namespace Marketplace_System.Views
             {
                 using AppDbContext dbContext = new();
 
-                List<int> selectedCartItemIds = selectedLines.Select(l => l.CartItemId).ToList();
+                // fulfillment is per item (from ComboBox binding)
+                Dictionary<int, string> fulfillmentByCartItemId =
+                    selectedLines.ToDictionary(line => line.CartItemId, line => line.FulfillmentMethod);
+
+                List<int> selectedCartItemIds = fulfillmentByCartItemId.Keys.ToList();
+
                 List<CartItem> checkoutItems = dbContext.CartItems
                     .Where(c => c.BuyerUserId == SessionManager.CurrentUserId && selectedCartItemIds.Contains(c.Id))
                     .OrderBy(c => c.CreatedAt)
@@ -149,9 +170,11 @@ namespace Marketplace_System.Views
                 }
 
                 DateTime now = DateTime.UtcNow;
+
                 foreach (CartItem item in checkoutItems)
                 {
                     string orderNumber = $"FH-{now:yyMMdd}-{item.Id:D4}";
+
                     dbContext.Orders.Add(new Order
                     {
                         OrderNumber = orderNumber,
@@ -162,7 +185,9 @@ namespace Marketplace_System.Views
                         SellerUserId = item.SellerUserId,
                         ProductListingId = item.ProductListingId,
                         Status = Order.StatusPendingPayment,
-                        FulfillmentMethod = fulfillmentMethod,
+                        FulfillmentMethod = fulfillmentByCartItemId.TryGetValue(item.Id, out string? selectedMethod)
+                            ? selectedMethod
+                            : Order.FulfillmentPickup,
                         Notes = "Buyer submitted checkout and payment proof. Awaiting seller confirmation.",
                         CreatedAt = now,
                         UpdatedAt = now
@@ -178,12 +203,21 @@ namespace Marketplace_System.Views
                 dbContext.CartItems.RemoveRange(checkoutItems);
                 dbContext.SaveChanges();
 
-                MessageBox.Show("Checkout submitted. Seller must confirm payment before the order moves forward.", "Checkout Submitted", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(
+                    "Checkout submitted. Seller must confirm payment before the order moves forward.",
+                    "Checkout Submitted",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
                 await LoadCartItems();
             }
             catch
             {
-                MessageBox.Show("Unable to checkout right now. Please try again.", "Checkout Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    "Unable to checkout right now. Please try again.",
+                    "Checkout Failed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -196,6 +230,7 @@ namespace Marketplace_System.Views
             public string TotalText { get; init; } = string.Empty;
             public decimal TotalAmount { get; init; }
             public bool IsSelected { get; set; }
+            public string FulfillmentMethod { get; set; } = Order.FulfillmentPickup;
         }
     }
 }
