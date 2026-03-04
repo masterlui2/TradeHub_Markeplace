@@ -25,8 +25,9 @@ namespace Marketplace_System
         private object? _browseProductsContent;
         private object? _buyerSidebarContent;
         private readonly string _currentUserName;
+        private readonly List<BrowseProductCard> _allBrowseProducts = new();
+        private string _activeCategory = "All";
         public ObservableCollection<BrowseProductCard> BrowseProducts { get; } = new();
-
         public MainWindow(string? currentUserName = null)
         {
             InitializeComponent();
@@ -48,6 +49,7 @@ namespace Marketplace_System
 
             ActivateBrowseProductsView();
             ActivateBuyerSidebar();
+            UpdateCategoryButtonStates();
         }
 
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -67,7 +69,10 @@ namespace Marketplace_System
                 SearchTextBox.Foreground = Brushes.Gray;
             }
         }
-
+           private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ApplySearchFilter();
+        }
         private void ActivateBuyerSidebar()
         {
             if (_buyerSidebarContent is not null)
@@ -210,6 +215,18 @@ namespace Marketplace_System
             ActivateBuyerSidebar();
             MainContentHost.Content = new MyCartPanelView();
             SetActiveNav("cart");
+
+        }
+        private void CategoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button { Tag: string selectedCategory })
+            {
+                return;
+            }
+
+            _activeCategory = selectedCategory;
+            ApplyBrowseFilters();
+            UpdateCategoryButtonStates();
         }
 
         private void LogoutMenuItem_Click(object sender, RoutedEventArgs e)
@@ -230,8 +247,7 @@ namespace Marketplace_System
 
         private void LoadBrowseProducts()
         {
-            BrowseProducts.Clear();
-
+            _allBrowseProducts.Clear();
             List<ProductListing> listings;
             try
             {
@@ -248,10 +264,9 @@ namespace Marketplace_System
 
             if (listings.Count == 0)
             {
-                foreach (BrowseProductCard fallback in GetFallbackProducts())
-                {
-                    BrowseProducts.Add(fallback);
-                }
+                _allBrowseProducts.AddRange(GetFallbackProducts());
+                ApplyBrowseFilters();
+
 
                 return;
             }
@@ -259,10 +274,11 @@ namespace Marketplace_System
             foreach (ProductListing listing in listings)
             {
                 bool isMyProduct = listing.SellerUserId != 0 && listing.SellerUserId == SessionManager.CurrentUserId;
-                BrowseProducts.Add(new BrowseProductCard
+                _allBrowseProducts.Add(new BrowseProductCard
                 {
                     ProductId = listing.Id,
                     ProductName = listing.ProductName,
+                    Category = listing.Category,
                     PricePerKilo = listing.PricePerKilo,
                     StockKilos = listing.AvailableKilos,
                     PriceText = $"₱{listing.PricePerKilo:N2} per kilo",
@@ -273,6 +289,72 @@ namespace Marketplace_System
                     ImagePath = ResolveListingImagePath(listing.ImagePath),
                     IsMyProduct = isMyProduct
                 });
+            }
+            ApplySearchFilter();
+        }
+
+        private void ApplySearchFilter()
+        {
+            string keyword = SearchTextBox?.Text?.Trim() ?? string.Empty;
+            if (string.Equals(keyword, "Search products", StringComparison.OrdinalIgnoreCase))
+            {
+                keyword = string.Empty;
+            }
+
+            IEnumerable<BrowseProductCard> filtered = _allBrowseProducts;
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                filtered = _allBrowseProducts.Where(p =>
+                    p.ProductName.Contains(keyword, StringComparison.OrdinalIgnoreCase)
+                    || p.SellerName.Contains(keyword, StringComparison.OrdinalIgnoreCase)
+                    || p.SellerLocation.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+            }
+
+            BrowseProducts.Clear();
+            foreach (BrowseProductCard product in filtered)
+            {
+                BrowseProducts.Add(product);
+            }
+            ApplyBrowseFilters();
+        }
+
+        private void ApplyBrowseFilters()
+        {
+            IEnumerable<BrowseProductCard> filteredProducts = _allBrowseProducts;
+
+            if (!string.Equals(_activeCategory, "All", StringComparison.OrdinalIgnoreCase))
+            {
+                filteredProducts = filteredProducts.Where(product =>
+                    string.Equals(product.Category, _activeCategory, StringComparison.OrdinalIgnoreCase));
+            }
+
+            BrowseProducts.Clear();
+            foreach (BrowseProductCard product in filteredProducts)
+            {
+                BrowseProducts.Add(product);
+            }
+        }
+
+        private void UpdateCategoryButtonStates()
+        {
+            List<Button> categoryButtons = new()
+            {
+                AllCategoriesButton,
+                VegetablesCategoryButton,
+                FruitsCategoryButton,
+                LeafyGreensCategoryButton,
+                RootCropsCategoryButton,
+                MilkEggsCategoryButton,
+                OrganicCategoryButton
+            };
+
+            foreach (Button button in categoryButtons)
+            {
+                bool isSelected = string.Equals(button.Tag?.ToString(), _activeCategory, StringComparison.OrdinalIgnoreCase);
+                button.Background = isSelected ? ActiveBackground : Brushes.Transparent;
+                button.BorderBrush = isSelected ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B7DFC8")) : Brushes.Transparent;
+                button.Foreground = isSelected ? ActiveForeground : InactiveForeground;
+                button.FontWeight = isSelected ? FontWeights.SemiBold : FontWeights.Normal;
             }
         }
 
@@ -288,10 +370,10 @@ namespace Marketplace_System
 
         private static List<BrowseProductCard> GetFallbackProducts() => new()
         {
-            new() { ProductId = 0, ProductName = "Fresh Carrots", PricePerKilo = 210m, StockKilos = 12, PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerId = 0, SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/carrot.jpg", IsMyProduct = false },
-            new() { ProductId = 0, ProductName = "Fresh Asparagus", PricePerKilo = 210m, StockKilos = 12, PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerId = 0, SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/asp.jpg", IsMyProduct = false },
-            new() { ProductId = 0, ProductName = "Fresh Potatoes", PricePerKilo = 210m, StockKilos = 12, PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerId = 0, SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/potato.jpg", IsMyProduct = false },
-            new() { ProductId = 0, ProductName = "Fresh Beets", PricePerKilo = 210m, StockKilos = 12, PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerId = 0, SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/beets.jpg", IsMyProduct = false }
+                       new() { ProductId = 0, ProductName = "Fresh Carrots", Category = "Root Crops", PricePerKilo = 210m, StockKilos = 12, PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerId = 0, SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/carrot.jpg", IsMyProduct = false },
+            new() { ProductId = 0, ProductName = "Fresh Asparagus", Category = "Vegetables", PricePerKilo = 210m, StockKilos = 12, PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerId = 0, SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/asp.jpg", IsMyProduct = false },
+            new() { ProductId = 0, ProductName = "Fresh Potatoes", Category = "Root Crops", PricePerKilo = 210m, StockKilos = 12, PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerId = 0, SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/potato.jpg", IsMyProduct = false },
+            new() { ProductId = 0, ProductName = "Fresh Beets", Category = "Root Crops", PricePerKilo = 210m, StockKilos = 12, PriceText = "₱210 per kilo", StockText = "Approx. 12 pcs • In Stock", SellerId = 0, SellerName = "Juan Dela Cruz", SellerLocation = "Davao City", ImagePath = "/Images/beets.jpg", IsMyProduct = false }
         };
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -303,15 +385,22 @@ namespace Marketplace_System
     {
         public int ProductId { get; init; }
         public int SellerId { get; init; }
+
         public string ProductName { get; init; } = string.Empty;
+        public string Category { get; init; } = "All";   // ✅ ADDED
+
         public decimal PricePerKilo { get; init; }
         public int StockKilos { get; init; }
+
         public string PriceText { get; init; } = string.Empty;
         public string StockText { get; init; } = string.Empty;
+
         public string SellerName { get; init; } = string.Empty;
         public string SellerLocation { get; init; } = string.Empty;
+
         public string ImagePath { get; init; } = "/Images/new.png";
         public bool IsMyProduct { get; init; }
+
         public string ActionButtonText => IsMyProduct ? "Own product" : "Add to Cart";
     }
 }

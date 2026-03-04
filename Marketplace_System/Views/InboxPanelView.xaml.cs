@@ -85,6 +85,9 @@ namespace Marketplace_System.Views
                 {
                     Body = m.Body,
                     TimeText = m.CreatedAt.ToLocalTime().ToString("h:mm tt"),
+                    MessageAlignment = m.SenderUserId == SessionManager.CurrentUserId ? HorizontalAlignment.Right : HorizontalAlignment.Left,
+                    LeftProfileVisibility = m.SenderUserId == SessionManager.CurrentUserId ? Visibility.Collapsed : Visibility.Visible,
+                    RightProfileVisibility = m.SenderUserId == SessionManager.CurrentUserId ? Visibility.Visible : Visibility.Collapsed,
                     BubbleColor = m.SenderUserId == SessionManager.CurrentUserId
                         ? new SolidColorBrush(Color.FromRgb(230, 244, 236))
                         : new SolidColorBrush(Color.FromRgb(243, 244, 246))
@@ -133,6 +136,9 @@ namespace Marketplace_System.Views
         {
             public string Body { get; init; } = string.Empty;
             public string TimeText { get; init; } = string.Empty;
+            public HorizontalAlignment MessageAlignment { get; init; }
+            public Visibility LeftProfileVisibility { get; init; } = Visibility.Visible;
+            public Visibility RightProfileVisibility { get; init; } = Visibility.Collapsed;
             public Brush BubbleColor { get; init; } = Brushes.White;
         }
     }

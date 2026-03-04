@@ -9,6 +9,36 @@
         Height="800"
         Background="#F3F8F4"
         WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="CategoryButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F4FBF7"/>
+                    <Setter Property="BorderBrush" Value="#CDE9DA"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -115,6 +145,7 @@
                  Background="Transparent"
                  Foreground="Gray"
                  VerticalContentAlignment="Center"
+                 TextChanged="SearchTextBox_TextChanged"
                  GotFocus="SearchTextBox_GotFocus"
                  LostFocus="SearchTextBox_LostFocus" DockPanel.Dock="Right" Width="151"/>
 
@@ -307,90 +338,72 @@
            FontSize="16"
            FontWeight="Bold"
            Margin="0,0,0,12"/>
+                            <Button x:Name="AllCategoriesButton"
+                                    Content="All Products"
+                                    Click="CategoryButton_Click"
+                                    Tag="All"
+                                    Style="{StaticResource CategoryButtonStyle}"/>
 
-                            <!-- Vegetables -->
-                            <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
+                            <Button x:Name="VegetablesCategoryButton"
+                                    Click="CategoryButton_Click"
+                                    Tag="Vegetables"
+                                    Style="{StaticResource CategoryButtonStyle}">
                                 <StackPanel Orientation="Horizontal">
-                                    <fa:FontAwesome Icon="Leaf"
-                        Width="15"
-                        Height="10"
-                        Foreground="#5F6B6A"
-                        VerticalAlignment="Center"/>
-                                    <TextBlock Text="Vegetables"
-                   Margin="12,0,0,0"
-                   VerticalAlignment="Center"/>
+                                    <fa:FontAwesome Icon="Leaf" Width="15" Height="10" Foreground="#5F6B6A" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Vegetables" Margin="12,0,0,0" VerticalAlignment="Center"/>
                                 </StackPanel>
-                            </Border>
+                            </Button>
 
-                            <!-- Fruits -->
-                            <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
+                            <Button x:Name="FruitsCategoryButton"
+                                    Click="CategoryButton_Click"
+                                    Tag="Fruits"
+                                    Style="{StaticResource CategoryButtonStyle}">
                                 <StackPanel Orientation="Horizontal">
-                                    <fa:FontAwesome Icon="Apple"
-                        Width="16"
-                        Height="12"
-                        Foreground="#5F6B6A"
-                        VerticalAlignment="Center"/>
-                                    <TextBlock Text="Fruits"
-                   Margin="12,0,0,0"
-                   VerticalAlignment="Center"/>
+                                    <fa:FontAwesome Icon="Apple" Width="16" Height="12" Foreground="#5F6B6A" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Fruits" Margin="12,0,0,0" VerticalAlignment="Center"/>
                                 </StackPanel>
-                            </Border>
+                            </Button>
 
-                            <!-- Leafy Greens -->
-                            <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
+                            <Button x:Name="LeafyGreensCategoryButton"
+                                    Click="CategoryButton_Click"
+                                    Tag="Leafy Greens"
+                                    Style="{StaticResource CategoryButtonStyle}">
                                 <StackPanel Orientation="Horizontal">
-                                    <fa:FontAwesome Icon="Leaf"
-                        Width="15"
-                        Height="12"
-                        Foreground="#5F6B6A"
-                        VerticalAlignment="Center"/>
-                                    <TextBlock Text="Leafy Greens"
-                   Margin="12,0,0,0"
-                   VerticalAlignment="Center"/>
+                                    <fa:FontAwesome Icon="Leaf" Width="15" Height="12" Foreground="#5F6B6A" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Leafy Greens" Margin="12,0,0,0" VerticalAlignment="Center"/>
                                 </StackPanel>
-                            </Border>
+                            </Button>
 
-                            <!-- Root Crops -->
-                            <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
+                            <Button x:Name="RootCropsCategoryButton"
+                                    Click="CategoryButton_Click"
+                                    Tag="Root Crops"
+                                    Style="{StaticResource CategoryButtonStyle}">
                                 <StackPanel Orientation="Horizontal">
-                                    <fa:FontAwesome Icon="Tree"
-                        Width="17"
-                        Height="13"
-                        Foreground="#5F6B6A"
-                        VerticalAlignment="Center"/>
-                                    <TextBlock Text="Root Crops"
-                   Margin="12,0,0,0"
-                   VerticalAlignment="Center"/>
+                                    <fa:FontAwesome Icon="Tree" Width="17" Height="13" Foreground="#5F6B6A" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Root Crops" Margin="12,0,0,0" VerticalAlignment="Center"/>
                                 </StackPanel>
-                            </Border>
+                            </Button>
 
-                            <!-- Milk & Eggs -->
-                            <Border Padding="8" CornerRadius="10" Margin="0,0,0,8">
+                            <Button x:Name="MilkEggsCategoryButton"
+                                    Click="CategoryButton_Click"
+                                    Tag="Milk &amp; Eggs"
+                                    Style="{StaticResource CategoryButtonStyle}">
                                 <StackPanel Orientation="Horizontal">
-                                    <fa:FontAwesome Icon="Coffee"
-                        Width="15"
-                        Height="12"
-                        Foreground="#5F6B6A"
-                        VerticalAlignment="Center"/>
-                                    <TextBlock Text="Milk &amp; Eggs"
-                   Margin="12,0,0,0"
-                   VerticalAlignment="Center"/>
+                                    <fa:FontAwesome Icon="Coffee" Width="15" Height="12" Foreground="#5F6B6A" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Milk &amp; Eggs" Margin="12,0,0,0" VerticalAlignment="Center"/>
                                 </StackPanel>
-                            </Border>
+                            </Button>
 
-                            <!-- Organic Products -->
-                            <Border Padding="8" CornerRadius="10">
+                            <Button x:Name="OrganicCategoryButton"
+                                    Click="CategoryButton_Click"
+                                    Tag="Organic Products"
+                                    Style="{StaticResource CategoryButtonStyle}"
+                                    Margin="0">
                                 <StackPanel Orientation="Horizontal">
-                                    <fa:FontAwesome Icon="Leaf"
-                        Width="18"
-                        Height="18"
-                        Foreground="#5F6B6A"
-                        VerticalAlignment="Center"/>
-                                    <TextBlock Text="Organic Products"
-                   Margin="12,0,0,0"
-                   VerticalAlignment="Center"/>
+                                    <fa:FontAwesome Icon="Leaf" Width="18" Height="18" Foreground="#5F6B6A" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Organic Products" Margin="12,0,0,0" VerticalAlignment="Center"/>
                                 </StackPanel>
-                            </Border>
+                            </Button>
                         </StackPanel>
                     </Border>
                 </ContentControl.Content>

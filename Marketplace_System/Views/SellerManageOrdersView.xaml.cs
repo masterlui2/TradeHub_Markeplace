@@ -49,6 +49,7 @@ namespace Marketplace_System.Views
                     BuyerLine = $"Buyer: {usersById.GetValueOrDefault(o.BuyerUserId, $"User #{o.BuyerUserId}")}",
                     FulfillmentLine = $"Method: {o.FulfillmentMethod}",
                     TimelineLine = $"Last update: {o.UpdatedAt.ToLocalTime():MMM dd, yyyy hh:mm tt}",
+                    AddressLine = o.Notes,
                     ActionText = GetActionText(o.Status),
                     ActionVisibility = string.IsNullOrEmpty(GetActionText(o.Status)) ? Visibility.Collapsed : Visibility.Visible
                 }).ToList();
@@ -141,6 +142,7 @@ namespace Marketplace_System.Views
             public string Status { get; init; } = string.Empty;
             public string TimelineLine { get; init; } = string.Empty;
             public string ActionText { get; init; } = string.Empty;
+            public string AddressLine { get; init; } = string.Empty;
             public Visibility ActionVisibility { get; init; }
         }
     }

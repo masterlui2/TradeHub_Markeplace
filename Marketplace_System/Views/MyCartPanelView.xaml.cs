@@ -53,6 +53,9 @@ namespace Marketplace_System.Views
                       join seller in dbContext.Users.AsNoTracking()
                           on cartItem.SellerUserId equals seller.Id into sellerGroup
                       from seller in sellerGroup.DefaultIfEmpty()
+                      join productListing in dbContext.ProductListings.AsNoTracking()
+                         on cartItem.ProductListingId equals productListing.Id into listingGroup
+                      from productListing in listingGroup.DefaultIfEmpty()
                       orderby cartItem.CreatedAt descending
                       select new CartLineViewModel
                       {
@@ -60,6 +63,8 @@ namespace Marketplace_System.Views
                           ProductName = cartItem.ProductName,
                           QuantityText = cartItem.QuantityKilos + " kilo(s)",
                           SellerText = "Seller: " + (seller != null ? seller.FullName : "User #" + cartItem.SellerUserId),
+                          PickupAddressText = "Pickup address: " + (productListing != null ? productListing.PickupAddress : "Not provided"),
+                          DeliveryAddress = productListing != null ? productListing.PickupAddress : string.Empty,
                           TotalText = "₱" + (cartItem.QuantityKilos * cartItem.UnitPrice).ToString("N2"),
                           TotalAmount = cartItem.QuantityKilos * cartItem.UnitPrice,
                           IsSelected = true,
@@ -155,6 +160,10 @@ namespace Marketplace_System.Views
                 // fulfillment is per item (from ComboBox binding)
                 Dictionary<int, string> fulfillmentByCartItemId =
                     selectedLines.ToDictionary(line => line.CartItemId, line => line.FulfillmentMethod);
+                Dictionary<int, string> deliveryAddressByCartItemId =
+                    selectedLines.ToDictionary(line => line.CartItemId, line => line.DeliveryAddress.Trim());
+                Dictionary<int, string> pickupAddressByCartItemId =
+                    selectedLines.ToDictionary(line => line.CartItemId, line => line.PickupAddressText.Replace("Pickup address:", string.Empty).Trim());
 
                 List<int> selectedCartItemIds = fulfillmentByCartItemId.Keys.ToList();
 
@@ -188,7 +197,7 @@ namespace Marketplace_System.Views
                         FulfillmentMethod = fulfillmentByCartItemId.TryGetValue(item.Id, out string? selectedMethod)
                             ? selectedMethod
                             : Order.FulfillmentPickup,
-                        Notes = "Buyer submitted checkout and payment proof. Awaiting seller confirmation.",
+                        Notes = $"Buyer submitted checkout and payment proof. Awaiting seller confirmation. Delivery address: {deliveryAddressByCartItemId.GetValueOrDefault(item.Id, "N/A")}. Pickup address: {pickupAddressByCartItemId.GetValueOrDefault(item.Id, "N/A")}",
                         CreatedAt = now,
                         UpdatedAt = now
                     });
@@ -227,6 +236,8 @@ namespace Marketplace_System.Views
             public string ProductName { get; init; } = string.Empty;
             public string QuantityText { get; init; } = string.Empty;
             public string SellerText { get; init; } = string.Empty;
+            public string PickupAddressText { get; init; } = string.Empty;
+            public string DeliveryAddress { get; set; } = string.Empty;
             public string TotalText { get; init; } = string.Empty;
             public decimal TotalAmount { get; init; }
             public bool IsSelected { get; set; }

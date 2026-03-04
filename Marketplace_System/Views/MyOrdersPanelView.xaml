@@ -38,6 +38,7 @@
                                         <TextBlock Text="{Binding SellerName}" Margin="0,3,0,0" Foreground="#5F6B6A"/>
                                         <TextBlock Text="{Binding FulfillmentText}" Margin="0,3,0,0" Foreground="#2E7D5B"/>
                                         <TextBlock Text="{Binding LastUpdatedText}" Margin="0,3,0,0" Foreground="#6B7280" FontSize="12"/>
+                                        <TextBlock Text="{Binding AddressText}" Margin="0,3,0,0" Foreground="#5F6B6A" FontSize="12" TextWrapping="Wrap" MaxWidth="640"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
                                         <TextBlock Text="{Binding Status}" Background="#FFF1C6" Foreground="#856404" Padding="10,4" FontWeight="SemiBold" TextAlignment="Center"/>

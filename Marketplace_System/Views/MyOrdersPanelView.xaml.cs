@@ -40,7 +40,8 @@ namespace Marketplace_System.Views
                         FulfillmentText = $"Method: {o.FulfillmentMethod}",
                         Status = o.Status,
                         TotalText = $"₱{o.QuantityKilos * o.UnitPrice:N2}",
-                        LastUpdatedText = $"Updated: {o.UpdatedAt.ToLocalTime():MMM dd, yyyy hh:mm tt}"
+                        LastUpdatedText = $"Updated: {o.UpdatedAt.ToLocalTime():MMM dd, yyyy hh:mm tt}",
+                        AddressText = o.Notes
                     })
                     .ToList();
             }
@@ -62,6 +63,7 @@ namespace Marketplace_System.Views
             public string Status { get; init; } = string.Empty;
             public string TotalText { get; init; } = string.Empty;
             public string LastUpdatedText { get; init; } = string.Empty;
+            public string AddressText { get; init; } = string.Empty;
         }
     }
 }
