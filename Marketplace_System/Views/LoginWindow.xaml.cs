@@ -10,7 +10,8 @@ namespace Marketplace_System.Views
     {
         private bool _isPasswordVisible = false;
         private readonly AuthService _authService = new();
-
+        private const string AdminUsername = "admin";
+        private const string AdminPassword = "Admin@123";
         public LoginWindow()
         {
             InitializeComponent();
@@ -32,6 +33,17 @@ namespace Marketplace_System.Views
 
             try
             {
+                if (string.Equals(username, AdminUsername, StringComparison.OrdinalIgnoreCase) &&
+                 password == AdminPassword)
+                {
+                    SessionManager.SetCurrentUser(-1, "Administrator");
+                    MessageBox.Show("Admin login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    AdminPanelWindow adminPanelWindow = new();
+                    adminPanelWindow.Show();
+                    Close();
+                    return;
+                }
                 var user = await _authService.LoginAsync(username, password);
                 if (user is null)
                 {

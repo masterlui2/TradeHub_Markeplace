@@ -226,6 +226,7 @@ namespace Marketplace_System.Views
 
         public string QuantityText => $"{QuantityKilos} kilo(s)";
         public string SellerText => $"Seller: {SellerName}";
+        public string PickupAddressText => $"Pickup Address: {PickupAddress}";
         public string TotalText => $"₱{TotalAmount:N2}";
         public decimal TotalAmount => QuantityKilos * UnitPrice;
 

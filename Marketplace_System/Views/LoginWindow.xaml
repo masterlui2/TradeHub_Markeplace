@@ -201,7 +201,7 @@
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
-
+                        
                     </StackPanel>
 
                     <!-- Register link -->
