@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -18,36 +20,63 @@ namespace Marketplace_System.Views
             InitializeComponent();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ShowModule(_dashboardView, DashboardNavButton, "Dashboard", "Real-time marketplace statistics and alerts");
+            await ShowModuleAsync(_dashboardView, DashboardNavButton, "Dashboard", "Real-time marketplace statistics and alerts");
         }
 
-        private void DashboardNavButton_Click(object sender, RoutedEventArgs e)
+        private async void DashboardNavButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowModule(_dashboardView, DashboardNavButton, "Dashboard", "Real-time marketplace statistics and alerts");
+            await ShowModuleAsync(_dashboardView, DashboardNavButton, "Dashboard", "Real-time marketplace statistics and alerts");
         }
 
-        private void ManageUsersNavButton_Click(object sender, RoutedEventArgs e)
+        private async void ManageUsersNavButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowModule(_usersView, ManageUsersNavButton, "Manage Users", "Create, update, suspend, and remove users");
+            await ShowModuleAsync(_usersView, ManageUsersNavButton, "Manage Users", "Create, update, suspend, and remove users");
         }
 
-        private void ManagePaymentsNavButton_Click(object sender, RoutedEventArgs e)
+        private async void ManagePaymentsNavButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowModule(_paymentsView, ManagePaymentsNavButton, "Manage Payments", "Transaction status and payment detail tracking");
+            await ShowModuleAsync(_paymentsView, ManagePaymentsNavButton, "Manage Payments", "Transaction status and payment detail tracking");
         }
 
-        private void ShowModule(UserControl module, Button selectedButton, string title, string subtitle)
+        private async Task ShowModuleAsync(UserControl module, Button selectedButton, string title, string subtitle)
         {
-            ModuleHost.Content = module;
-            ModuleTitleText.Text = title;
-            ModuleSubtitleText.Text = subtitle;
+            try
+            {
+                switch (module)
+                {
+                    case SuperAdminDashboardView dashboardView:
+                        await dashboardView.RefreshDataAsync();
+                        break;
+                    case SuperAdminManageUsersView usersView:
+                        await usersView.RefreshDataAsync();
+                        break;
+                    case SuperAdminManagePaymentsView paymentsView:
+                        await paymentsView.RefreshDataAsync();
+                        break;
+                }
 
-            DashboardNavButton.Background = InactiveBrush;
-            ManageUsersNavButton.Background = InactiveBrush;
-            ManagePaymentsNavButton.Background = InactiveBrush;
-            selectedButton.Background = ActiveBrush;
+                ModuleHost.Content = module;
+                ModuleTitleText.Text = title;
+                ModuleSubtitleText.Text = subtitle;
+
+                DashboardNavButton.Background = InactiveBrush;
+                ManageUsersNavButton.Background = InactiveBrush;
+                ManagePaymentsNavButton.Background = InactiveBrush;
+                selectedButton.Background = ActiveBrush;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to load {title.ToLowerInvariant()} module.\n\n{ex.Message}", "Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            var loginWindow = new LoginWindow();
+            loginWindow.Show();
+            Close();
         }
     }
 }

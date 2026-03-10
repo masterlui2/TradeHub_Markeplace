@@ -1,11 +1,11 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Marketplace_System.Data;
 using Marketplace_System.Models;
 using Marketplace_System.ViewModels;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Marketplace_System.Services
@@ -15,7 +15,8 @@ namespace Marketplace_System.Services
         public async Task<SuperAdminDashboardData> GetDashboardDataAsync()
         {
             await using var db = new AppDbContext();
-            var users = await db.Users.AsNoTracking().ToListAsync();
+
+            var userCount = await db.Users.AsNoTracking().CountAsync();
             var orders = await db.Orders.AsNoTracking().ToListAsync();
             var listings = await db.ProductListings.AsNoTracking().ToListAsync();
             var payments = await db.Payments.AsNoTracking().OrderByDescending(p => p.CreatedAt).ToListAsync();
@@ -34,20 +35,20 @@ namespace Marketplace_System.Services
                 })
                 .ToList();
 
-            var recentTransactions = payments.Take(8).Select(p => new RecentTransactionRow
-            {
-                ReferenceNumber = p.ReferenceNumber,
-                OrderNumber = p.OrderNumber,
-                PayerName = p.PayerName,
-                Amount = p.Amount,
-                Status = p.Status,
-                CreatedAt = p.CreatedAt
-            }).ToList();
+            var recentTransactions = payments
+                .Take(10)
+                .Select(p => new RecentTransaction
+                {
+                    ReferenceNumber = p.ReferenceNumber,
+                    OrderNumber = p.OrderNumber,   // ← add this
+                    PayerName = p.PayerName,
+                    Amount = p.Amount,
+                    Status = p.Status,
+                    CreatedAt = p.CreatedAt
+                })
+                .ToList();
 
             var alerts = new List<string>();
-            var pendingPayments = payments.Count(p => p.Status == Payment.StatusPending);
-            if (pendingPayments > 0)
-                alerts.Add($"{pendingPayments} pending payments need review.");
 
             var failedPayments = payments.Count(p => p.Status == Payment.StatusFailed);
             if (failedPayments > 0)
@@ -59,7 +60,7 @@ namespace Marketplace_System.Services
 
             return new SuperAdminDashboardData
             {
-                TotalUsers = users.Count,
+                TotalUsers = userCount,
                 TotalSales = salesCount,
                 Revenue = revenue,
                 ActiveListings = listings.Count,
@@ -72,24 +73,52 @@ namespace Marketplace_System.Services
         public async Task<List<SuperAdminUserRow>> GetUsersAsync()
         {
             await using var db = new AppDbContext();
-            return await db.Users.AsNoTracking().OrderByDescending(u => u.CreatedAt)
-                .Select(u => new SuperAdminUserRow
-                {
-                    Id = u.Id,
-                    FullName = u.FullName,
-                    Email = u.Email,
-                    MobileNumber = u.MobileNumber,
-                    City = u.City,
-                    IsSuspended = u.IsSuspended,
-                    CreatedAt = u.CreatedAt
-                }).ToListAsync();
+
+            try
+            {
+                return await db.Users.AsNoTracking().OrderByDescending(u => u.CreatedAt)
+                    .Select(u => new SuperAdminUserRow
+                    {
+                        Id = u.Id,
+                        FullName = u.FullName,
+                        Email = u.Email,
+                        MobileNumber = u.MobileNumber,
+                        City = u.City,
+                        IsSuspended = u.IsSuspended,
+                        CreatedAt = u.CreatedAt
+                    }).ToListAsync();
+            }
+            catch (SqlException ex) when (IsMissingIsSuspendedColumn(ex))
+            {
+                return await db.Users.AsNoTracking().OrderByDescending(u => u.CreatedAt)
+                    .Select(u => new SuperAdminUserRow
+                    {
+                        Id = u.Id,
+                        FullName = u.FullName,
+                        Email = u.Email,
+                        MobileNumber = u.MobileNumber,
+                        City = u.City,
+                        IsSuspended = false,
+                        CreatedAt = u.CreatedAt
+                    }).ToListAsync();
+            }
         }
 
         public async Task CreateUserAsync(User user)
         {
             await using var db = new AppDbContext();
-            db.Users.Add(user);
-            await db.SaveChangesAsync();
+
+            try
+            {
+                db.Users.Add(user);
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex) when (IsMissingIsSuspendedColumn(ex))
+            {
+                await db.Database.ExecuteSqlInterpolatedAsync($@"
+                    INSERT INTO Users (FullName, Email, MobileNumber, City, PasswordHash, CreatedAt)
+                    VALUES ({user.FullName}, {user.Email}, {user.MobileNumber}, {user.City}, {user.PasswordHash}, {user.CreatedAt})");
+            }
         }
 
         public async Task UpdateUserAsync(SuperAdminUserRow row)
@@ -117,9 +146,21 @@ namespace Marketplace_System.Services
         public async Task ToggleSuspendAsync(int userId, bool isSuspended)
         {
             await using var db = new AppDbContext();
-            var user = await db.Users.FirstAsync(u => u.Id == userId);
-            user.IsSuspended = isSuspended;
-            await db.SaveChangesAsync();
+
+            try
+            {
+                var user = await db.Users.FirstAsync(u => u.Id == userId);
+                user.IsSuspended = isSuspended;
+                await db.SaveChangesAsync();
+            }
+            catch (SqlException ex) when (IsMissingIsSuspendedColumn(ex))
+            {
+                // Legacy schema without IsSuspended column: ignore toggle request.
+            }
+            catch (DbUpdateException ex) when (IsMissingIsSuspendedColumn(ex))
+            {
+                // Legacy schema without IsSuspended column: ignore toggle request.
+            }
         }
 
         public async Task<List<SuperAdminPaymentRow>> GetPaymentsAsync()
@@ -140,5 +181,11 @@ namespace Marketplace_System.Services
                     CreatedAt = p.CreatedAt
                 }).ToListAsync();
         }
+
+        private static bool IsMissingIsSuspendedColumn(SqlException ex) =>
+            ex.Message.Contains("Invalid column name 'IsSuspended'", StringComparison.OrdinalIgnoreCase);
+
+        private static bool IsMissingIsSuspendedColumn(DbUpdateException ex) =>
+            ex.InnerException is SqlException sqlEx && IsMissingIsSuspendedColumn(sqlEx);
     }
 }
