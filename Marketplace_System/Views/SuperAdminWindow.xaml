@@ -1,6 +1,7 @@
 ﻿<Window x:Class="Marketplace_System.Views.SuperAdminWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:Marketplace_System.Views"
         Title="FarmHub Super Admin"
         Height="840"
         Width="1360"
@@ -11,174 +12,119 @@
         Loaded="Window_Loaded">
 
     <Window.Resources>
-        <!-- Color System -->
-        <SolidColorBrush x:Key="PrimaryBrush" Color="#2563EB"/>
-        <SolidColorBrush x:Key="PrimaryHoverBrush" Color="#1D4ED8"/>
-        <SolidColorBrush x:Key="SuccessBrush" Color="#16A34A"/>
-        <SolidColorBrush x:Key="InfoBrush" Color="#0891B2"/>
-
-        <!-- Sidebar Button Style -->
-        <Style x:Key="SidebarButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="48"/>
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernNavButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#CBD5E1"/>
+            <Setter Property="Foreground" Value="#94A3B8"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="Padding" Value="20,0"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Margin" Value="8,0,8,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="Height" Value="45"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="ButtonBorder"
+                        <Border x:Name="Border"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="10">
+                                CornerRadius="8">
                             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              VerticalAlignment="Center"
-                                              Margin="{TemplateBinding Padding}"/>
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                            Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#2D3F4B"/>
+                                <Setter Property="Background" Value="#1E293B"/>
+                                <Setter Property="Foreground" Value="White"/>
                             </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Active Sidebar Button Style -->
-        <Style x:Key="ActiveSidebarButtonStyle" BasedOn="{StaticResource SidebarButtonStyle}" TargetType="Button">
-            <Setter Property="Background" Value="#2D3F4B"/>
-            <Setter Property="Foreground" Value="White"/>
-        </Style>
-
-        <!-- Card Style -->
-        <Style x:Key="CardStyle" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="16"/>
-            <Setter Property="BorderBrush" Value="#E2E8F0"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="20"/>
-        </Style>
-
-        <!-- Primary Button Style -->
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="ButtonBorder"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="10">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="{StaticResource PrimaryHoverBrush}"/>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#334155"/>
+                                <Setter Property="Foreground" Value="White"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#94A3B8"/>
+                                <Setter Property="Foreground" Value="#475569"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+
+        <!-- Logout Button Style -->
+        <Style x:Key="LogoutButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernNavButton}">
+            <Setter Property="Foreground" Value="#EF4444"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2D1A1A"/>
+                    <Setter Property="Foreground" Value="#F87171"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#3B2020"/>
+                    <Setter Property="Foreground" Value="#FCA5A5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Active Button Style -->
+        <Style x:Key="ActiveNavButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernNavButton}">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="White"/>
         </Style>
     </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="260"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar -->
         <Border Grid.Column="0" Background="#0F172A">
-            <Grid Margin="0,24,0,24">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Logo Section -->
-                <StackPanel Grid.Row="0" Margin="20,0,20,32">
-                    <TextBlock Text="🌾 FarmHub"
-                               FontSize="24"
-                               FontWeight="Bold"
-                               Foreground="White"/>
-                    <TextBlock Text="Super Admin Portal"
-                               FontSize="13"
-                               Foreground="#94A3B8"
-                               Margin="0,6,0,0"/>
+                <!-- Logo and Title -->
+                <StackPanel Grid.Row="0" Margin="20,24,20,20">
+                    <TextBlock Text="🌾 FarmHub" FontSize="24" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="Super Admin Portal" Foreground="#94A3B8" Margin="0,4,0,0"/>
+                    <Border Height="1" Background="#1E293B" Margin="0,16,0,0"/>
                 </StackPanel>
 
-                <!-- Navigation -->
-                <StackPanel Grid.Row="1">
-                    <Button x:Name="DashboardNavButton"
-                            Style="{StaticResource ActiveSidebarButtonStyle}"
-                            Click="DashboardNavButton_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="📊" FontSize="18" Margin="0,0,12,0"/>
-                            <TextBlock Text="Dashboard"/>
-                        </StackPanel>
-                    </Button>
+                <!-- Navigation Buttons -->
+                <StackPanel Grid.Row="1" Margin="16,0,16,0">
+                    <Button x:Name="DashboardNavButton" 
+                            Content="📊 Dashboard" 
+                            Style="{StaticResource ModernNavButton}"
+                            Margin="0,0,0,4"
+                            Click="DashboardNavButton_Click"/>
 
-                    <Button x:Name="ManageUsersNavButton"
-                            Style="{StaticResource SidebarButtonStyle}"
-                            Click="ManageUsersNavButton_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="👥" FontSize="18" Margin="0,0,12,0"/>
-                            <TextBlock Text="Manage Users"/>
-                        </StackPanel>
-                    </Button>
+                    <Button x:Name="ManageUsersNavButton" 
+                            Content="👥 Manage Users" 
+                            Style="{StaticResource ModernNavButton}"
+                            Margin="0,0,0,4"
+                            Click="ManageUsersNavButton_Click"/>
 
-                    <Button x:Name="SalesDashboardNavButton"
-                            Style="{StaticResource SidebarButtonStyle}"
-                            Click="SalesDashboardNavButton_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="📈" FontSize="18" Margin="0,0,12,0"/>
-                            <TextBlock Text="Sales Dashboard"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button x:Name="ManagePaymentsNavButton"
-                            Style="{StaticResource SidebarButtonStyle}"
-                            Click="ManagePaymentsNavButton_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="💳" FontSize="18" Margin="0,0,12,0"/>
-                            <TextBlock Text="Manage Payments"/>
-                        </StackPanel>
-                    </Button>
+                    <Button x:Name="ManagePaymentsNavButton" 
+                            Content="💰 Manage Payments" 
+                            Style="{StaticResource ModernNavButton}"
+                            Click="ManagePaymentsNavButton_Click"/>
                 </StackPanel>
 
-                <!-- Admin Info -->
-                <Border Grid.Row="2"
-                        Margin="16"
-                        Padding="16"
-                        Background="#1E293B"
-                        CornerRadius="12">
-                    <StackPanel>
-                        <TextBlock Text="Super Admin"
-                                   Foreground="White"
-                                   FontWeight="SemiBold"
-                                   FontSize="14"/>
-                        <TextBlock Text="Full system access"
-                                   Foreground="#94A3B8"
-                                   FontSize="12"
-                                   Margin="0,4,0,0"/>
-                    </StackPanel>
-                </Border>
+                <!-- Logout Button at Bottom -->
+                <StackPanel Grid.Row="2" Margin="16,0,16,24">
+                    <Border Height="1" Background="#1E293B" Margin="0,0,0,16"/>
+                    <Button x:Name="LogoutButton" 
+                            Content="🚪 Logout" 
+                            Style="{StaticResource LogoutButtonStyle}"
+                            Click="LogoutButton_Click"/>
+                </StackPanel>
             </Grid>
         </Border>
 
@@ -189,368 +135,19 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Header -->
-            <Border Grid.Row="0"
-                    Background="Transparent"
-                    Margin="0,0,0,24">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+            <StackPanel Margin="0,0,0,14">
+                <TextBlock x:Name="ModuleTitleText" 
+                          Text="Dashboard" 
+                          FontSize="28" 
+                          FontWeight="SemiBold"
+                          Foreground="#0F172A"/>
+                <TextBlock x:Name="ModuleSubtitleText" 
+                          Text="Live system insights and controls" 
+                          Foreground="#64748B"
+                          FontSize="14"/>
+            </StackPanel>
 
-                    <StackPanel Grid.Column="0">
-                        <TextBlock x:Name="ModuleTitleText"
-                                   Text="Dashboard Overview"
-                                   FontSize="28"
-                                   FontWeight="SemiBold"
-                                   Foreground="#0F172A"/>
-                        <TextBlock x:Name="ModuleSubtitleText"
-                                   Text="Welcome back, Super Admin. Here's what's happening today."
-                                   Margin="0,4,0,0"
-                                   Foreground="#64748B"
-                                   FontSize="14"/>
-                    </StackPanel>
-
-                    <!-- Admin Agreement Check -->
-                    <Border Grid.Column="1"
-                            Background="White"
-                            CornerRadius="12"
-                            BorderBrush="#E2E8F0"
-                            BorderThickness="1"
-                            Padding="16">
-                        <StackPanel>
-                            <TextBlock Text="Admin Agreement"
-                                       FontWeight="SemiBold"
-                                       FontSize="13"
-                                       Foreground="#0F172A"/>
-                            <CheckBox x:Name="AdminAgreementCheckBox"
-                                      Content="I accept the Terms &amp; Conditions"
-                                      Foreground="#475569"
-                                      FontSize="12"
-                                      Margin="0,8,0,0"/>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-            </Border>
-
-            <!-- Dynamic Content Area -->
-            <Grid Grid.Row="1">
-                <!-- Dashboard Module (Default) -->
-                <Border x:Name="DashboardModule"
-                        Style="{StaticResource CardStyle}"
-                        Visibility="Visible">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="0,0,8,0">
-                            <!-- Stats Grid -->
-                            <Grid Margin="0,0,0,20">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <!-- Total Users -->
-                                <Border Grid.Column="0"
-                                        Background="White"
-                                        CornerRadius="16"
-                                        BorderBrush="#E2E8F0"
-                                        BorderThickness="1"
-                                        Padding="16"
-                                        Margin="0,0,12,0">
-                                    <StackPanel>
-                                        <TextBlock Text="👥" FontSize="24" Margin="0,0,0,8"/>
-                                        <TextBlock Text="Total Users" Foreground="#64748B" FontSize="13"/>
-                                        <TextBlock Text="2,847" FontSize="24" FontWeight="Bold" Foreground="#0F172A" Margin="0,4,0,0"/>
-                                        <TextBlock Text="↑ 12% from last month" Foreground="#16A34A" FontSize="11" Margin="0,4,0,0"/>
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Total Revenue -->
-                                <Border Grid.Column="1"
-                                        Background="White"
-                                        CornerRadius="16"
-                                        BorderBrush="#E2E8F0"
-                                        BorderThickness="1"
-                                        Padding="16"
-                                        Margin="12,0,12,0">
-                                    <StackPanel>
-                                        <TextBlock Text="💰" FontSize="24" Margin="0,0,0,8"/>
-                                        <TextBlock Text="Total Revenue" Foreground="#64748B" FontSize="13"/>
-                                        <TextBlock Text="$128.4K" FontSize="24" FontWeight="Bold" Foreground="#0F172A" Margin="0,4,0,0"/>
-                                        <TextBlock Text="↑ 8% from last month" Foreground="#16A34A" FontSize="11" Margin="0,4,0,0"/>
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Active Orders -->
-                                <Border Grid.Column="2"
-                                        Background="White"
-                                        CornerRadius="16"
-                                        BorderBrush="#E2E8F0"
-                                        BorderThickness="1"
-                                        Padding="16"
-                                        Margin="12,0,12,0">
-                                    <StackPanel>
-                                        <TextBlock Text="📦" FontSize="24" Margin="0,0,0,8"/>
-                                        <TextBlock Text="Active Orders" Foreground="#64748B" FontSize="13"/>
-                                        <TextBlock Text="342" FontSize="24" FontWeight="Bold" Foreground="#0F172A" Margin="0,4,0,0"/>
-                                        <TextBlock Text="↓ 3% from yesterday" Foreground="#DC2626" FontSize="11" Margin="0,4,0,0"/>
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Pending Payments -->
-                                <Border Grid.Column="3"
-                                        Background="White"
-                                        CornerRadius="16"
-                                        BorderBrush="#E2E8F0"
-                                        BorderThickness="1"
-                                        Padding="16"
-                                        Margin="12,0,0,0">
-                                    <StackPanel>
-                                        <TextBlock Text="⏳" FontSize="24" Margin="0,0,0,8"/>
-                                        <TextBlock Text="Pending Payments" Foreground="#64748B" FontSize="13"/>
-                                        <TextBlock Text="28" FontSize="24" FontWeight="Bold" Foreground="#0F172A" Margin="0,4,0,0"/>
-                                        <TextBlock Text="Value: $12.4K" Foreground="#EAB308" FontSize="11" Margin="0,4,0,0"/>
-                                    </StackPanel>
-                                </Border>
-                            </Grid>
-
-                            <!-- Charts Section -->
-                            <Grid Margin="0,0,0,20">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <!-- Revenue Chart -->
-                                <Border Grid.Column="0"
-                                        Background="White"
-                                        CornerRadius="16"
-                                        BorderBrush="#E2E8F0"
-                                        BorderThickness="1"
-                                        Padding="20"
-                                        Margin="0,0,12,0">
-                                    <StackPanel>
-                                        <TextBlock Text="Revenue Overview" FontSize="16" FontWeight="SemiBold" Foreground="#0F172A"/>
-                                        <TextBlock Text="Last 30 days" Foreground="#64748B" FontSize="12" Margin="0,2,0,16"/>
-                                        <Border Background="#F8FAFC" Height="180" CornerRadius="12">
-                                            <TextBlock Text="Chart placeholder - Revenue trend"
-                                                       Foreground="#94A3B8"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"/>
-                                        </Border>
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- User Activity -->
-                                <Border Grid.Column="1"
-                                        Background="White"
-                                        CornerRadius="16"
-                                        BorderBrush="#E2E8F0"
-                                        BorderThickness="1"
-                                        Padding="20"
-                                        Margin="12,0,0,0">
-                                    <StackPanel>
-                                        <TextBlock Text="User Activity" FontSize="16" FontWeight="SemiBold" Foreground="#0F172A"/>
-                                        <TextBlock Text="Active sessions" Foreground="#64748B" FontSize="12" Margin="0,2,0,16"/>
-                                        <Border Background="#F8FAFC" Height="180" CornerRadius="12">
-                                            <TextBlock Text="Chart placeholder - User activity"
-                                                       Foreground="#94A3B8"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"/>
-                                        </Border>
-                                    </StackPanel>
-                                </Border>
-                            </Grid>
-
-                            <!-- Recent Activity -->
-                            <Border Background="White"
-                                    CornerRadius="16"
-                                    BorderBrush="#E2E8F0"
-                                    BorderThickness="1"
-                                    Padding="20">
-                                <StackPanel>
-                                    <TextBlock Text="Recent Activity" FontSize="16" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,16"/>
-
-                                    <!-- Activity Items -->
-                                    <StackPanel>
-                                        <Border Background="#F8FAFC" CornerRadius="10" Padding="12" Margin="0,0,0,8">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="👤" FontSize="16" Margin="0,0,12,0"/>
-                                                <StackPanel Grid.Column="1">
-                                                    <TextBlock Text="New user registered" FontWeight="Medium" Foreground="#0F172A"/>
-                                                    <TextBlock Text="Farmer John Doe joined the platform" Foreground="#64748B" FontSize="12"/>
-                                                </StackPanel>
-                                                <TextBlock Grid.Column="2" Text="2 min ago" Foreground="#94A3B8" FontSize="12"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Background="#F8FAFC" CornerRadius="10" Padding="12" Margin="0,0,0,8">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="💰" FontSize="16" Margin="0,0,12,0"/>
-                                                <StackPanel Grid.Column="1">
-                                                    <TextBlock Text="Payment received" FontWeight="Medium" Foreground="#0F172A"/>
-                                                    <TextBlock Text="Order #ORD-2024-128 - $2,450.00" Foreground="#64748B" FontSize="12"/>
-                                                </StackPanel>
-                                                <TextBlock Grid.Column="2" Text="15 min ago" Foreground="#94A3B8" FontSize="12"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Background="#F8FAFC" CornerRadius="10" Padding="12">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="📊" FontSize="16" Margin="0,0,12,0"/>
-                                                <StackPanel Grid.Column="1">
-                                                    <TextBlock Text="System update" FontWeight="Medium" Foreground="#0F172A"/>
-                                                    <TextBlock Text="Daily sales report generated" Foreground="#64748B" FontSize="12"/>
-                                                </StackPanel>
-                                                <TextBlock Grid.Column="2" Text="1 hour ago" Foreground="#94A3B8" FontSize="12"/>
-                                            </Grid>
-                                        </Border>
-                                    </StackPanel>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                    </ScrollViewer>
-                </Border>
-
-                <!-- Manage Users Module -->
-                <Border x:Name="ManageUsersModule"
-                        Background="White"
-                        CornerRadius="16"
-                        BorderBrush="#E2E8F0"
-                        BorderThickness="1"
-                        Padding="20"
-                        Visibility="Collapsed">
-                    <StackPanel>
-                        <Button Content="Open User Management"
-                                Height="40"
-                                Width="200"
-                                HorizontalAlignment="Left"
-                                Margin="0,0,0,20"
-                                IsEnabled="{Binding ElementName=AdminAgreementCheckBox, Path=IsChecked}"
-                                Style="{StaticResource PrimaryButtonStyle}"/>
-
-                        <Border Background="#F8FAFC" 
-                                CornerRadius="12" 
-                                Padding="20">
-                            <StackPanel>
-                                <TextBlock Text="User Management Interface"
-                                           FontWeight="SemiBold"
-                                           Foreground="#0F172A"
-                                           FontSize="15"
-                                           Margin="0,0,0,12"/>
-                                <TextBlock Text="• User list table with sorting and filtering" 
-                                           Foreground="#475569" 
-                                           Margin="0,4,0,0"/>
-                                <TextBlock Text="• Role assignment and permissions" 
-                                           Foreground="#475569" 
-                                           Margin="0,4,0,0"/>
-                                <TextBlock Text="• Account status management" 
-                                           Foreground="#475569" 
-                                           Margin="0,4,0,0"/>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
-                </Border>
-
-                <!-- Sales Dashboard Module -->
-                <Border x:Name="SalesDashboardModule"
-                        Background="White"
-                        CornerRadius="16"
-                        BorderBrush="#E2E8F0"
-                        BorderThickness="1"
-                        Padding="20"
-                        Visibility="Collapsed">
-                    <StackPanel>
-                        <Button Content="Open Sales Dashboard"
-                                Height="40"
-                                Width="200"
-                                HorizontalAlignment="Left"
-                                Margin="0,0,0,20"
-                                IsEnabled="{Binding ElementName=AdminAgreementCheckBox, Path=IsChecked}"
-                                Style="{StaticResource PrimaryButtonStyle}"
-                                Background="{StaticResource InfoBrush}"/>
-
-                        <Border Background="#F8FAFC" 
-                                CornerRadius="12" 
-                                Padding="20">
-                            <StackPanel>
-                                <TextBlock Text="Sales Analytics Dashboard"
-                                           FontWeight="SemiBold"
-                                           Foreground="#0F172A"
-                                           FontSize="15"
-                                           Margin="0,0,0,12"/>
-                                <TextBlock Text="• Revenue metrics and KPIs" 
-                                           Foreground="#475569" 
-                                           Margin="0,4,0,0"/>
-                                <TextBlock Text="• Product performance analysis" 
-                                           Foreground="#475569" 
-                                           Margin="0,4,0,0"/>
-                                <TextBlock Text="• Sales trends and forecasts" 
-                                           Foreground="#475569" 
-                                           Margin="0,4,0,0"/>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
-                </Border>
-
-                <!-- Manage Payments Module -->
-                <Border x:Name="ManagePaymentsModule"
-                        Background="White"
-                        CornerRadius="16"
-                        BorderBrush="#E2E8F0"
-                        BorderThickness="1"
-                        Padding="20"
-                        Visibility="Collapsed">
-                    <StackPanel>
-                        <Button Content="Open Payment Monitor"
-                                Height="40"
-                                Width="200"
-                                HorizontalAlignment="Left"
-                                Margin="0,0,0,20"
-                                IsEnabled="{Binding ElementName=AdminAgreementCheckBox, Path=IsChecked}"
-                                Style="{StaticResource PrimaryButtonStyle}"
-                                Background="{StaticResource SuccessBrush}"/>
-
-                        <Border Background="#F8FAFC" 
-                                CornerRadius="12" 
-                                Padding="20">
-                            <StackPanel>
-                                <TextBlock Text="Payment Management System"
-                                           FontWeight="SemiBold"
-                                           Foreground="#0F172A"
-                                           FontSize="15"
-                                           Margin="0,0,0,12"/>
-                                <TextBlock Text="• Real-time payment monitoring" 
-                                           Foreground="#475569" 
-                                           Margin="0,4,0,0"/>
-                                <TextBlock Text="• Transaction reconciliation" 
-                                           Foreground="#475569" 
-                                           Margin="0,4,0,0"/>
-                                <TextBlock Text="• Fraud detection alerts" 
-                                           Foreground="#475569" 
-                                           Margin="0,4,0,0"/>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
-                </Border>
-            </Grid>
+            <ContentControl Grid.Row="1" x:Name="ModuleHost"/>
         </Grid>
     </Grid>
 </Window>

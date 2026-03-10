@@ -6,8 +6,12 @@ namespace Marketplace_System.Views
 {
     public partial class SuperAdminWindow : Window
     {
-        private static readonly Brush ActiveNavBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2D3F4B"));
-        private static readonly Brush InactiveNavBrush = Brushes.Transparent;
+        private readonly SuperAdminDashboardView _dashboardView = new();
+        private readonly SuperAdminManageUsersView _usersView = new();
+        private readonly SuperAdminManagePaymentsView _paymentsView = new();
+
+        private static readonly Brush ActiveBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DBEAFE"));
+        private static readonly Brush InactiveBrush = Brushes.White;
 
         public SuperAdminWindow()
         {
@@ -16,37 +20,34 @@ namespace Marketplace_System.Views
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ShowModule(ManageUsersModule, ManageUsersNavButton, "Manage Users", "View and manage system users.");
+            ShowModule(_dashboardView, DashboardNavButton, "Dashboard", "Real-time marketplace statistics and alerts");
+        }
+
+        private void DashboardNavButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowModule(_dashboardView, DashboardNavButton, "Dashboard", "Real-time marketplace statistics and alerts");
         }
 
         private void ManageUsersNavButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowModule(ManageUsersModule, ManageUsersNavButton, "Manage Users", "View and manage system users.");
+            ShowModule(_usersView, ManageUsersNavButton, "Manage Users", "Create, update, suspend, and remove users");
         }
 
-        
         private void ManagePaymentsNavButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowModule(ManagePaymentsModule, ManagePaymentsNavButton, "Manage Payments", "Monitor and manage payment transactions.");
+            ShowModule(_paymentsView, ManagePaymentsNavButton, "Manage Payments", "Transaction status and payment detail tracking");
         }
-        private void DashboardNavButton_Click(object sender, RoutedEventArgs e)
+
+        private void ShowModule(UserControl module, Button selectedButton, string title, string subtitle)
         {
-            ShowModule(SalesDashboardModule, DashboardNavButton, "Dashboard", "Display an overview of sales data and analytics.");
-        }
-        private void ShowModule(Border module, Button navButton, string title, string subtitle)
-        {
-            ManageUsersModule.Visibility = Visibility.Collapsed;
-            SalesDashboardModule.Visibility = Visibility.Collapsed;
-            ManagePaymentsModule.Visibility = Visibility.Collapsed;
-
-            ManageUsersNavButton.Background = InactiveNavBrush;
-            ManagePaymentsNavButton.Background = InactiveNavBrush;
-
-            module.Visibility = Visibility.Visible;
-            navButton.Background = ActiveNavBrush;
-
+            ModuleHost.Content = module;
             ModuleTitleText.Text = title;
             ModuleSubtitleText.Text = subtitle;
+
+            DashboardNavButton.Background = InactiveBrush;
+            ManageUsersNavButton.Background = InactiveBrush;
+            ManagePaymentsNavButton.Background = InactiveBrush;
+            selectedButton.Background = ActiveBrush;
         }
     }
 }
