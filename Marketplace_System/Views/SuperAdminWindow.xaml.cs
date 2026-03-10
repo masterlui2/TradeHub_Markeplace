@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace Marketplace_System.Views
 {
@@ -12,8 +11,6 @@ namespace Marketplace_System.Views
         private readonly SuperAdminManageUsersView _usersView = new();
         private readonly SuperAdminManagePaymentsView _paymentsView = new();
 
-        private static readonly Brush ActiveBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DBEAFE"));
-        private static readonly Brush InactiveBrush = Brushes.White;
 
         public SuperAdminWindow()
         {
@@ -61,10 +58,10 @@ namespace Marketplace_System.Views
                 ModuleTitleText.Text = title;
                 ModuleSubtitleText.Text = subtitle;
 
-                DashboardNavButton.Background = InactiveBrush;
-                ManageUsersNavButton.Background = InactiveBrush;
-                ManagePaymentsNavButton.Background = InactiveBrush;
-                selectedButton.Background = ActiveBrush;
+                DashboardNavButton.Style = (Style)FindResource("ModernNavButton");
+                ManageUsersNavButton.Style = (Style)FindResource("ModernNavButton");
+                ManagePaymentsNavButton.Style = (Style)FindResource("ModernNavButton");
+                selectedButton.Style = (Style)FindResource("ActiveNavButtonStyle");
             }
             catch (Exception ex)
             {

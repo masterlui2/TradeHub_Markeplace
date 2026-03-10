@@ -37,10 +37,10 @@ namespace Marketplace_System.Services
 
             var recentTransactions = payments
                 .Take(10)
-                .Select(p => new RecentTransaction
+                .Select(p => new RecentTransactionRow
                 {
                     ReferenceNumber = p.ReferenceNumber,
-                    OrderNumber = p.OrderNumber,   // ← add this
+                    OrderNumber = p.OrderNumber,
                     PayerName = p.PayerName,
                     Amount = p.Amount,
                     Status = p.Status,

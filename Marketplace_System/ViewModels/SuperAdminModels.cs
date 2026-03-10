@@ -39,6 +39,7 @@ namespace Marketplace_System.ViewModels
         public bool IsSuspended { get; set; }
         public DateTime CreatedAt { get; init; }
         public string Status => IsSuspended ? "Suspended" : "Active";
+        public string SuspendActionLabel => IsSuspended ? "Unsuspend" : "Suspend";
     }
 
     public sealed class SuperAdminPaymentRow

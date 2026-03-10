@@ -102,8 +102,11 @@ namespace Marketplace_System.Views
 
         private async void SuspendToggle_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is not CheckBox { Tag: SuperAdminUserRow row, IsChecked: bool isChecked }) return;
-            await _service.ToggleSuspendAsync(row.Id, isChecked);
+            if (sender is not Button { Tag: SuperAdminUserRow row })
+                return;
+
+            var nextStatus = !row.IsSuspended;
+            await _service.ToggleSuspendAsync(row.Id, nextStatus);
             await RefreshDataAsync();
         }
     }
