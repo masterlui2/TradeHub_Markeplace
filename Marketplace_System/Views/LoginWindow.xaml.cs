@@ -10,8 +10,7 @@ namespace Marketplace_System.Views
     {
         private bool _isPasswordVisible = false;
         private readonly AuthService _authService = new();
-        private const string AdminUsername = "admin";
-        private const string AdminPassword = "Admin@123";
+              private readonly AdminCredentialService _adminCredentialService = new();
         public LoginWindow()
         {
             InitializeComponent();
@@ -34,8 +33,19 @@ namespace Marketplace_System.Views
             try
             {
                 SessionManager.Clear();
-                if (string.Equals(username, AdminUsername, StringComparison.OrdinalIgnoreCase) &&
-                 password == AdminPassword)
+                var adminRole = _adminCredentialService.Validate(username, password);
+                if (adminRole == AdminRole.SuperAdmin)
+                {
+                    SessionManager.SetCurrentUser(-2, "Super Administrator");
+                    MessageBox.Show("Super Admin login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    SuperAdminWindow superAdminWindow = new();
+                    superAdminWindow.Show();
+                    Close();
+                    return;
+                }
+
+                if (adminRole == AdminRole.Admin)
                 {
                     SessionManager.SetCurrentUser(-1, "Administrator");
                     MessageBox.Show("Admin login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);

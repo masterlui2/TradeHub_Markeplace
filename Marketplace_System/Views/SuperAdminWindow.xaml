@@ -1,0 +1,249 @@
+﻿<Window x:Class="Marketplace_System.Views.SuperAdminWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="FarmHub Super Admin"
+        Height="840"
+        Width="1360"
+        MinHeight="700"
+        MinWidth="1100"
+        WindowStartupLocation="CenterScreen"
+        Background="#F3F6FA"
+        Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <Style x:Key="SidebarButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Margin="6,0">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#243847"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModuleCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="BorderBrush" Value="#D8E1EA"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="20"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="#1E293B">
+            <Grid Margin="0,16,0,16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Margin="18,0,18,20">
+                    <TextBlock Text="🌾 FarmHub"
+                               FontSize="22"
+                               FontWeight="SemiBold"
+                               Foreground="White"/>
+                    <TextBlock Text="Super Admin Portal"
+                               FontSize="13"
+                               Foreground="#94A3B8"
+                               Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1">
+                    <Button x:Name="ManageUsersNavButton"
+                            Style="{StaticResource SidebarButtonStyle}"
+                            Click="ManageUsersNavButton_Click"
+                            Background="#2D3F4B">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="👥" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Manage Users" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="SalesDashboardNavButton"
+                            Style="{StaticResource SidebarButtonStyle}"
+                            Click="SalesDashboardNavButton_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📈" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Sales Dashboard" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="ManagePaymentsNavButton"
+                            Style="{StaticResource SidebarButtonStyle}"
+                            Click="ManagePaymentsNavButton_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="💳" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Manage Payments" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <Border Grid.Row="2"
+                        Margin="14,0,14,0"
+                        Padding="12"
+                        Background="#223240"
+                        CornerRadius="10">
+                    <StackPanel>
+                        <TextBlock Text="Super Admin"
+                                   Foreground="White"
+                                   FontWeight="SemiBold"/>
+                        <TextBlock Text="Monitoring and control mode"
+                                   Foreground="#94A3B8"
+                                   FontSize="12"
+                                   Margin="0,2,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Background="White"
+                    CornerRadius="14"
+                    BorderBrush="#D8E1EA"
+                    BorderThickness="1"
+                    Padding="18"
+                    Margin="0,0,0,14">
+                <StackPanel>
+                    <TextBlock x:Name="ModuleTitleText"
+                               Text="Manage Users"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               Foreground="#0F172A"/>
+                    <TextBlock x:Name="ModuleSubtitleText"
+                               Text="View and manage system users."
+                               Margin="0,4,0,0"
+                               Foreground="#64748B"
+                               FontSize="13"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Background="White"
+                    CornerRadius="14"
+                    BorderBrush="#D8E1EA"
+                    BorderThickness="1"
+                    Padding="16"
+                    Margin="0,0,0,14">
+                <StackPanel>
+                    <TextBlock Text="Admin ↔ System Terms and Conditions"
+                               FontWeight="SemiBold"
+                               FontSize="15"
+                               Foreground="#0F172A"/>
+                    <TextBlock Text="The Super Admin acknowledges responsibility for authorized use of administrative tools, handling user and payment information securely, and following system governance policies."
+                               Margin="0,6,0,8"
+                               Foreground="#475569"
+                               TextWrapping="Wrap"/>
+                    <CheckBox x:Name="AdminAgreementCheckBox"
+                              Content="I acknowledge and accept the Admin and System Terms and Conditions."
+                              Foreground="#0F172A"
+                              FontWeight="Medium"/>
+                </StackPanel>
+            </Border>
+
+            <Grid Grid.Row="2">
+                <Border x:Name="ManageUsersModule"
+                        Style="{StaticResource ModuleCardStyle}">
+                    <StackPanel>
+                        <Button Content="Open User Management"
+                                Height="36"
+                                Width="190"
+                                HorizontalAlignment="Left"
+                                Margin="0,0,0,14"
+                                IsEnabled="{Binding ElementName=AdminAgreementCheckBox, Path=IsChecked}"
+                                Background="#2563EB"
+                                Foreground="White"
+                                BorderThickness="0"/>
+                        <Border Background="#F8FAFC" CornerRadius="10" Padding="12">
+                            <StackPanel>
+                                <TextBlock Text="• User list table placeholder" Foreground="#334155"/>
+                                <TextBlock Text="• Role/status controls placeholder" Foreground="#334155" Margin="0,4,0,0"/>
+                                <TextBlock Text="• Account lock/unlock actions placeholder" Foreground="#334155" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <Border x:Name="SalesDashboardModule"
+                        Style="{StaticResource ModuleCardStyle}"
+                        Visibility="Collapsed">
+                    <StackPanel>
+                        <Button Content="Open Sales Dashboard"
+                                Height="36"
+                                Width="190"
+                                HorizontalAlignment="Left"
+                                Margin="0,0,0,14"
+                                IsEnabled="{Binding ElementName=AdminAgreementCheckBox, Path=IsChecked}"
+                                Background="#0891B2"
+                                Foreground="White"
+                                BorderThickness="0"/>
+                        <Border Background="#F8FAFC" CornerRadius="10" Padding="12">
+                            <StackPanel>
+                                <TextBlock Text="• Revenue KPI widgets placeholder" Foreground="#334155"/>
+                                <TextBlock Text="• Product performance chart placeholder" Foreground="#334155" Margin="0,4,0,0"/>
+                                <TextBlock Text="• Trend analytics panel placeholder" Foreground="#334155" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <Border x:Name="ManagePaymentsModule"
+                        Style="{StaticResource ModuleCardStyle}"
+                        Visibility="Collapsed">
+                    <StackPanel>
+                        <Button Content="Open Payment Monitor"
+                                Height="36"
+                                Width="190"
+                                HorizontalAlignment="Left"
+                                Margin="0,0,0,14"
+                                IsEnabled="{Binding ElementName=AdminAgreementCheckBox, Path=IsChecked}"
+                                Background="#16A34A"
+                                Foreground="White"
+                                BorderThickness="0"/>
+                        <Border Background="#F8FAFC" CornerRadius="10" Padding="12">
+                            <StackPanel>
+                                <TextBlock Text="• Payment queue placeholder" Foreground="#334155"/>
+                                <TextBlock Text="• Reconciliation tools placeholder" Foreground="#334155" Margin="0,4,0,0"/>
+                                <TextBlock Text="• Fraud alert panel placeholder" Foreground="#334155" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

@@ -100,7 +100,7 @@ namespace Marketplace_System.Views
             decimal total = selectedLines.Sum(c => c.TotalAmount);
 
             CartTotalTextBlock.Text = $"₱{total:N2}";
-            CheckoutButton.IsEnabled = selectedLines.Count > 0;
+            CheckoutButton.IsEnabled = selectedLines.Count > 0 && AcceptTncCheckBox?.IsChecked == true;
         }
 
         private List<CartLineViewModel> GetSelectedLines()
@@ -109,12 +109,23 @@ namespace Marketplace_System.Views
                 .Where(c => c?.IsSelected == true)
                 .ToList();
         }
-
+        private void AcceptTncCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            UpdateCheckoutState();
+        }
         private async void CheckoutButton_Click(object sender, RoutedEventArgs e)
         {
             var selectedLines = GetSelectedLines();
             if (selectedLines.Count == 0) return;
-
+            if (AcceptTncCheckBox?.IsChecked != true)
+            {
+                MessageBox.Show(
+                    "Please review and accept the Buyer Terms and Conditions before proceeding.",
+                    "Terms & Conditions Required",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
             var result = MessageBox.Show(
                 $"Checkout {selectedLines.Count} item(s)?\n\n" +
                 $"• Pickup items: {selectedLines.Count(x => x.IsPickupSelected)}\n" +
