@@ -138,6 +138,9 @@ namespace Marketplace_System.Views
         }
 
         public ObservableCollection<ActivityLogItemViewModel> ActivityLogs => _activityLogs;
+         public ICollectionView UsersView => _usersView;
+
+        public ICollectionView ListingsView => _listingsView;
 
         public AdminUserRow? SelectedUser
         {
