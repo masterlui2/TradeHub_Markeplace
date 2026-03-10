@@ -271,15 +271,15 @@
                                        Margin="0,4,0,8"
                                        Foreground="#5E6F6B"
                                        FontSize="12"/>
-                            <Expander Header="Review Terms"
-                                      Foreground="#2D6A4F"
-                                      FontWeight="SemiBold">
-                                <TextBlock TextWrapping="Wrap"
-                                           Foreground="#4B5F59"
-                                           FontSize="12"
-                                           Margin="0,8,0,0"
-                                           Text="By checking out, you confirm that the selected quantity, fulfillment option, and address are accurate. You agree to complete payment on time, communicate respectfully with sellers, and comply with FarmHub marketplace policies for refunds, cancellations, and dispute handling."/>
-                            </Expander>
+                            <Button Content="View Terms &amp; Conditions"
+                                    HorizontalAlignment="Left"
+                                    Padding="10,6"
+                                    FontSize="12"
+                                    FontWeight="SemiBold"
+                                    Foreground="#2D6A4F"
+                                    Background="#ECF7F1"
+                                    BorderBrush="#D3EBDD"
+                                    Click="ViewTermsButton_Click"/>
                             <CheckBox x:Name="AcceptTncCheckBox"
                                       Margin="0,10,0,0"
                                       Content="I have reviewed and accept the Buyer Terms and Conditions."

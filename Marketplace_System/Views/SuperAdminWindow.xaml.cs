@@ -24,16 +24,15 @@ namespace Marketplace_System.Views
             ShowModule(ManageUsersModule, ManageUsersNavButton, "Manage Users", "View and manage system users.");
         }
 
-        private void SalesDashboardNavButton_Click(object sender, RoutedEventArgs e)
-        {
-            ShowModule(SalesDashboardModule, SalesDashboardNavButton, "View Sales Dashboard", "Display an overview of sales data and analytics.");
-        }
-
+        
         private void ManagePaymentsNavButton_Click(object sender, RoutedEventArgs e)
         {
             ShowModule(ManagePaymentsModule, ManagePaymentsNavButton, "Manage Payments", "Monitor and manage payment transactions.");
         }
-
+        private void DashboardNavButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowModule(SalesDashboardModule, DashboardNavButton, "Dashboard", "Display an overview of sales data and analytics.");
+        }
         private void ShowModule(Border module, Button navButton, string title, string subtitle)
         {
             ManageUsersModule.Visibility = Visibility.Collapsed;
@@ -41,7 +40,6 @@ namespace Marketplace_System.Views
             ManagePaymentsModule.Visibility = Visibility.Collapsed;
 
             ManageUsersNavButton.Background = InactiveNavBrush;
-            SalesDashboardNavButton.Background = InactiveNavBrush;
             ManagePaymentsNavButton.Background = InactiveNavBrush;
 
             module.Visibility = Visibility.Visible;

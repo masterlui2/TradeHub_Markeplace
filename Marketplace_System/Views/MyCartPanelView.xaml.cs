@@ -91,7 +91,15 @@ namespace Marketplace_System.Views
 
             UpdateCheckoutState();
         }
+        private void ViewTermsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var termsWindow = new TermsConditionsWindow
+            {
+                Owner = Window.GetWindow(this)
+            };
 
+            termsWindow.ShowDialog();
+        }
         private void UpdateCheckoutState()
         {
             if (CartTotalTextBlock == null || CheckoutButton == null) return;

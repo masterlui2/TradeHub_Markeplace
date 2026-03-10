@@ -435,8 +435,163 @@ namespace Marketplace_System.Views
             ManagePaymentsButton.Background = section == AdminSection.Payments ? new SolidColorBrush(Color.FromRgb(0x2D, 0x3F, 0x4B)) : Brushes.Transparent;
             ActivityLogButton.Background = section == AdminSection.ActivityLogs ? new SolidColorBrush(Color.FromRgb(0x2D, 0x3F, 0x4B)) : Brushes.Transparent;
         }
+        private async void AddUserButton_Click(object sender, RoutedEventArgs e)
+        {
+            var form = new UserAccountFormWindow("Create User Account") { Owner = this };
+            if (form.ShowDialog() != true)
+                return;
 
-      
+            var data = form.FormData;
+            if (string.IsNullOrWhiteSpace(data.FullName) ||
+                string.IsNullOrWhiteSpace(data.Email) ||
+                string.IsNullOrWhiteSpace(data.MobileNumber) ||
+                string.IsNullOrWhiteSpace(data.City) ||
+                string.IsNullOrWhiteSpace(data.Password))
+            {
+                MessageBox.Show("Please complete all required fields, including password.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                await using var db = new AppDbContext();
+                bool emailExists = await db.Users.AnyAsync(u => u.Email == data.Email);
+                if (emailExists)
+                {
+                    MessageBox.Show("A user with this email already exists.", "Duplicate Email", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var user = new User
+                {
+                    FullName = data.FullName,
+                    Email = data.Email,
+                    MobileNumber = data.MobileNumber,
+                    City = data.City,
+                    PasswordHash = PasswordHasher.Hash(data.Password),
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                db.Users.Add(user);
+                await db.SaveChangesAsync();
+                await LoadAdminDataAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to create user\n{ex.Message}", "Create User Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ViewUserButton_Click(object sender, RoutedEventArgs e)
+        {
+            var user = GetUserRowFromSender(sender);
+            if (user is null)
+                return;
+
+            var profileWindow = new UserProfileViewWindow(user) { Owner = this };
+            profileWindow.ShowDialog();
+        }
+
+        private async void EditUserButton_Click(object sender, RoutedEventArgs e)
+        {
+            var user = GetUserRowFromSender(sender);
+            if (user is null)
+                return;
+
+            var form = new UserAccountFormWindow("Edit User Account", new UserFormData
+            {
+                FullName = user.FullName,
+                Email = user.Email,
+                MobileNumber = user.MobileNumber,
+                City = user.City
+            }, isEditMode: true)
+            { Owner = this };
+
+            if (form.ShowDialog() != true)
+                return;
+
+            var data = form.FormData;
+            if (string.IsNullOrWhiteSpace(data.FullName) ||
+                string.IsNullOrWhiteSpace(data.Email) ||
+                string.IsNullOrWhiteSpace(data.MobileNumber) ||
+                string.IsNullOrWhiteSpace(data.City))
+            {
+                MessageBox.Show("Please complete all required fields.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                await using var db = new AppDbContext();
+                bool duplicateEmail = await db.Users.AnyAsync(u => u.Email == data.Email && u.Id != user.Id);
+                if (duplicateEmail)
+                {
+                    MessageBox.Show("A different user is already using this email.", "Duplicate Email", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var entity = await db.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+                if (entity is null)
+                {
+                    MessageBox.Show("User was not found.", "Edit User", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                entity.FullName = data.FullName;
+                entity.Email = data.Email;
+                entity.MobileNumber = data.MobileNumber;
+                entity.City = data.City;
+
+                await db.SaveChangesAsync();
+                await LoadAdminDataAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to update user\n{ex.Message}", "Edit User Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void DeleteUserButton_Click(object sender, RoutedEventArgs e)
+        {
+            var user = GetUserRowFromSender(sender);
+            if (user is null)
+                return;
+
+            var confirm = MessageBox.Show(
+                $"Delete user '{user.FullName}' (ID: {user.Id})? This action cannot be undone.",
+                "Confirm Delete",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirm != MessageBoxResult.Yes)
+                return;
+
+            try
+            {
+                await using var db = new AppDbContext();
+                var entity = await db.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+                if (entity is null)
+                {
+                    MessageBox.Show("User was not found.", "Delete User", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                db.Users.Remove(entity);
+                await db.SaveChangesAsync();
+                await LoadAdminDataAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to delete user\n{ex.Message}", "Delete User Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private static AdminUserRow? GetUserRowFromSender(object sender)
+        {
+            return sender is Button { Tag: AdminUserRow row } ? row : null;
+        }
+
+
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
             if (Equals(field, value))

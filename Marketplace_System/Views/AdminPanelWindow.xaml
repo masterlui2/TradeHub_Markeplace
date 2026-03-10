@@ -262,10 +262,19 @@
 
                                     <DockPanel Grid.Row="0" Margin="0,0,0,12">
                                         <TextBlock Text="Users" FontSize="16" FontWeight="SemiBold"
-                               Foreground="#1E293B" DockPanel.Dock="Left"/>
-                                        <TextBox Width="260" Height="34" Padding="10,4"
-                             Text="{Binding UserSearchText, UpdateSourceTrigger=PropertyChanged}"
-                             DockPanel.Dock="Right"/>
+                              Foreground="#1E293B" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                                            <Button Content="+ Add User"
+                                                    Margin="0,0,10,0"
+                                                    Padding="14,6"
+                                                    Background="#0F766E"
+                                                    Foreground="White"
+                                                    BorderThickness="0"
+                                                    FontWeight="SemiBold"
+                                                    Click="AddUserButton_Click"/>
+                                            <TextBox Width="260" Height="34" Padding="10,4"
+                             Text="{Binding UserSearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
                                     </DockPanel>
 
                                     <TextBlock Grid.Row="1"
@@ -285,6 +294,35 @@
                                             <DataGridTextColumn Header="City" Binding="{Binding City}" Width="*"/>
                                             <DataGridTextColumn Header="Joined" Binding="{Binding CreatedAt, StringFormat=yyyy-MM-dd}" Width="*"/>
                                             <DataGridTextColumn Header="Last Activity" Binding="{Binding LastActivityLabel}" Width="*"/>
+                                            <DataGridTemplateColumn Header="Actions" Width="170">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                            <Button Content="👁"
+                                                                    ToolTip="View"
+                                                                    Width="36"
+                                                                    Height="28"
+                                                                    Margin="2"
+                                                                    Tag="{Binding}"
+                                                                    Click="ViewUserButton_Click"/>
+                                                            <Button Content="✏"
+                                                                    ToolTip="Edit"
+                                                                    Width="36"
+                                                                    Height="28"
+                                                                    Margin="2"
+                                                                    Tag="{Binding}"
+                                                                    Click="EditUserButton_Click"/>
+                                                            <Button Content="🗑"
+                                                                    ToolTip="Delete"
+                                                                    Width="36"
+                                                                    Height="28"
+                                                                    Margin="2"
+                                                                    Tag="{Binding}"
+                                                                    Click="DeleteUserButton_Click"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </Grid>
