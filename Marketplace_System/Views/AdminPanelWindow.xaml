@@ -167,12 +167,6 @@
                             <TextBlock Text="Payments" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-                    <Button x:Name="SendMessagesButton" Style="{StaticResource SidebarButtonStyle}" Click="SendMessagesButton_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="📨" FontSize="18" Margin="0,0,10,0"/>
-                            <TextBlock Text="Messages" FontSize="13" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
                     <Button x:Name="ActivityLogButton" Style="{StaticResource SidebarButtonStyle}" Click="ActivityLogButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="🧾" FontSize="18" Margin="0,0,10,0"/>
@@ -221,6 +215,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
                         <UniformGrid Columns="4" Margin="0,0,0,16">
@@ -250,10 +245,41 @@
                             </Border>
                         </UniformGrid>
 
-                        <Border Grid.Row="1" Style="{StaticResource ModuleCardStyle}">
+                        <Border Grid.Row="1" Style="{StaticResource ModuleCardStyle}" Margin="0,0,0,12">
                             <StackPanel>
                                 <TextBlock Text="Snapshot" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B"/>
                                 <TextBlock Text="{Binding DashboardSummary}" Margin="0,6,0,0" Foreground="#475569" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Row="2" Style="{StaticResource ModuleCardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="Recent Activity" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                <TextBlock Text="{Binding ActivityLogSummary}" Margin="0,4,0,10" Foreground="#64748B" TextWrapping="Wrap"/>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="220">
+                                    <ItemsControl ItemsSource="{Binding ActivityLogs}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8" Padding="10" Margin="0,0,0,8">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="130"/>
+                                                            <ColumnDefinition Width="95"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="{Binding TimeLabel}" Foreground="#64748B" FontSize="12" VerticalAlignment="Center"/>
+                                                        <Border Grid.Column="1" Background="#E2F0FF" CornerRadius="10" Padding="8,2" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding Category}" Foreground="#1D4ED8" FontWeight="SemiBold" FontSize="11"/>
+                                                        </Border>
+                                                        <StackPanel Grid.Column="2" Margin="10,0,0,0">
+                                                            <TextBlock Text="{Binding Action}" Foreground="#0F172A" FontWeight="SemiBold"/>
+                                                            <TextBlock Text="{Binding Details}" Foreground="#475569" FontSize="12" TextWrapping="Wrap"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
                             </StackPanel>
                         </Border>
                     </Grid>
@@ -293,7 +319,6 @@
                                             <DataGridTextColumn Header="Full Name" Binding="{Binding FullName}" Width="2*"/>
                                             <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="2*"/>
                                             <DataGridTextColumn Header="City" Binding="{Binding City}" Width="*"/>
-                                            <DataGridTextColumn Header="Role" Binding="{Binding Role}" Width="*"/>
                                             <DataGridTextColumn Header="Joined" Binding="{Binding CreatedAt, StringFormat=yyyy-MM-dd}" Width="*"/>
                                             <DataGridTextColumn Header="Last Activity" Binding="{Binding LastActivityLabel}" Width="*"/>
                                         </DataGrid.Columns>
@@ -368,7 +393,83 @@
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </Grid>
+                                <!-- ACTIVITY LOG MODULE -->
+                                <Grid x:Name="ActivityLogModuleGrid" Visibility="Collapsed">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
 
+                                    <TextBlock Text="{Binding ActivityLogSummary}" Foreground="#64748B" Margin="0,0,0,10"/>
+
+                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                        <ItemsControl ItemsSource="{Binding ActivityLogs}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,10">
+                                                        <StackPanel>
+                                                            <DockPanel Margin="0,0,0,4">
+                                                                <TextBlock Text="{Binding TimeLabel}" Foreground="#64748B" FontSize="12" DockPanel.Dock="Right"/>
+                                                                <TextBlock Text="{Binding Action}" FontWeight="SemiBold" Foreground="#0F172A"/>
+                                                            </DockPanel>
+                                                            <TextBlock Text="{Binding Category}" Foreground="#2563EB" FontWeight="SemiBold" FontSize="11"/>
+                                                            <TextBlock Text="{Binding Details}" Foreground="#334155" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Grid>
+                                <!-- PAYMENTS MODULE -->
+                                <Grid x:Name="PaymentsModuleGrid" Visibility="Collapsed">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <DockPanel Grid.Row="0" Margin="0,0,0,12">
+                                        <TextBlock Text="Payments" FontSize="18" FontWeight="SemiBold" Foreground="#0F172A" DockPanel.Dock="Left"/>
+                                        <TextBox Width="240" Height="34" Padding="10,4" Text="{Binding PaymentSearchText, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right"/>
+                                    </DockPanel>
+
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+                                        <ComboBox Style="{StaticResource AdminComboBoxStyle}" Width="150" SelectedValuePath="Content" SelectedValue="{Binding PaymentStatusFilter}">
+                                            <ComboBoxItem Content="All statuses"/>
+                                            <ComboBoxItem Content="Pending"/>
+                                            <ComboBoxItem Content="Paid"/>
+                                            <ComboBoxItem Content="Failed"/>
+                                            <ComboBoxItem Content="Refunded"/>
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Row="2" Text="{Binding PaymentTableSummary}" Margin="0,0,0,8" Foreground="#64748B"/>
+
+                                    <DataGrid Grid.Row="3" Style="{StaticResource AdminDataGridStyle}" ItemsSource="{Binding PaymentsView}" SelectedItem="{Binding SelectedPayment}" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                                            <DataGridTextColumn Header="Reference" Binding="{Binding ReferenceNumber}" Width="*"/>
+                                            <DataGridTextColumn Header="Buyer" Binding="{Binding BuyerName}" Width="*"/>                                            <DataGridTextColumn Header="Payer" Binding="{Binding PayerName}" Width="*"/>
+                                            <DataGridTextColumn Header="Recipient" Binding="{Binding RecipientName}" Width="*"/>
+                                            <DataGridTextColumn Header="Method" Binding="{Binding Method}" Width="*"/>
+                                            <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat=C}" Width="*"/>
+                                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                                            <DataGridTextColumn Header="Updated" Binding="{Binding UpdatedAt, StringFormat=yyyy-MM-dd HH:mm}" Width="*"/>
+                                            <DataGridTemplateColumn Header="Actions" Width="110">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Button Content="✎" Style="{StaticResource RowActionButtonStyle}" Tag="{Binding}" Click="EditPaymentRowButton_Click"/>
+                                                            <Button Content="🗑" Style="{StaticResource RowActionButtonStyle}" Tag="{Binding}" Click="DeletePaymentRowButton_Click"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
                             </Grid>
                         </Border>
                     </Grid>

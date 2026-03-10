@@ -11,6 +11,7 @@ using System.Windows.Media;
 using Marketplace_System.Data;
 using Marketplace_System.Models;
 using Marketplace_System.Services;
+using Marketplace_System.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Marketplace_System.Views
@@ -19,11 +20,18 @@ namespace Marketplace_System.Views
     {
         private readonly ObservableCollection<AdminUserRow> _users = new();
         private readonly ObservableCollection<AdminListingRow> _listings = new();
+        private readonly ObservableCollection<ActivityLogItemViewModel> _activityLogs = new();
+        private readonly ActivityLogService _activityLogService = new();
+        private readonly ObservableCollection<PaymentRow> _payments = new();
+        private readonly PaymentService _paymentService = new();
         private readonly ICollectionView _usersView;
         private readonly ICollectionView _listingsView;
+        private readonly ICollectionView _paymentsView;
         private string _userSearchText = string.Empty;
         private string _listingSearchText = string.Empty;
         private string _listingStatusFilter = "All statuses";
+        private string _paymentSearchText = string.Empty;
+        private string _paymentStatusFilter = "All statuses";
         private string _listingSortBy = "Newest";
         private int _totalUsers;
         private int _totalListings;
@@ -32,7 +40,10 @@ namespace Marketplace_System.Views
         private string _dashboardSummary = "Loading dashboard...";
         private string _userTableSummary = "Loading users...";
         private string _listingTableSummary = "Loading listings...";
+        private string _activityLogSummary = "Loading activity logs..."; 
+        private string _paymentTableSummary = "Loading payments...";
         private AdminUserRow? _selectedUser;
+        private PaymentRow? _selectedPayment;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -130,7 +141,48 @@ namespace Marketplace_System.Views
             get => _listingTableSummary;
             set => SetField(ref _listingTableSummary, value);
         }
+        public string ActivityLogSummary
+        {
+            get => _activityLogSummary;
+            set => SetField(ref _activityLogSummary, value);
+        }
 
+        public ObservableCollection<ActivityLogItemViewModel> ActivityLogs => _activityLogs;
+        public ICollectionView PaymentsView => _paymentsView;
+
+        public PaymentRow? SelectedPayment
+        {
+            get => _selectedPayment;
+            set => SetField(ref _selectedPayment, value);
+        }
+
+        public string PaymentSearchText
+        {
+            get => _paymentSearchText;
+            set
+            {
+                if (!SetField(ref _paymentSearchText, value))
+                    return;
+                _paymentsView.Refresh();
+            }
+        }
+
+        public string PaymentStatusFilter
+        {
+            get => _paymentStatusFilter;
+            set
+            {
+                if (!SetField(ref _paymentStatusFilter, value))
+                    return;
+                _paymentsView.Refresh();
+            }
+        }
+
+        public string PaymentTableSummary
+        {
+            get => _paymentTableSummary;
+            set => SetField(ref _paymentTableSummary, value);
+        }
         public AdminPanelWindow()
         {
             InitializeComponent();
@@ -139,6 +191,9 @@ namespace Marketplace_System.Views
             _usersView.Filter = FilterUsers;
             _listingsView = CollectionViewSource.GetDefaultView(_listings);
             _listingsView.Filter = FilterListings;
+            _paymentsView = CollectionViewSource.GetDefaultView(_payments);
+            _paymentsView.Filter = FilterPayments;
+
             ApplyListingSort();
         }
 
@@ -158,6 +213,13 @@ namespace Marketplace_System.Views
                 var users = await db.Users.AsNoTracking().ToListAsync();
                 var listings = await db.ProductListings.AsNoTracking().ToListAsync();
                 var orders = await db.Orders.AsNoTracking().ToListAsync();
+                var payments = await db.Payments.AsNoTracking().OrderByDescending(p => p.CreatedAt).ToListAsync();
+                var paidOrders = orders
+                   .Where(o => o.Status == Order.StatusPaid || o.Status == Order.StatusCompleted)
+                   .GroupBy(o => o.OrderNumber)
+                   .ToDictionary(g => g.Key, g => g.OrderByDescending(x => x.UpdatedAt).First());
+
+                var buyersById = users.ToDictionary(u => u.Id, u => u.FullName);
 
                 var sellerIds = listings.Select(l => l.SellerUserId).ToHashSet();
                 var userLastActivity = listings
@@ -250,15 +312,40 @@ namespace Marketplace_System.Views
                 int activeCount = _users.Count(u => u.Status == "Active");
                 UserTableSummary = $"Showing {_users.Count} users ({activeCount} active).";
                 ListingTableSummary = $"Showing {_listings.Count} listings from the marketplace.";
+                _payments.Clear();
+                foreach (var payment in payments)
+                {
+                    if (!paidOrders.TryGetValue(payment.OrderNumber, out var matchedPaidOrder))
+                        continue;
 
+                    _payments.Add(new PaymentRow
+                    {
+                        Id = payment.Id,
+                        ReferenceNumber = payment.ReferenceNumber,
+                        OrderNumber = payment.OrderNumber,
+                        BuyerName = buyersById.TryGetValue(matchedPaidOrder.BuyerUserId, out var buyerName) ? buyerName : "Unknown buyer",
+                        PayerName = payment.PayerName,
+                        RecipientName = payment.RecipientName,
+                        Method = payment.Method,
+                        Status = payment.Status,
+                        Amount = payment.Amount,
+                        UpdatedAt = payment.UpdatedAt
+                    });
+                }
+
+                PaymentTableSummary = $"Showing {_payments.Count} paid buyer payments.";
+                await LoadActivityLogsAsync();
                 _usersView.Refresh();
                 _listingsView.Refresh();
+                _paymentsView.Refresh();
             }
             catch (Exception ex)
             {
                 DashboardSummary = "Could not load dashboard data from the database.";
                 UserTableSummary = $"Database load failed: {ex.Message}";
                 ListingTableSummary = $"Database load failed: {ex.Message}";
+                ActivityLogSummary = $"Database load failed: {ex.Message}";
+                PaymentTableSummary = $"Database load failed: {ex.Message}";
                 MessageBox.Show($"Failed to load admin data.\n\n{ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
@@ -304,10 +391,7 @@ namespace Marketplace_System.Views
 
         private void ManagePaymentsButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowDashboard();
-            PageTitleText.Text = "Payments";
-            PageSubtitleText.Text = "Payment controls will be connected next";
-            UpdateActiveButton(ManagePaymentsButton);
+            ShowPaymentsModule("Manage Payments", "Paid buyer payments with quick row actions"); UpdateActiveButton(ManagePaymentsButton);
         }
 
         private void SendMessagesButton_Click(object sender, RoutedEventArgs e)
@@ -315,14 +399,11 @@ namespace Marketplace_System.Views
             ShowDashboard();
             PageTitleText.Text = "Messages";
             PageSubtitleText.Text = "Message center will be connected next";
-            UpdateActiveButton(SendMessagesButton);
         }
 
         private void ActivityLogButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowDashboard();
-            PageTitleText.Text = "Activity Log";
-            PageSubtitleText.Text = "Audit timeline will be connected next";
+            ShowActivityLogModule();
             UpdateActiveButton(ActivityLogButton);
         }
 
@@ -348,6 +429,7 @@ namespace Marketplace_System.Views
             PageSubtitleText.Text = "Live platform summary";
             DashboardGrid.Visibility = Visibility.Visible;
             ModuleContentGrid.Visibility = Visibility.Collapsed;
+            PaymentsModuleGrid.Visibility = Visibility.Collapsed;
         }
 
         private void ShowUsersModule(string title, string subtitle)
@@ -357,7 +439,8 @@ namespace Marketplace_System.Views
             DashboardGrid.Visibility = Visibility.Collapsed;
             ModuleContentGrid.Visibility = Visibility.Visible;
             UsersModuleGrid.Visibility = Visibility.Visible;
-            ListingsModuleGrid.Visibility = Visibility.Collapsed;
+            ActivityLogModuleGrid.Visibility = Visibility.Collapsed;
+            PaymentsModuleGrid.Visibility = Visibility.Collapsed;
         }
 
         private void ShowListingsModule(string title, string subtitle)
@@ -368,6 +451,29 @@ namespace Marketplace_System.Views
             ModuleContentGrid.Visibility = Visibility.Visible;
             UsersModuleGrid.Visibility = Visibility.Collapsed;
             ListingsModuleGrid.Visibility = Visibility.Visible;
+            ActivityLogModuleGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowActivityLogModule()
+        {
+            PageTitleText.Text = "Activity Log";
+            PageSubtitleText.Text = "Track account, listing, and moderation updates in real time";
+            DashboardGrid.Visibility = Visibility.Collapsed;
+            ModuleContentGrid.Visibility = Visibility.Visible;
+            UsersModuleGrid.Visibility = Visibility.Collapsed;
+            ListingsModuleGrid.Visibility = Visibility.Collapsed;
+            ActivityLogModuleGrid.Visibility = Visibility.Visible;
+            PaymentsModuleGrid.Visibility = Visibility.Collapsed;
+        }
+        private void ShowPaymentsModule(string title, string subtitle)
+        {
+            PageTitleText.Text = title;
+            PageSubtitleText.Text = subtitle;
+            DashboardGrid.Visibility = Visibility.Collapsed;
+            ModuleContentGrid.Visibility = Visibility.Visible;
+            UsersModuleGrid.Visibility = Visibility.Collapsed;
+            ListingsModuleGrid.Visibility = Visibility.Collapsed;
+            PaymentsModuleGrid.Visibility = Visibility.Visible;
         }
 
         private bool FilterListings(object item)
@@ -417,7 +523,6 @@ namespace Marketplace_System.Views
                 ManageUsersButton,
                 ManageListingsButton,
                 ManagePaymentsButton,
-                SendMessagesButton,
                 ActivityLogButton
             };
 
@@ -487,6 +592,8 @@ namespace Marketplace_System.Views
 
             TotalUsers = _users.Count;
             UserTableSummary = $"Added account for {newRow.FullName}.";
+            await _activityLogService.LogAsync("Created user account", $"{newRow.FullName} ({newRow.Email}) was added by admin.", newRow.Id, "Users");
+            await LoadActivityLogsAsync();
             _usersView.Refresh();
         }
 
@@ -500,14 +607,14 @@ namespace Marketplace_System.Views
             await EditSelectedUserAsync(SelectedUser);
         }
 
-        private void DeactivateUserButton_Click(object sender, RoutedEventArgs e)
+        private async void DeactivateUserButton_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedUser is null)
             {
                 MessageBox.Show("Select a user to deactivate first.", "Manage Users", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-            ToggleStatus(SelectedUser);
+            await ToggleStatusAsync(SelectedUser);
         }
 
         private async void DeleteUserButton_Click(object sender, RoutedEventArgs e)
@@ -529,12 +636,12 @@ namespace Marketplace_System.Views
             }
         }
 
-        private void DeactivateRowButton_Click(object sender, RoutedEventArgs e)
+        private async void DeactivateRowButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button { Tag: AdminUserRow row })
             {
                 SelectedUser = row;
-                ToggleStatus(row);
+                await ToggleStatusAsync(row);
             }
         }
 
@@ -601,6 +708,8 @@ namespace Marketplace_System.Views
             row.LastActivityLabel = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 
             UserTableSummary = $"Updated account details for {row.FullName}.";
+            await _activityLogService.LogAsync("Updated user account", $"Profile details were updated for {row.FullName}.", row.Id, "Users");
+            await LoadActivityLogsAsync();
             _usersView.Refresh();
         }
 
@@ -660,10 +769,12 @@ namespace Marketplace_System.Views
             return hasUpper && hasLower && hasNumber && hasSpecial;
         }
 
-        private void ToggleStatus(AdminUserRow row)
+        private async Task ToggleStatusAsync(AdminUserRow row)
         {
             row.Status = row.Status == "Active" ? "Deactivated" : "Active";
             UserTableSummary = $"Updated status for {row.FullName} to {row.Status}.";
+            await _activityLogService.LogAsync("Changed user status", $"{row.FullName} status is now {row.Status}.", row.Id, "Users");
+            await LoadActivityLogsAsync();
             _usersView.Refresh();
         }
 
@@ -688,9 +799,169 @@ namespace Marketplace_System.Views
                 SelectedUser = null;
 
             UserTableSummary = $"Deleted user {row.FullName}.";
+            await _activityLogService.LogAsync("Deleted user account", $"{row.FullName} was removed from the platform.", row.Id, "Users");
+            await LoadActivityLogsAsync();
             _usersView.Refresh();
         }
+        private async Task LoadActivityLogsAsync()
+        {
+            var logs = await _activityLogService.GetRecentAsync(30);
+            _activityLogs.Clear();
+            foreach (var log in logs)
+            {
+                _activityLogs.Add(new ActivityLogItemViewModel
+                {
+                    TimeLabel = log.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm"),
+                    Category = log.Category,
+                    Action = log.Action,
+                    Details = log.Details
+                });
+            }
 
+            ActivityLogSummary = _activityLogs.Count == 0
+                ? "No activity logs yet. Actions will appear here once admins start updating records."
+                : $"Showing {_activityLogs.Count} latest platform activities.";
+        }
+
+        private bool FilterPayments(object item)
+        {
+            if (item is not PaymentRow payment)
+                return false;
+
+            if (PaymentStatusFilter != "All statuses" && !string.Equals(payment.Status, PaymentStatusFilter, StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            if (string.IsNullOrWhiteSpace(PaymentSearchText))
+                return true;
+
+            var term = PaymentSearchText.Trim();
+            return payment.ReferenceNumber.Contains(term, StringComparison.OrdinalIgnoreCase)
+                   || payment.OrderNumber.Contains(term, StringComparison.OrdinalIgnoreCase)
+                    || payment.BuyerName.Contains(term, StringComparison.OrdinalIgnoreCase)
+                   || payment.PayerName.Contains(term, StringComparison.OrdinalIgnoreCase)
+                   || payment.RecipientName.Contains(term, StringComparison.OrdinalIgnoreCase)
+                   || payment.Method.Contains(term, StringComparison.OrdinalIgnoreCase)
+                   || payment.Status.Contains(term, StringComparison.OrdinalIgnoreCase);
+        }
+
+        
+
+        private async void EditPaymentRowButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button { Tag: PaymentRow row })
+            {
+                SelectedPayment = row;
+                await EditPaymentAsync(row);
+            }
+        }
+
+        private async void DeletePaymentRowButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button { Tag: PaymentRow row })
+            {
+                SelectedPayment = row;
+                await DeletePaymentAsync(row);
+            }
+        }
+
+        private async Task EditPaymentAsync(PaymentRow row)
+        {
+            var form = new PaymentFormWindow("Edit Payment", new PaymentFormData
+            {
+                ReferenceNumber = row.ReferenceNumber,
+                OrderNumber = row.OrderNumber,
+                PayerName = row.PayerName,
+                RecipientName = row.RecipientName,
+                Method = row.Method,
+                Status = row.Status,
+                Amount = row.Amount
+            });
+
+            if (form.ShowDialog() != true)
+                return;
+
+            if (!ValidatePaymentForm(form.FormData, out var msg))
+            {
+                MessageBox.Show(msg, "Payment", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            bool updated = await _paymentService.UpdateAsync(new Payment
+            {
+                Id = row.Id,
+                ReferenceNumber = form.FormData.ReferenceNumber,
+                OrderNumber = form.FormData.OrderNumber,
+                PayerName = form.FormData.PayerName,
+                RecipientName = form.FormData.RecipientName,
+                Method = form.FormData.Method,
+                Status = form.FormData.Status,
+                Amount = form.FormData.Amount,
+                Notes = string.Empty
+            });
+
+            if (!updated)
+            {
+                MessageBox.Show("Payment record no longer exists.", "Payments", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            row.ReferenceNumber = form.FormData.ReferenceNumber;
+            row.OrderNumber = form.FormData.OrderNumber;
+            row.PayerName = form.FormData.PayerName;
+            row.RecipientName = form.FormData.RecipientName;
+            row.Method = form.FormData.Method;
+            row.Status = form.FormData.Status;
+            row.Amount = form.FormData.Amount;
+            row.UpdatedAt = DateTime.UtcNow;
+            PaymentTableSummary = $"Updated payment {row.ReferenceNumber}.";
+            _paymentsView.Refresh();
+        }
+
+        private async Task DeletePaymentAsync(PaymentRow row)
+        {
+            var confirm = MessageBox.Show($"Delete payment {row.ReferenceNumber}?", "Delete Payment", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (confirm != MessageBoxResult.Yes)
+                return;
+
+            bool deleted = await _paymentService.DeleteAsync(row.Id);
+            if (!deleted)
+            {
+                MessageBox.Show("Payment record no longer exists.", "Payments", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            _payments.Remove(row);
+            if (ReferenceEquals(SelectedPayment, row))
+                SelectedPayment = null;
+
+            PaymentTableSummary = $"Deleted payment {row.ReferenceNumber}.";
+            _paymentsView.Refresh();
+        }
+
+        private static bool ValidatePaymentForm(PaymentFormData formData, out string message)
+        {
+            if (string.IsNullOrWhiteSpace(formData.ReferenceNumber)
+                || string.IsNullOrWhiteSpace(formData.OrderNumber)
+                || string.IsNullOrWhiteSpace(formData.PayerName)
+                || string.IsNullOrWhiteSpace(formData.RecipientName)
+                || string.IsNullOrWhiteSpace(formData.Method)
+                || string.IsNullOrWhiteSpace(formData.Status))
+            {
+                message = "All payment fields are required.";
+                return false;
+            }
+
+            if (formData.Amount <= 0)
+            {
+                message = "Amount must be greater than zero.";
+                return false;
+            }
+
+            message = string.Empty;
+            return true;
+        }
+
+    
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
             if (Equals(field, value))
@@ -713,7 +984,19 @@ namespace Marketplace_System.Views
             public DateTime CreatedAt { get; init; }
             public string LastActivityLabel { get; set; } = string.Empty;
         }
-
+        public sealed class PaymentRow
+        {
+            public int Id { get; init; }
+            public string ReferenceNumber { get; set; } = string.Empty;
+            public string OrderNumber { get; set; } = string.Empty;
+            public string BuyerName { get; set; } = string.Empty;
+            public string PayerName { get; set; } = string.Empty;
+            public string RecipientName { get; set; } = string.Empty;
+            public string Method { get; set; } = string.Empty;
+            public string Status { get; set; } = string.Empty;
+            public decimal Amount { get; set; }
+            public DateTime UpdatedAt { get; set; }
+        }
         private sealed class AdminListingRow
         {
             public int Id { get; init; }

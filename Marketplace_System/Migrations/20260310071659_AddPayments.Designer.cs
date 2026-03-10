@@ -4,6 +4,7 @@ using Marketplace_System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketplace_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260310071659_AddPayments")]
+    partial class AddPayments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -209,71 +212,6 @@ namespace Marketplace_System.Migrations
 
                     b.ToTable("Orders");
                 });
-            modelBuilder.Entity("Marketplace_System.Models.Payment", b =>
-            {
-                b.Property<int>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("int");
-
-                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                b.Property<decimal>("Amount")
-                    .HasColumnType("decimal(18,2)");
-
-                b.Property<DateTime>("CreatedAt")
-                    .HasColumnType("datetime2");
-
-                b.Property<string>("Method")
-                    .IsRequired()
-                    .HasMaxLength(24)
-                    .HasColumnType("nvarchar(24)");
-
-                b.Property<string>("Notes")
-                    .IsRequired()
-                    .HasMaxLength(250)
-                    .HasColumnType("nvarchar(250)");
-
-                b.Property<string>("OrderNumber")
-                    .IsRequired()
-                    .HasMaxLength(24)
-                    .HasColumnType("nvarchar(24)");
-
-                b.Property<string>("PayerName")
-                    .IsRequired()
-                    .HasMaxLength(120)
-                    .HasColumnType("nvarchar(120)");
-
-                b.Property<string>("RecipientName")
-                    .IsRequired()
-                    .HasMaxLength(120)
-                    .HasColumnType("nvarchar(120)");
-
-                b.Property<string>("ReferenceNumber")
-                    .IsRequired()
-                    .HasMaxLength(30)
-                    .HasColumnType("nvarchar(30)");
-
-                b.Property<string>("Status")
-                    .IsRequired()
-                    .HasMaxLength(20)
-                    .HasColumnType("nvarchar(20)");
-
-                b.Property<DateTime>("UpdatedAt")
-                    .HasColumnType("datetime2");
-
-                b.HasKey("Id");
-
-                b.HasIndex("CreatedAt");
-
-                b.HasIndex("OrderNumber");
-
-                b.HasIndex("ReferenceNumber")
-                    .IsUnique();
-
-                b.HasIndex("Status");
-
-                b.ToTable("Payments");
-            });
 
             modelBuilder.Entity("Marketplace_System.Models.ProductListing", b =>
                 {

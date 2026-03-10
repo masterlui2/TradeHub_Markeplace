@@ -9,8 +9,10 @@ namespace Marketplace_System.Data
         public DbSet<ProductListing> ProductListings => Set<ProductListing>();
         public DbSet<CartItem> CartItems => Set<CartItem>();
         public DbSet<Order> Orders => Set<Order>();
+        public DbSet<Payment> Payments => Set<Payment>();
         public DbSet<MessageThread> MessageThreads => Set<MessageThread>();
         public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
+        public DbSet<ActivityLog> ActivityLogs => Set<ActivityLog>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -66,6 +68,22 @@ namespace Marketplace_System.Data
 
             modelBuilder.Entity<Order>()
                 .HasIndex(o => o.UpdatedAt);
+            modelBuilder.Entity<Payment>()
+               .Property(p => p.Amount)
+               .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Payment>()
+                .HasIndex(p => p.ReferenceNumber)
+                .IsUnique();
+
+            modelBuilder.Entity<Payment>()
+                .HasIndex(p => p.OrderNumber);
+
+            modelBuilder.Entity<Payment>()
+                .HasIndex(p => p.Status);
+
+            modelBuilder.Entity<Payment>()
+                .HasIndex(p => p.CreatedAt);
 
             modelBuilder.Entity<MessageThread>()
                 .HasIndex(t => new { t.UserOneId, t.UserTwoId })
@@ -73,12 +91,26 @@ namespace Marketplace_System.Data
 
             modelBuilder.Entity<MessageThread>()
                 .HasIndex(t => t.UpdatedAt);
-
+            
             modelBuilder.Entity<ChatMessage>()
                 .HasIndex(m => m.ThreadId);
 
             modelBuilder.Entity<ChatMessage>()
                 .HasIndex(m => m.CreatedAt);
+            modelBuilder.Entity<ActivityLog>()
+            .HasIndex(a => a.CreatedAt);
+
+            modelBuilder.Entity<ActivityLog>()
+                .HasIndex(a => a.UserId);
+
+            modelBuilder.Entity<ActivityLog>()
+                .Property(a => a.Category)
+                .HasMaxLength(64);
+
+            modelBuilder.Entity<ActivityLog>()
+                .Property(a => a.Action)
+                .HasMaxLength(140);
+        
         }
     }
 }
