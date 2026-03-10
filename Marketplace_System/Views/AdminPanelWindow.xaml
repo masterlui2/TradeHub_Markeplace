@@ -71,9 +71,25 @@
             <Setter Property="Padding" Value="16"/>
             <Setter Property="BorderBrush" Value="#E2E8F0"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Effect" Value="{StaticResource ModuleCardShadow}"/>
+            <Setter Property="Effect" Value="{DynamicResource ModuleCardShadow}"/>        </Style>
+        <Style x:Key="AdminComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
         </Style>
-     
+
+        <Style x:Key="AdminDataGridStyle" TargetType="DataGrid">
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="RowHeaderWidth" Value="0"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="AlternatingRowBackground" Value="#F8FAFC"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
     </Window.Resources>
 
     <Grid Background="#F5F7FA">
@@ -96,7 +112,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="1">
-                    <Button x:Name="DashboardButton" Style="{StaticResource SidebarButtonStyle}" Click="DashboardButton_Click" Background="#2D3F4B">
+                    <Button x:Name="DashboardButton" Style="{DynamicResource SidebarButtonStyle}" Click="DashboardButton_Click" Background="#2D3F4B">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="📊" FontSize="18" Margin="0,0,10,0"/>
                             <TextBlock Text="Dashboard" FontSize="13" VerticalAlignment="Center"/>
@@ -104,7 +120,7 @@
                     </Button>
 
                     <TextBlock Text="USER MANAGEMENT" Foreground="#64748B" FontSize="11" FontWeight="SemiBold" Margin="20,16,0,6"/>
-                    <Button x:Name="ManageUsersButton" Style="{StaticResource SidebarButtonStyle}" Click="ManageUsersButton_Click">
+                    <Button x:Name="ManageUsersButton" Style="{DynamicResource SidebarButtonStyle}" Click="ManageUsersButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="👥" FontSize="18" Margin="0,0,10,0"/>
                             <TextBlock Text="Manage Users" FontSize="13" VerticalAlignment="Center"/>
@@ -112,19 +128,19 @@
                     </Button>
 
                     <TextBlock Text="PLATFORM" Foreground="#64748B" FontSize="11" FontWeight="SemiBold" Margin="20,16,0,6"/>
-                    <Button x:Name="ManageListingsButton" Style="{StaticResource SidebarButtonStyle}" Click="ManageListingsButton_Click">
+                    <Button x:Name="ManageListingsButton" Style="{DynamicResource SidebarButtonStyle}" Click="ManageListingsButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="📦" FontSize="18" Margin="0,0,10,0"/>
                             <TextBlock Text="Manage Listings" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-                    <Button x:Name="ManagePaymentsButton" Style="{StaticResource SidebarButtonStyle}" Click="ManagePaymentsButton_Click">
+                    <Button x:Name="ManagePaymentsButton" Style="{DynamicResource SidebarButtonStyle}" Click="ManagePaymentsButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="💳" FontSize="18" Margin="0,0,10,0"/>
                             <TextBlock Text="Payments" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-                    <Button x:Name="ActivityLogButton" Style="{StaticResource SidebarButtonStyle}" Click="ActivityLogButton_Click">
+                    <Button x:Name="ActivityLogButton" Style="{DynamicResource SidebarButtonStyle}" Click="ActivityLogButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="🧾" FontSize="18" Margin="0,0,10,0"/>
                             <TextBlock Text="Activity Log" FontSize="13" VerticalAlignment="Center"/>
@@ -134,7 +150,7 @@
 
                 <StackPanel Grid.Row="2" Margin="20,0,20,0">
                     <Border Height="1" Background="#334454" Margin="0,0,0,12"/>
-                    <Button x:Name="LogoutButton" Style="{StaticResource SidebarButtonStyle}" Click="LogoutButton_Click" Height="38">
+                    <Button x:Name="LogoutButton" Style="{DynamicResource SidebarButtonStyle}" Click="LogoutButton_Click" Height="38">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="🚪" FontSize="18" Margin="0,0,10,0"/>
                             <TextBlock Text="Logout" FontSize="13" VerticalAlignment="Center"/>
@@ -151,8 +167,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Border Grid.Row="0" Background="White" CornerRadius="10" Padding="16" Margin="0,0,0,16" Effect="{StaticResource ModuleCardShadow}">
-                    <Grid>
+                <Border Grid.Row="0" Background="White" CornerRadius="10" Padding="16" Margin="0,0,0,16" Effect="{DynamicResource ModuleCardShadow}">                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
@@ -176,40 +191,34 @@
                         </Grid.RowDefinitions>
 
                         <UniformGrid Columns="4" Margin="0,0,0,16">
-                            <Border Style="{StaticResource ModuleCardStyle}" Margin="0,0,10,0">
-                                <StackPanel>
+                            <Border Style="{DynamicResource ModuleCardStyle}" Margin="0,0,10,0">                                <StackPanel>
                                     <TextBlock Text="Users" Foreground="#64748B" FontSize="12"/>
                                     <TextBlock Text="{Binding TotalUsers}" FontSize="26" FontWeight="SemiBold" Foreground="#0F5132"/>
                                 </StackPanel>
                             </Border>
-                            <Border Style="{StaticResource ModuleCardStyle}" Margin="0,0,10,0">
-                                <StackPanel>
+                            <Border Style="{DynamicResource ModuleCardStyle}" Margin="0,0,10,0">                                <StackPanel>
                                     <TextBlock Text="Listings" Foreground="#64748B" FontSize="12"/>
                                     <TextBlock Text="{Binding TotalListings}" FontSize="26" FontWeight="SemiBold" Foreground="#0F5132"/>
                                 </StackPanel>
                             </Border>
-                            <Border Style="{StaticResource ModuleCardStyle}" Margin="0,0,10,0">
-                                <StackPanel>
+                            <Border Style="{DynamicResource ModuleCardStyle}" Margin="0,0,10,0">                                <StackPanel>
                                     <TextBlock Text="Active Orders" Foreground="#64748B" FontSize="12"/>
                                     <TextBlock Text="{Binding ActiveOrders}" FontSize="26" FontWeight="SemiBold" Foreground="#0F5132"/>
                                 </StackPanel>
                             </Border>
-                            <Border Style="{StaticResource ModuleCardStyle}">
-                                <StackPanel>
+                            <Border Style="{DynamicResource ModuleCardStyle}">                                <StackPanel>
                                     <TextBlock Text="Revenue (This Month)" Foreground="#64748B" FontSize="12"/>
                                     <TextBlock Text="{Binding RevenueThisMonth, StringFormat=C}" FontSize="26" FontWeight="SemiBold" Foreground="#0F5132"/>
                                 </StackPanel>
                             </Border>
                         </UniformGrid>
 
-                        <Border Grid.Row="1" Style="{StaticResource ModuleCardStyle}" Margin="0,0,0,12">
-                            <StackPanel>
+                        <Border Grid.Row="1" Style="{DynamicResource ModuleCardStyle}" Margin="0,0,0,12">                            <StackPanel>
                                 <TextBlock Text="Snapshot" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B"/>
                                 <TextBlock Text="{Binding DashboardSummary}" Margin="0,6,0,0" Foreground="#475569" TextWrapping="Wrap"/>
                             </StackPanel>
                         </Border>
-                        <Border Grid.Row="2" Style="{StaticResource ModuleCardStyle}">
-                            <StackPanel>
+                        <Border Grid.Row="2" Style="{DynamicResource ModuleCardStyle}">                            <StackPanel>
                                 <TextBlock Text="Recent Activity" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B"/>
                                 <TextBlock Text="{Binding ActivityLogSummary}" Margin="0,4,0,10" Foreground="#64748B" TextWrapping="Wrap"/>
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="220">
@@ -242,8 +251,7 @@
                     </Grid>
 
                     <Grid x:Name="ModuleContentGrid" Visibility="Collapsed">
-                        <Border Style="{StaticResource ModuleCardStyle}">
-                            <Grid>
+                        <Border Style="{DynamicResource ModuleCardStyle}">                            <Grid>
                                 <!-- USERS MODULE -->
                                 <Grid x:Name="UsersModuleGrid">
                                     <Grid.RowDefinitions>
@@ -266,8 +274,7 @@
                            Foreground="#64748B"/>
 
                                     <DataGrid Grid.Row="2"
-                          Style="{StaticResource AdminDataGridStyle}"
-                          ItemsSource="{Binding UsersView}"
+                          Style="{DynamicResource AdminDataGridStyle}"                          ItemsSource="{Binding UsersView}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
                           CanUserAddRows="False">
@@ -300,15 +307,13 @@
                                     </DockPanel>
 
                                     <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
-                                        <ComboBox Style="{StaticResource AdminComboBoxStyle}" Width="150"
-                              SelectedValuePath="Content" SelectedValue="{Binding ListingStatusFilter}">
+                                        <ComboBox Style="{DynamicResource AdminComboBoxStyle}" Width="150"                              SelectedValuePath="Content" SelectedValue="{Binding ListingStatusFilter}">
                                             <ComboBoxItem Content="All statuses"/>
                                             <ComboBoxItem Content="Active"/>
                                             <ComboBoxItem Content="Low Stock"/>
                                             <ComboBoxItem Content="Sold Out"/>
                                         </ComboBox>
-                                        <ComboBox Style="{StaticResource AdminComboBoxStyle}" Width="140"
-                              SelectedValuePath="Content" SelectedValue="{Binding ListingSortBy}">
+                                        <ComboBox Style="{DynamicResource AdminComboBoxStyle}" Width="140"                              SelectedValuePath="Content" SelectedValue="{Binding ListingSortBy}">
                                             <ComboBoxItem Content="Newest"/>
                                             <ComboBoxItem Content="Oldest"/>
                                             <ComboBoxItem Content="Highest Price"/>
@@ -320,8 +325,8 @@
                            Margin="0,0,0,8" Foreground="#64748B"/>
 
                                     <DataGrid Grid.Row="3"
-                          Style="{StaticResource AdminDataGridStyle}"
-                          ItemsSource="{Binding ListingsView}"
+                          Style="{DynamicResource AdminDataGridStyle}"
+                                              ItemsSource="{Binding ListingsView}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
                           CanUserAddRows="False">
@@ -350,7 +355,15 @@
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </Grid>
-                                
+                                <!-- PAYMENTS MODULE -->
+                                <Grid x:Name="PaymentsModuleGrid" Visibility="Collapsed">
+                                    <views:AdminManagePaymentsView/>
+                                </Grid>
+
+                                <!-- ACTIVITY LOG MODULE -->
+                                <Grid x:Name="ActivityLogModuleGrid" Visibility="Collapsed">
+                                    <views:AdminActivityLogsView/>
+                                </Grid>
 
                             </Grid>
                         </Border>

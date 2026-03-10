@@ -164,6 +164,7 @@ namespace Marketplace_System.Views
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            ShowSection(AdminSection.Dashboard);
             await LoadAdminDataAsync();
         }
 
@@ -229,7 +230,8 @@ namespace Marketplace_System.Views
                 DashboardSummary = $"{TotalUsers} users • {TotalListings} listings • {ActiveOrders} active orders";
 
                 await LoadDashboardActivityLogsAsync();
-
+                UserTableSummary = $"{_users.Count} users";
+                ListingTableSummary = $"{_listings.Count} listings";
                 _usersView.Refresh();
                 _listingsView.Refresh();
             }
@@ -281,6 +283,87 @@ namespace Marketplace_System.Views
                 _listingsView.SortDescriptions.Add(new SortDescription(nameof(AdminListingRow.CreatedAt), ListSortDirection.Ascending));
         }
 
+        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            await LoadAdminDataAsync();
+        }
+
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            var loginWindow = new LoginWindow();
+            loginWindow.Show();
+            Close();
+        }
+
+        private void DashboardButton_Click(object sender, RoutedEventArgs e)
+        {
+            DashboardGrid.Visibility = Visibility.Visible;
+            ModuleContentGrid.Visibility = Visibility.Collapsed;
+            SetActiveSidebarButton(DashboardButton);
+        }
+
+        private void ManageUsersButton_Click(object sender, RoutedEventArgs e)
+        {
+            DashboardGrid.Visibility = Visibility.Collapsed;
+            ModuleContentGrid.Visibility = Visibility.Visible;
+            UsersModuleGrid.Visibility = Visibility.Visible;
+            ListingsModuleGrid.Visibility = Visibility.Collapsed;
+            PaymentsModuleGrid.Visibility = Visibility.Collapsed;
+            ActivityLogModuleGrid.Visibility = Visibility.Collapsed;
+            SetActiveSidebarButton(ManageUsersButton);
+        }
+
+        private void ManageListingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            DashboardGrid.Visibility = Visibility.Collapsed;
+            ModuleContentGrid.Visibility = Visibility.Visible;
+            UsersModuleGrid.Visibility = Visibility.Collapsed;
+            ListingsModuleGrid.Visibility = Visibility.Visible;
+            PaymentsModuleGrid.Visibility = Visibility.Collapsed;
+            ActivityLogModuleGrid.Visibility = Visibility.Collapsed;
+            SetActiveSidebarButton(ManageListingsButton);
+        }
+
+        private void ManagePaymentsButton_Click(object sender, RoutedEventArgs e)
+        {
+            DashboardGrid.Visibility = Visibility.Collapsed;
+            ModuleContentGrid.Visibility = Visibility.Visible;
+            UsersModuleGrid.Visibility = Visibility.Collapsed;
+            ListingsModuleGrid.Visibility = Visibility.Collapsed;
+            PaymentsModuleGrid.Visibility = Visibility.Visible;
+            ActivityLogModuleGrid.Visibility = Visibility.Collapsed;
+            SetActiveSidebarButton(ManagePaymentsButton);
+        }
+
+        private void ActivityLogButton_Click(object sender, RoutedEventArgs e)
+        {
+            DashboardGrid.Visibility = Visibility.Collapsed;
+            ModuleContentGrid.Visibility = Visibility.Visible;
+            UsersModuleGrid.Visibility = Visibility.Collapsed;
+            ListingsModuleGrid.Visibility = Visibility.Collapsed;
+            PaymentsModuleGrid.Visibility = Visibility.Collapsed;
+            ActivityLogModuleGrid.Visibility = Visibility.Visible;
+            SetActiveSidebarButton(ActivityLogButton);
+        }
+
+        private void SetActiveSidebarButton(Button activeButton)
+        {
+            var buttons = new[]
+            {
+                DashboardButton,
+                ManageUsersButton,
+                ManageListingsButton,
+                ManagePaymentsButton,
+                ActivityLogButton
+            };
+
+            foreach (var button in buttons)
+            {
+                button.Background = button == activeButton
+                    ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2D3F4B"))
+                    : Brushes.Transparent;
+            }
+        }
         private async Task LoadDashboardActivityLogsAsync()
         {
             var logs = await _activityLogService.GetRecentAsync(30);
@@ -300,7 +383,60 @@ namespace Marketplace_System.Views
 
             ActivityLogSummary = $"{_activityLogs.Count} recent activities";
         }
+        private enum AdminSection
+        {
+            Dashboard,
+            Users,
+            Listings,
+            Payments,
+            ActivityLogs
+        }
 
+        private void ShowSection(AdminSection section)
+        {
+            DashboardGrid.Visibility = section == AdminSection.Dashboard ? Visibility.Visible : Visibility.Collapsed;
+            ModuleContentGrid.Visibility = section == AdminSection.Dashboard ? Visibility.Collapsed : Visibility.Visible;
+
+            UsersModuleGrid.Visibility = section == AdminSection.Users ? Visibility.Visible : Visibility.Collapsed;
+            ListingsModuleGrid.Visibility = section == AdminSection.Listings ? Visibility.Visible : Visibility.Collapsed;
+
+            ApplySidebarSelection(section);
+
+            switch (section)
+            {
+                case AdminSection.Dashboard:
+                    PageTitleText.Text = "Dashboard";
+                    PageSubtitleText.Text = "Live platform summary";
+                    break;
+                case AdminSection.Users:
+                    PageTitleText.Text = "Manage Users";
+                    PageSubtitleText.Text = "Browse and review registered users";
+                    break;
+                case AdminSection.Listings:
+                    PageTitleText.Text = "Manage Listings";
+                    PageSubtitleText.Text = "Monitor listing inventory and status";
+                    break;
+                case AdminSection.Payments:
+                    PageTitleText.Text = "Payments";
+                    PageSubtitleText.Text = "Payments are handled in the dedicated payments view";
+                    break;
+                case AdminSection.ActivityLogs:
+                    PageTitleText.Text = "Activity Log";
+                    PageSubtitleText.Text = "Activity history is available in the dedicated activity log view";
+                    break;
+            }
+        }
+
+        private void ApplySidebarSelection(AdminSection section)
+        {
+            DashboardButton.Background = section == AdminSection.Dashboard ? new SolidColorBrush(Color.FromRgb(0x2D, 0x3F, 0x4B)) : Brushes.Transparent;
+            ManageUsersButton.Background = section == AdminSection.Users ? new SolidColorBrush(Color.FromRgb(0x2D, 0x3F, 0x4B)) : Brushes.Transparent;
+            ManageListingsButton.Background = section == AdminSection.Listings ? new SolidColorBrush(Color.FromRgb(0x2D, 0x3F, 0x4B)) : Brushes.Transparent;
+            ManagePaymentsButton.Background = section == AdminSection.Payments ? new SolidColorBrush(Color.FromRgb(0x2D, 0x3F, 0x4B)) : Brushes.Transparent;
+            ActivityLogButton.Background = section == AdminSection.ActivityLogs ? new SolidColorBrush(Color.FromRgb(0x2D, 0x3F, 0x4B)) : Brushes.Transparent;
+        }
+
+      
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
             if (Equals(field, value))
@@ -336,6 +472,18 @@ namespace Marketplace_System.Views
             public decimal Revenue { get; init; }
             public string Status { get; init; } = "Active";
             public DateTime CreatedAt { get; init; }
+            public Brush StatusBackground => Status switch
+            {
+                "Sold Out" => new SolidColorBrush(Color.FromRgb(0xFE, 0xE2, 0xE2)),
+                "Low Stock" => new SolidColorBrush(Color.FromRgb(0xFE, 0xF3, 0xC7)),
+                _ => new SolidColorBrush(Color.FromRgb(0xDC, 0xFC, 0xE7))
+            };
+            public Brush StatusForeground => Status switch
+            {
+                "Sold Out" => new SolidColorBrush(Color.FromRgb(0x99, 0x1B, 0x1B)),
+                "Low Stock" => new SolidColorBrush(Color.FromRgb(0x92, 0x4, 0x0E)),
+                _ => new SolidColorBrush(Color.FromRgb(0x16, 0x65, 0x34))
+            };
         }
     }
 }
