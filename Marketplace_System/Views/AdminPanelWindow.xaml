@@ -8,30 +8,15 @@
         MinWidth="1024"
         WindowStartupLocation="CenterScreen"
         Background="#F5F7FA"
-        WindowStyle="SingleBorderWindow"
-        ResizeMode="CanResize">
+        Loaded="Window_Loaded">
 
     <Window.Resources>
-        <!-- Colors -->
-        <Color x:Key="PrimaryColor">#0F5132</Color>
-        <Color x:Key="PrimaryLightColor">#E8F3E9</Color>
-        <Color x:Key="SecondaryColor">#2D6A4F</Color>
-        <Color x:Key="AccentColor">#40916C</Color>
-        <Color x:Key="TextPrimaryColor">#1E293B</Color>
-        <Color x:Key="TextSecondaryColor">#64748B</Color>
-        <Color x:Key="BorderColor">#E2E8F0</Color>
-
-        <!-- Shadow effect for cards -->
-        <DropShadowEffect x:Key="ModuleCardShadow" 
-                          BlurRadius="12" 
-                          Opacity="0.05" 
-                          ShadowDepth="2" 
+        <DropShadowEffect x:Key="ModuleCardShadow"
+                          BlurRadius="12"
+                          Opacity="0.05"
+                          ShadowDepth="2"
                           Color="#000000"/>
 
-        <!-- Converters -->
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-
-        <!-- Styles -->
         <Style x:Key="SidebarButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="44"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -44,20 +29,17 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" 
+                        <Border x:Name="border"
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="6"
                                 Margin="6,2">
                             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                            VerticalAlignment="Center"
-                                            Margin="{TemplateBinding Padding}"/>
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="#1A2E3A"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#2D3F4B"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -75,16 +57,13 @@
         </Style>
     </Window.Resources>
 
-    <!-- Main Grid -->
     <Grid Background="#F5F7FA">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Sidebar - No Scrollbar -->
-        <Border Grid.Column="0" 
-                Background="#1A2A36">
+        <Border Grid.Column="0" Background="#1A2A36">
             <Grid Margin="0,16,0,16">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -92,388 +71,174 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Logo Section -->
                 <StackPanel Grid.Row="0" Margin="20,0,20,24">
-                    <TextBlock Text="🌾 FarmHub" 
-                               FontSize="22" 
-                               FontWeight="SemiBold" 
-                               Foreground="White"
-                               FontFamily="Segoe UI"/>
-                    <TextBlock Text="Admin Portal" 
-                               FontSize="13" 
-                               Foreground="#94A3B8"
-                               Margin="0,2,0,0"/>
+                    <TextBlock Text="🌾 FarmHub" FontSize="22" FontWeight="SemiBold" Foreground="White"/>
+                    <TextBlock Text="Admin Portal" FontSize="13" Foreground="#94A3B8" Margin="0,2,0,0"/>
                 </StackPanel>
 
-                <!-- Navigation Menu - Fixed height to fit all items without scrolling -->
-                <StackPanel Grid.Row="1" Margin="0,0,0,0">
-                    <!-- Dashboard -->
-                    <Button x:Name="DashboardButton" 
-                            Style="{StaticResource SidebarButtonStyle}"
-                            Click="DashboardButton_Click"
-                            Background="#2D3F4B"
-                            Height="40">
+                <StackPanel Grid.Row="1">
+                    <Button x:Name="DashboardButton" Style="{StaticResource SidebarButtonStyle}" Click="DashboardButton_Click" Background="#2D3F4B">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="📊" FontSize="18" Margin="0,0,10,0"/>
                             <TextBlock Text="Dashboard" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
-                    <!-- User Management Group -->
-                    <TextBlock Text="USER MANAGEMENT" 
-                               Foreground="#64748B" 
-                               FontSize="11" 
-                               FontWeight="SemiBold"
-                               Margin="20,16,0,6"/>
-
-                    <Button x:Name="ManageUsersButton" 
-                            Style="{StaticResource SidebarButtonStyle}"
-                            Click="ManageUsersButton_Click"
-                            Height="38">
+                    <TextBlock Text="USER MANAGEMENT" Foreground="#64748B" FontSize="11" FontWeight="SemiBold" Margin="20,16,0,6"/>
+                    <Button x:Name="ManageUsersButton" Style="{StaticResource SidebarButtonStyle}" Click="ManageUsersButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="👥" FontSize="18" Margin="0,0,10,0"/>
                             <TextBlock Text="Manage Users" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
-                    <Button x:Name="UserGridButton" 
-                            Style="{StaticResource SidebarButtonStyle}"
-                            Click="UserGridButton_Click"
-                            Height="38">
+                    <Button x:Name="UserGridButton" Style="{StaticResource SidebarButtonStyle}" Click="UserGridButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="📋" FontSize="18" Margin="0,0,10,0"/>
-                            <TextBlock Text="User Grid View" FontSize="13" VerticalAlignment="Center"/>
+                            <TextBlock Text="User Grid" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
-                    <!-- Product Management Group -->
-                    <TextBlock Text="PRODUCTS &#38; SALES" 
-                               Foreground="#64748B" 
-                               FontSize="11" 
-                               FontWeight="SemiBold"
-                               Margin="20,16,0,6"/>
-
-                    <Button x:Name="ManageListingsButton" 
-                            Style="{StaticResource SidebarButtonStyle}"
-                            Click="ManageListingsButton_Click"
-                            Height="38">
+                    <TextBlock Text="PLATFORM" Foreground="#64748B" FontSize="11" FontWeight="SemiBold" Margin="20,16,0,6"/>
+                    <Button x:Name="ManageListingsButton" Style="{StaticResource SidebarButtonStyle}" Click="ManageListingsButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="📦" FontSize="18" Margin="0,0,10,0"/>
-                            <TextBlock Text="Product Listings" FontSize="13" VerticalAlignment="Center"/>
+                            <TextBlock Text="Manage Listings" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-
-                    <Button x:Name="ManagePaymentsButton" 
-                            Style="{StaticResource SidebarButtonStyle}"
-                            Click="ManagePaymentsButton_Click"
-                            Height="38">
+                    <Button x:Name="ManagePaymentsButton" Style="{StaticResource SidebarButtonStyle}" Click="ManagePaymentsButton_Click">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="💰" FontSize="18" Margin="0,0,10,0"/>
-                            <TextBlock Text="Payment Records" FontSize="13" VerticalAlignment="Center"/>
+                            <TextBlock Text="💳" FontSize="18" Margin="0,0,10,0"/>
+                            <TextBlock Text="Payments" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-
-                    <!-- Communications Group -->
-                    <TextBlock Text="COMMUNICATIONS" 
-                               Foreground="#64748B" 
-                               FontSize="11" 
-                               FontWeight="SemiBold"
-                               Margin="20,16,0,6"/>
-
-                    <Button x:Name="SendMessagesButton" 
-                            Style="{StaticResource SidebarButtonStyle}"
-                            Click="SendMessagesButton_Click"
-                            Height="38">
+                    <Button x:Name="SendMessagesButton" Style="{StaticResource SidebarButtonStyle}" Click="SendMessagesButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="📨" FontSize="18" Margin="0,0,10,0"/>
-                            <TextBlock Text="Send Messages" FontSize="13" VerticalAlignment="Center"/>
+                            <TextBlock Text="Messages" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-
-                    <Button x:Name="ActivityLogButton" 
-                            Style="{StaticResource SidebarButtonStyle}"
-                            Click="ActivityLogButton_Click"
-                            Height="38">
+                    <Button x:Name="ActivityLogButton" Style="{StaticResource SidebarButtonStyle}" Click="ActivityLogButton_Click">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="📜" FontSize="18" Margin="0,0,10,0"/>
+                            <TextBlock Text="🧾" FontSize="18" Margin="0,0,10,0"/>
                             <TextBlock Text="Activity Log" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
 
-                <!-- Footer Section -->
                 <StackPanel Grid.Row="2" Margin="20,0,20,0">
                     <Border Height="1" Background="#334454" Margin="0,0,0,12"/>
-
-                    <Button x:Name="LogoutButton"
-                            Style="{StaticResource SidebarButtonStyle}"
-                            Click="LogoutButton_Click"
-                            Height="38">
+                    <Button x:Name="LogoutButton" Style="{StaticResource SidebarButtonStyle}" Click="LogoutButton_Click" Height="38">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="🚪" FontSize="18" Margin="0,0,10,0"/>
                             <TextBlock Text="Logout" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-
-                    <TextBlock Text="v1.0.0" 
-                               Foreground="#475569" 
-                               FontSize="10"
-                               Margin="20,8,0,4"/>
                 </StackPanel>
             </Grid>
         </Border>
 
-        <!-- Main Content Area -->
-        <ScrollViewer Grid.Column="1" 
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled"
-                      Background="#F5F7FA">
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Grid Margin="20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Header -->
-                <Border Grid.Row="0" 
-                        Background="White" 
-                        CornerRadius="10" 
-                        Padding="16" 
-                        Margin="0,0,0,16"
-                        Effect="{StaticResource ModuleCardShadow}">
+                <Border Grid.Row="0" Background="White" CornerRadius="10" Padding="16" Margin="0,0,0,16" Effect="{StaticResource ModuleCardShadow}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Column="0">
-                            <TextBlock x:Name="PageTitleText" 
-                                       Text="Dashboard" 
-                                       FontSize="22" 
-                                       FontWeight="SemiBold" 
-                                       Foreground="#1E293B"/>
-                            <TextBlock x:Name="PageSubtitleText" 
-                                       Text="Welcome back, Admin" 
-                                       Margin="0,2,0,0" 
-                                       Foreground="#64748B" 
-                                       FontSize="12"/>
+                        <StackPanel>
+                            <TextBlock x:Name="PageTitleText" Text="Dashboard" FontSize="22" FontWeight="SemiBold" Foreground="#1E293B"/>
+                            <TextBlock x:Name="PageSubtitleText" Text="Live platform summary" Margin="0,2,0,0" Foreground="#64748B" FontSize="12"/>
                         </StackPanel>
 
-                        <!-- Admin Profile -->
-                        <Border Grid.Column="1" 
-                                Background="#F1F5F9" 
-                                CornerRadius="24" 
-                                Padding="8,4">
-                            <StackPanel Orientation="Horizontal">
-                                <Border Background="#0F5132" 
-                                        Width="26" 
-                                        Height="26" 
-                                        CornerRadius="13"
-                                        Margin="0,0,6,0">
-                                    <TextBlock Text="A" 
-                                               Foreground="White" 
-                                               FontSize="13" 
-                                               FontWeight="SemiBold"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"/>
-                                </Border>
-                                <StackPanel>
-                                    <TextBlock Text="Administrator" 
-                                               FontSize="11" 
-                                               FontWeight="SemiBold" 
-                                               Foreground="#1E293B"/>
-                                    <TextBlock Text="Online" 
-                                               FontSize="9" 
-                                               Foreground="#2D6A4F"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
+                        <Button Grid.Column="1" Content="Refresh data" Padding="12,6" FontSize="12" Click="RefreshButton_Click"/>
                     </Grid>
                 </Border>
 
-                <!-- Dynamic Content Area -->
                 <Grid Grid.Row="1">
-
-                    <!-- Dashboard Modules Grid -->
-                    <Grid x:Name="DashboardGrid" Visibility="Visible">
+                    <Grid x:Name="DashboardGrid">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Stats Cards -->
-                        <WrapPanel Grid.Row="0" Margin="0,0,0,20">
-                            <Border Style="{StaticResource ModuleCardStyle}" Width="190" Margin="0,0,10,10">
+                        <UniformGrid Columns="4" Margin="0,0,0,16">
+                            <Border Style="{StaticResource ModuleCardStyle}" Margin="0,0,10,0">
                                 <StackPanel>
-                                    <TextBlock Text="👥" FontSize="24" Margin="0,0,0,4"/>
-                                    <TextBlock Text="Total Users" Foreground="#64748B" FontSize="11"/>
-                                    <TextBlock Text="1,284" FontSize="20" FontWeight="Light" Foreground="#0F5132" Margin="0,4,0,0"/>
-                                    <TextBlock Text="↑ 12% this month" Foreground="#2D6A4F" FontSize="9" Margin="0,2,0,0"/>
+                                    <TextBlock Text="Users" Foreground="#64748B" FontSize="12"/>
+                                    <TextBlock Text="{Binding TotalUsers}" FontSize="26" FontWeight="SemiBold" Foreground="#0F5132"/>
                                 </StackPanel>
                             </Border>
-
-                            <Border Style="{StaticResource ModuleCardStyle}" Width="190" Margin="0,0,10,10">
+                            <Border Style="{StaticResource ModuleCardStyle}" Margin="0,0,10,0">
                                 <StackPanel>
-                                    <TextBlock Text="📦" FontSize="24" Margin="0,0,0,4"/>
-                                    <TextBlock Text="Active Listings" Foreground="#64748B" FontSize="11"/>
-                                    <TextBlock Text="456" FontSize="20" FontWeight="Light" Foreground="#0F5132" Margin="0,4,0,0"/>
-                                    <TextBlock Text="32 pending review" Foreground="#EAB308" FontSize="9" Margin="0,2,0,0"/>
+                                    <TextBlock Text="Listings" Foreground="#64748B" FontSize="12"/>
+                                    <TextBlock Text="{Binding TotalListings}" FontSize="26" FontWeight="SemiBold" Foreground="#0F5132"/>
                                 </StackPanel>
                             </Border>
-
-                            <Border Style="{StaticResource ModuleCardStyle}" Width="190" Margin="0,0,10,10">
+                            <Border Style="{StaticResource ModuleCardStyle}" Margin="0,0,10,0">
                                 <StackPanel>
-                                    <TextBlock Text="💰" FontSize="24" Margin="0,0,0,4"/>
-                                    <TextBlock Text="Revenue (MTD)" Foreground="#64748B" FontSize="11"/>
-                                    <TextBlock Text="₱124.5K" FontSize="20" FontWeight="Light" Foreground="#0F5132" Margin="0,4,0,0"/>
-                                    <TextBlock Text="↑ 8.3% vs last month" Foreground="#2D6A4F" FontSize="9" Margin="0,2,0,0"/>
+                                    <TextBlock Text="Active Orders" Foreground="#64748B" FontSize="12"/>
+                                    <TextBlock Text="{Binding ActiveOrders}" FontSize="26" FontWeight="SemiBold" Foreground="#0F5132"/>
                                 </StackPanel>
                             </Border>
-                        </WrapPanel>
-
-                        <!-- Section Title -->
-                        <TextBlock Grid.Row="1" 
-                                   Text="Quick Access Modules" 
-                                   FontSize="15" 
-                                   FontWeight="SemiBold" 
-                                   Foreground="#1E293B"
-                                   Margin="0,4,0,12"/>
-
-                        <!-- Main Modules Grid -->
-                        <UniformGrid Grid.Row="2" 
-                                     Columns="3" 
-                                     Rows="2"
-                                     Margin="0,0,0,0">
-
-                            <!-- Manage Users Module -->
-                            <Border Style="{StaticResource ModuleCardStyle}" 
-                                    Margin="0,0,10,10" 
-                                    Cursor="Hand"
-                                    MouseLeftButtonUp="ManageUsersButton_Click">
+                            <Border Style="{StaticResource ModuleCardStyle}">
                                 <StackPanel>
-                                    <TextBlock Text="👥" FontSize="28" Margin="0,0,0,6"/>
-                                    <TextBlock Text="Manage Users" FontSize="14" FontWeight="SemiBold" Foreground="#1E293B"/>
-                                    <TextBlock Text="Suspend, verify, and update buyer/seller accounts" 
-                                               Margin="0,4,0,0" 
-                                               Foreground="#64748B" 
-                                               TextWrapping="Wrap"
-                                               FontSize="11"
-                                               Height="45"/>
-                                    <Border Background="#F1F5F9" 
-                                            CornerRadius="12" 
-                                            Padding="6,3" 
-                                            Margin="0,10,0,0"
-                                            HorizontalAlignment="Left">
-                                        <TextBlock Text="24 new requests" Foreground="#0F5132" FontSize="9"/>
-                                    </Border>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Product Listings Module -->
-                            <Border Style="{StaticResource ModuleCardStyle}" 
-                                    Margin="0,0,10,10"
-                                    Cursor="Hand"
-                                    MouseLeftButtonUp="ManageListingsButton_Click">
-                                <StackPanel>
-                                    <TextBlock Text="📦" FontSize="28" Margin="0,0,0,6"/>
-                                    <TextBlock Text="Product Listings" FontSize="14" FontWeight="SemiBold" Foreground="#1E293B"/>
-                                    <TextBlock Text="Review, edit, or deactivate posted products" 
-                                               Margin="0,4,0,0" 
-                                               Foreground="#64748B" 
-                                               TextWrapping="Wrap"
-                                               FontSize="11"
-                                               Height="45"/>
-                                    <Border Background="#F1F5F9" 
-                                            CornerRadius="12" 
-                                            Padding="6,3" 
-                                            Margin="0,10,0,0"
-                                            HorizontalAlignment="Left">
-                                        <TextBlock Text="32 pending review" Foreground="#EAB308" FontSize="9"/>
-                                    </Border>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Sales Dashboard Module -->
-
-                            <!-- Payment Records Module -->
-                            <Border Style="{StaticResource ModuleCardStyle}" 
-                                    Margin="0,0,10,0"
-                                    Cursor="Hand"
-                                    MouseLeftButtonUp="ManagePaymentsButton_Click">
-                                <StackPanel>
-                                    <TextBlock Text="💰" FontSize="28" Margin="0,0,0,6"/>
-                                    <TextBlock Text="Payment Records" FontSize="14" FontWeight="SemiBold" Foreground="#1E293B"/>
-                                    <TextBlock Text="Review payment records and settlement statuses" 
-                                               Margin="0,4,0,0" 
-                                               Foreground="#64748B" 
-                                               TextWrapping="Wrap"
-                                               FontSize="11"
-                                               Height="45"/>
-                                    <Border Background="#F1F5F9" 
-                                            CornerRadius="12" 
-                                            Padding="6,3" 
-                                            Margin="0,10,0,0"
-                                            HorizontalAlignment="Left">
-                                        <TextBlock Text="18 pending" Foreground="#EAB308" FontSize="9"/>
-                                    </Border>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Messages Module -->
-                            <Border Style="{StaticResource ModuleCardStyle}" 
-                                    Margin="0,0,10,0"
-                                    Cursor="Hand"
-                                    MouseLeftButtonUp="SendMessagesButton_Click">
-                                <StackPanel>
-                                    <TextBlock Text="📨" FontSize="28" Margin="0,0,0,6"/>
-                                    <TextBlock Text="Send Messages" FontSize="14" FontWeight="SemiBold" Foreground="#1E293B"/>
-                                    <TextBlock Text="Send announcements and system notices to users" 
-                                               Margin="0,4,0,0" 
-                                               Foreground="#64748B" 
-                                               TextWrapping="Wrap"
-                                               FontSize="11"
-                                               Height="45"/>
-                                    <Border Background="#F1F5F9" 
-                                            CornerRadius="12" 
-                                            Padding="6,3" 
-                                            Margin="0,10,0,0"
-                                            HorizontalAlignment="Left">
-                                        <TextBlock Text="Draft 3 messages" Foreground="#0F5132" FontSize="9"/>
-                                    </Border>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Activity Log Module -->
-                            <Border Style="{StaticResource ModuleCardStyle}" 
-                                    Margin="0,0,0,0"
-                                    Cursor="Hand"
-                                    MouseLeftButtonUp="ActivityLogButton_Click">
-                                <StackPanel>
-                                    <TextBlock Text="📜" FontSize="28" Margin="0,0,0,6"/>
-                                    <TextBlock Text="Activity Log" FontSize="14" FontWeight="SemiBold" Foreground="#1E293B"/>
-                                    <TextBlock Text="Track administrative actions and sensitive events" 
-                                               Margin="0,4,0,0" 
-                                               Foreground="#64748B" 
-                                               TextWrapping="Wrap"
-                                               FontSize="11"
-                                               Height="45"/>
-                                    <Border Background="#F1F5F9" 
-                                            CornerRadius="12" 
-                                            Padding="6,3" 
-                                            Margin="0,10,0,0"
-                                            HorizontalAlignment="Left">
-                                        <TextBlock Text="128 entries today" Foreground="#0F5132" FontSize="9"/>
-                                    </Border>
+                                    <TextBlock Text="Revenue (This Month)" Foreground="#64748B" FontSize="12"/>
+                                    <TextBlock Text="{Binding RevenueThisMonth, StringFormat=C}" FontSize="26" FontWeight="SemiBold" Foreground="#0F5132"/>
                                 </StackPanel>
                             </Border>
                         </UniformGrid>
+
+                        <Border Grid.Row="1" Style="{StaticResource ModuleCardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="Snapshot" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                <TextBlock Text="{Binding DashboardSummary}" Margin="0,6,0,0" Foreground="#475569" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
                     </Grid>
 
-                    <!-- Placeholder for other views -->
                     <Grid x:Name="ModuleContentGrid" Visibility="Collapsed">
-                        <!-- Module-specific content will be loaded here -->
+                        <Border Style="{StaticResource ModuleCardStyle}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <DockPanel Grid.Row="0" Margin="0,0,0,12">
+                                    <TextBlock Text="Users" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" DockPanel.Dock="Left"/>
+                                    <TextBox Width="260" Height="30" Padding="8,4" Text="{Binding UserSearchText, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right"/>
+                                </DockPanel>
+
+                                <TextBlock Grid.Row="1" Text="{Binding UserTableSummary}" Margin="0,0,0,8" Foreground="#64748B"/>
+
+                                <DataGrid Grid.Row="2"
+                                          ItemsSource="{Binding UsersView}"
+                                          AutoGenerateColumns="False"
+                                          IsReadOnly="True"
+                                          CanUserAddRows="False"
+                                          HeadersVisibility="Column"
+                                          GridLinesVisibility="Horizontal"
+                                          RowHeaderWidth="0">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                                        <DataGridTextColumn Header="Full Name" Binding="{Binding FullName}" Width="2*"/>
+                                        <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="2*"/>
+                                        <DataGridTextColumn Header="City" Binding="{Binding City}" Width="*"/>
+                                        <DataGridTextColumn Header="Role" Binding="{Binding Role}" Width="*"/>
+                                        <DataGridTextColumn Header="Joined" Binding="{Binding CreatedAt, StringFormat=yyyy-MM-dd}" Width="*"/>
+                                        <DataGridTextColumn Header="Last Activity" Binding="{Binding LastActivityLabel}" Width="*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </Border>
                     </Grid>
                 </Grid>
             </Grid>
