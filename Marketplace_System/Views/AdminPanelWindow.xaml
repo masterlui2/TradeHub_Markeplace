@@ -92,13 +92,6 @@
                         </StackPanel>
                     </Button>
 
-                    <Button x:Name="UserGridButton" Style="{StaticResource SidebarButtonStyle}" Click="UserGridButton_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="📋" FontSize="18" Margin="0,0,10,0"/>
-                            <TextBlock Text="User Grid" FontSize="13" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-
                     <TextBlock Text="PLATFORM" Foreground="#64748B" FontSize="11" FontWeight="SemiBold" Margin="20,16,0,6"/>
                     <Button x:Name="ManageListingsButton" Style="{StaticResource SidebarButtonStyle}" Click="ManageListingsButton_Click">
                         <StackPanel Orientation="Horizontal">

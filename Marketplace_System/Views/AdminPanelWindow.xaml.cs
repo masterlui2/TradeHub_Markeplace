@@ -196,11 +196,7 @@ namespace Marketplace_System.Views
             UpdateActiveButton(ManageUsersButton);
         }
 
-        private void UserGridButton_Click(object sender, RoutedEventArgs e)
-        {
-            ShowUsersModule("User Grid", "Database-backed user records with filtering");
-            UpdateActiveButton(UserGridButton);
-        }
+       
 
         private void ManageListingsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -271,7 +267,6 @@ namespace Marketplace_System.Views
             {
                 DashboardButton,
                 ManageUsersButton,
-                UserGridButton,
                 ManageListingsButton,
                 ManagePaymentsButton,
                 SendMessagesButton,
