@@ -49,7 +49,7 @@ namespace Marketplace_System.Services
             string hashedPassword = PasswordHasher.Hash(password);
 
             return await dbContext.Users.FirstOrDefaultAsync(u =>
-                (u.Email == lookup || u.FullName.ToLower() == lookup) &&
+   ((u.Email != null && u.Email.ToLower() == lookup) || (u.FullName != null && u.FullName.ToLower() == lookup)) &&
                 u.PasswordHash == hashedPassword);
         }
         private static bool IsStrongPassword(string password)

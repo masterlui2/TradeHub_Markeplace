@@ -46,7 +46,24 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="ToolbarButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Background" Value="#F8FAFC"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
 
+        <Style x:Key="RowActionButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="34"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="Background" Value="#F8FAFC"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
         <Style x:Key="ModuleCardStyle" TargetType="Border">
             <Setter Property="Background" Value="White"/>
             <Setter Property="CornerRadius" Value="12"/>
@@ -54,6 +71,51 @@
             <Setter Property="BorderBrush" Value="#E2E8F0"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Effect" Value="{StaticResource ModuleCardShadow}"/>
+        </Style>
+        <Style x:Key="AdminComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+
+        <Style x:Key="AdminDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="RowBackground" Value="Transparent"/>
+            <Setter Property="AlternatingRowBackground" Value="#F8FAFC"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#E2E8F0"/>
+            <Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
+            <Setter Property="RowHeaderWidth" Value="0"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+            <Setter Property="CanUserReorderColumns" Value="False"/>
+            <Setter Property="CanUserSortColumns" Value="True"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#F8FAFC"/>
+                        <Setter Property="Foreground" Value="#334155"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="BorderBrush" Value="#E2E8F0"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        <Setter Property="Padding" Value="10,8"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="CellStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="10,8"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Foreground" Value="#0F172A"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
@@ -199,37 +261,114 @@
                     <Grid x:Name="ModuleContentGrid" Visibility="Collapsed">
                         <Border Style="{StaticResource ModuleCardStyle}">
                             <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
+                                <!-- USERS MODULE -->
+                                <Grid x:Name="UsersModuleGrid">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
 
-                                <DockPanel Grid.Row="0" Margin="0,0,0,12">
-                                    <TextBlock Text="Users" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" DockPanel.Dock="Left"/>
-                                    <TextBox Width="260" Height="30" Padding="8,4" Text="{Binding UserSearchText, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right"/>
-                                </DockPanel>
+                                    <DockPanel Grid.Row="0" Margin="0,0,0,12">
+                                        <TextBlock Text="Users" FontSize="16" FontWeight="SemiBold"
+                               Foreground="#1E293B" DockPanel.Dock="Left"/>
+                                        <TextBox Width="260" Height="34" Padding="10,4"
+                             Text="{Binding UserSearchText, UpdateSourceTrigger=PropertyChanged}"
+                             DockPanel.Dock="Right"/>
+                                    </DockPanel>
 
-                                <TextBlock Grid.Row="1" Text="{Binding UserTableSummary}" Margin="0,0,0,8" Foreground="#64748B"/>
+                                    <TextBlock Grid.Row="1"
+                           Text="{Binding UserTableSummary}"
+                           Margin="0,0,0,8"
+                           Foreground="#64748B"/>
 
-                                <DataGrid Grid.Row="2"
-                                          ItemsSource="{Binding UsersView}"
-                                          AutoGenerateColumns="False"
-                                          IsReadOnly="True"
-                                          CanUserAddRows="False"
-                                          HeadersVisibility="Column"
-                                          GridLinesVisibility="Horizontal"
-                                          RowHeaderWidth="0">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
-                                        <DataGridTextColumn Header="Full Name" Binding="{Binding FullName}" Width="2*"/>
-                                        <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="2*"/>
-                                        <DataGridTextColumn Header="City" Binding="{Binding City}" Width="*"/>
-                                        <DataGridTextColumn Header="Role" Binding="{Binding Role}" Width="*"/>
-                                        <DataGridTextColumn Header="Joined" Binding="{Binding CreatedAt, StringFormat=yyyy-MM-dd}" Width="*"/>
-                                        <DataGridTextColumn Header="Last Activity" Binding="{Binding LastActivityLabel}" Width="*"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>
+                                    <DataGrid Grid.Row="2"
+                          Style="{StaticResource AdminDataGridStyle}"
+                          ItemsSource="{Binding UsersView}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="70"/>
+                                            <DataGridTextColumn Header="Full Name" Binding="{Binding FullName}" Width="2*"/>
+                                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="2*"/>
+                                            <DataGridTextColumn Header="City" Binding="{Binding City}" Width="*"/>
+                                            <DataGridTextColumn Header="Role" Binding="{Binding Role}" Width="*"/>
+                                            <DataGridTextColumn Header="Joined" Binding="{Binding CreatedAt, StringFormat=yyyy-MM-dd}" Width="*"/>
+                                            <DataGridTextColumn Header="Last Activity" Binding="{Binding LastActivityLabel}" Width="*"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+
+                                <!-- LISTINGS MODULE -->
+                                <Grid x:Name="ListingsModuleGrid" Visibility="Collapsed">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <DockPanel Grid.Row="0" Margin="0,0,0,12">
+                                        <TextBlock Text="Listings" FontSize="18" FontWeight="SemiBold"
+                               Foreground="#0F172A" DockPanel.Dock="Left"/>
+                                        <TextBox Width="260" Height="34" Padding="10,4"
+                             Text="{Binding ListingSearchText, UpdateSourceTrigger=PropertyChanged}"
+                             DockPanel.Dock="Right"/>
+                                    </DockPanel>
+
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+                                        <ComboBox Style="{StaticResource AdminComboBoxStyle}" Width="150"
+                              SelectedValuePath="Content" SelectedValue="{Binding ListingStatusFilter}">
+                                            <ComboBoxItem Content="All statuses"/>
+                                            <ComboBoxItem Content="Active"/>
+                                            <ComboBoxItem Content="Low Stock"/>
+                                            <ComboBoxItem Content="Sold Out"/>
+                                        </ComboBox>
+                                        <ComboBox Style="{StaticResource AdminComboBoxStyle}" Width="140"
+                              SelectedValuePath="Content" SelectedValue="{Binding ListingSortBy}">
+                                            <ComboBoxItem Content="Newest"/>
+                                            <ComboBoxItem Content="Oldest"/>
+                                            <ComboBoxItem Content="Highest Price"/>
+                                            <ComboBoxItem Content="Lowest Stock"/>
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Row="2" Text="{Binding ListingTableSummary}"
+                           Margin="0,0,0,8" Foreground="#64748B"/>
+
+                                    <DataGrid Grid.Row="3"
+                          Style="{StaticResource AdminDataGridStyle}"
+                          ItemsSource="{Binding ListingsView}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="70"/>
+                                            <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="2*"/>
+                                            <DataGridTextColumn Header="Seller" Binding="{Binding SellerName}" Width="*"/>
+                                            <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="*"/>
+                                            <DataGridTextColumn Header="Price/kg" Binding="{Binding PricePerKilo, StringFormat=C}" Width="*"/>
+                                            <DataGridTextColumn Header="Stock" Binding="{Binding AvailableKilos}" Width="80"/>
+                                            <DataGridTextColumn Header="Sold" Binding="{Binding SoldKilos}" Width="80"/>
+                                            <DataGridTemplateColumn Header="Status" Width="120">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Border Background="{Binding StatusBackground}" CornerRadius="12"
+                                            Padding="10,4" HorizontalAlignment="Left">
+                                                            <TextBlock Text="{Binding Status}"
+                                                   Foreground="{Binding StatusForeground}"
+                                                   FontWeight="SemiBold" FontSize="12"/>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Revenue" Binding="{Binding Revenue, StringFormat=C}" Width="*"/>
+                                            <DataGridTextColumn Header="Joined" Binding="{Binding CreatedAt, StringFormat=\{0:yyyy-MM-dd\}}" Width="*"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+
                             </Grid>
                         </Border>
                     </Grid>

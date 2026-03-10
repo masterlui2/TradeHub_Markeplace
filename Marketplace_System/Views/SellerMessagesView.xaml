@@ -230,10 +230,18 @@
                     <ItemsControl x:Name="MessagesItemsControl">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <DockPanel Margin="0,0,0,8"
-                                           HorizontalAlignment="{Binding HorizontalAlignment}">
-                                    <Border Style="{StaticResource ProfileIconContainerStyle}"
-                                            Margin="0,0,8,0">
+                                <Grid Margin="0,0,0,8"
+                                      HorizontalAlignment="{Binding MessageAlignment}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0"
+                                            Style="{StaticResource ProfileIconContainerStyle}"
+                                            Margin="0,0,8,0"
+                                            Visibility="{Binding LeftProfileVisibility}">
                                         <TextBlock Text="&#xE77B;"
                                                    FontFamily="Segoe MDL2 Assets"
                                                    Foreground="{StaticResource PrimaryBrush}"
@@ -241,7 +249,8 @@
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"/>
                                     </Border>
-                                    <Border Style="{StaticResource MessageBubbleStyle}"
+                                    <Border Grid.Column="1"
+                                            Style="{StaticResource MessageBubbleStyle}"
                                             Margin="0"
                                             Background="{Binding BubbleColor}">
                                         <StackPanel>
@@ -257,7 +266,18 @@
                                                        Margin="0,6,0,0"/>
                                         </StackPanel>
                                     </Border>
-                                </DockPanel>
+                                    <Border Grid.Column="2"
+                                            Style="{StaticResource ProfileIconContainerStyle}"
+                                            Margin="8,0,0,0"
+                                            Visibility="{Binding RightProfileVisibility}">
+                                        <TextBlock Text="&#xE77B;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   Foreground="{StaticResource PrimaryBrush}"
+                                                   FontSize="13"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

@@ -33,6 +33,7 @@ namespace Marketplace_System.Views
 
             try
             {
+                SessionManager.Clear();
                 if (string.Equals(username, AdminUsername, StringComparison.OrdinalIgnoreCase) &&
                  password == AdminPassword)
                 {
