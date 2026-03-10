@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="Marketplace_System.Views.AdminManagePaymentsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="500" d:DesignWidth="1000">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" Margin="0,0,0,12">
+            <TextBlock Text="Payments from Orders" FontSize="18" FontWeight="SemiBold" Foreground="#0F172A" DockPanel.Dock="Left"/>
+            <TextBox Width="260" Height="34" Padding="10,4" Text="{Binding PaymentSearchText, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right"/>
+        </DockPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+            <ComboBox Style="{DynamicResource AdminComboBoxStyle}" Width="160" SelectedValuePath="Content" SelectedValue="{Binding PaymentStatusFilter}">
+                <ComboBoxItem Content="All statuses"/>
+                <ComboBoxItem Content="Pending"/>
+                <ComboBoxItem Content="Paid"/>
+                <ComboBoxItem Content="Failed"/>
+                <ComboBoxItem Content="Refunded"/>
+            </ComboBox>
+        </StackPanel>
+
+        <TextBlock Grid.Row="2" Text="{Binding PaymentTableSummary}" Margin="0,0,0,8" Foreground="#64748B"/>
+
+        <DataGrid Grid.Row="3" Style="{DynamicResource AdminDataGridStyle}" ItemsSource="{Binding PaymentsView}" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Order ID" Binding="{Binding OrderNumber}" Width="*"/>
+                <DataGridTextColumn Header="Buyer" Binding="{Binding BuyerName}" Width="*"/>
+                <DataGridTextColumn Header="Seller" Binding="{Binding SellerName}" Width="*"/>
+                <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat=C}" Width="*"/>
+                <DataGridTextColumn Header="Method" Binding="{Binding Method}" Width="*"/>
+                <DataGridTemplateColumn Header="Status" Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border Background="{Binding StatusBackground}" CornerRadius="12" Padding="10,4" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding Status}" Foreground="{Binding StatusForeground}" FontWeight="SemiBold" FontSize="12"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=yyyy-MM-dd HH:mm}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
