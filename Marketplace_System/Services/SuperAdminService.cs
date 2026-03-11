@@ -40,7 +40,7 @@ namespace Marketplace_System.Services
                 .Select(p => new RecentTransactionRow
                 {
                     ReferenceNumber = p.ReferenceNumber,
-                    OrderNumber = p.OrderNumber,
+                    OrderNumber = p.OrderNumber,   // ← add this
                     PayerName = p.PayerName,
                     Amount = p.Amount,
                     Status = p.Status,
@@ -84,7 +84,6 @@ namespace Marketplace_System.Services
                         Email = u.Email,
                         MobileNumber = u.MobileNumber,
                         City = u.City,
-                        IsSuspended = u.IsSuspended,
                         CreatedAt = u.CreatedAt
                     }).ToListAsync();
             }
@@ -98,7 +97,6 @@ namespace Marketplace_System.Services
                         Email = u.Email,
                         MobileNumber = u.MobileNumber,
                         City = u.City,
-                        IsSuspended = false,
                         CreatedAt = u.CreatedAt
                     }).ToListAsync();
             }
@@ -150,7 +148,6 @@ namespace Marketplace_System.Services
             try
             {
                 var user = await db.Users.FirstAsync(u => u.Id == userId);
-                user.IsSuspended = isSuspended;
                 await db.SaveChangesAsync();
             }
             catch (SqlException ex) when (IsMissingIsSuspendedColumn(ex))

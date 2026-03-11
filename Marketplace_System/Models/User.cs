@@ -26,7 +26,6 @@ namespace Marketplace_System.Models
         [Required]
         [MaxLength(256)]
         public string PasswordHash { get; set; } = string.Empty;
-        public bool IsSuspended { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

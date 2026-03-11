@@ -91,7 +91,7 @@ namespace Marketplace_System.Data
 
             modelBuilder.Entity<MessageThread>()
                 .HasIndex(t => t.UpdatedAt);
-            
+
             modelBuilder.Entity<ChatMessage>()
                 .HasIndex(m => m.ThreadId);
 
@@ -110,7 +110,7 @@ namespace Marketplace_System.Data
             modelBuilder.Entity<ActivityLog>()
                 .Property(a => a.Action)
                 .HasMaxLength(140);
-        
+
         }
     }
 }

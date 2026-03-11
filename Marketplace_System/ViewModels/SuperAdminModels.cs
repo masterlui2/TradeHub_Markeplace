@@ -24,7 +24,7 @@ namespace Marketplace_System.ViewModels
         public int TotalSales { get; init; }
         public decimal Revenue { get; init; }
         public int ActiveListings { get; init; }
-        public ObservableCollection<SalesTrendPoint> SalesTrends { get; set; } = new();
+      public ObservableCollection<SalesTrendPoint> SalesTrends { get; set; } = new();
         public ObservableCollection<RecentTransactionRow> RecentTransactions { get; set; } = new();
         public ObservableCollection<string> Alerts { get; set; } = new();
     }
@@ -39,7 +39,6 @@ namespace Marketplace_System.ViewModels
         public bool IsSuspended { get; set; }
         public DateTime CreatedAt { get; init; }
         public string Status => IsSuspended ? "Suspended" : "Active";
-        public string SuspendActionLabel => IsSuspended ? "Unsuspend" : "Suspend";
     }
 
     public sealed class SuperAdminPaymentRow

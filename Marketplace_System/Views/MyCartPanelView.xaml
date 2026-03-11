@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="#F8FAF9">
+
     <UserControl.Resources>
         <!-- Shadow effect for cards -->
         <DropShadowEffect x:Key="CardShadow" 
@@ -47,11 +48,7 @@
             <TextBlock Text="My Cart" 
                        FontSize="32" 
                        FontWeight="Light" 
-                       Foreground="#1A3B2E">
-                <TextBlock.TextEffects>
-                    <TextEffect/>
-                </TextBlock.TextEffects>
-            </TextBlock>
+                       Foreground="#1A3B2E"/>
             <TextBlock Text="Select items to checkout and set pickup or delivery per item" 
                        Margin="0,8,0,0" 
                        Foreground="#5E6F6B" 
@@ -61,9 +58,9 @@
                     Margin="0,16,0,0"/>
         </StackPanel>
 
-        <!-- Cart Items Section -->
+        <!-- Cart Items Section (with empty state) -->
         <Grid Grid.Row="1">
-            <!-- Empty State -->
+            <!-- Empty State Border -->
             <Border x:Name="EmptyCartBorder"
                     Background="White"
                     CornerRadius="20"
@@ -92,10 +89,10 @@
             </Border>
 
             <!-- Cart Items List -->
-            <ScrollViewer VerticalScrollBarVisibility="Auto"
+            <ScrollViewer x:Name="CartScrollViewer"
+                          VerticalScrollBarVisibility="Auto"
                           PanningMode="VerticalOnly">
-                <ItemsControl x:Name="CartItemsControl"
-                              Margin="0,0,8,0">
+                <ItemsControl x:Name="CartItemsControl" Margin="0,0,8,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border Background="White" 
@@ -119,7 +116,7 @@
 
                                     <!-- Checkbox -->
                                     <CheckBox Grid.Column="0"
-                                              IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                               VerticalAlignment="Center"
                                               Margin="0,0,16,0"
                                               Style="{StaticResource ModernCheckBoxStyle}"/>
@@ -139,9 +136,7 @@
                                         </Grid.ColumnDefinitions>
 
                                         <!-- Product Name and Quantity -->
-                                        <StackPanel Grid.Row="0" 
-                                                    Grid.ColumnSpan="2" 
-                                                    Orientation="Horizontal">
+                                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal">
                                             <TextBlock Text="{Binding ProductName}" 
                                                        FontSize="18" 
                                                        FontWeight="SemiBold" 
@@ -154,14 +149,14 @@
                                         </StackPanel>
 
                                         <!-- Seller Info -->
-                                        <TextBlock Grid.Row="1" 
-                                                   Grid.ColumnSpan="2" 
+                                        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" 
                                                    Text="{Binding SellerText}" 
                                                    Margin="0,6,0,0" 
                                                    Foreground="#5E6F6B" 
                                                    FontSize="13"/>
-                                        <TextBlock Grid.Row="2"
-                                                   Grid.ColumnSpan="2"
+
+                                        <!-- Pickup Address (static) -->
+                                        <TextBlock Grid.Row="2" Grid.ColumnSpan="2"
                                                    Text="{Binding PickupAddressText}"
                                                    Margin="0,4,0,0"
                                                    Foreground="#2D6A4F"
@@ -169,8 +164,7 @@
                                                    FontWeight="SemiBold"/>
 
                                         <!-- Fulfillment Selection -->
-                                        <StackPanel Grid.Row="3" 
-                                                    Grid.ColumnSpan="2" 
+                                        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" 
                                                     Orientation="Horizontal" 
                                                     Margin="0,12,0,0">
                                             <TextBlock Text="Fulfillment:" 
@@ -180,18 +174,17 @@
                                                        FontSize="13"/>
                                             <RadioButton Content="Pick up" 
                                                          GroupName="Fulfillment"
-                                                         IsChecked="{Binding IsPickupSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                         IsChecked="{Binding IsPickupSelected, Mode=TwoWay}"
                                                          Margin="0,0,16,0"
                                                          Style="{StaticResource ModernRadioButtonStyle}"/>
                                             <RadioButton Content="Deliver" 
                                                          GroupName="Fulfillment"
-                                                         IsChecked="{Binding IsDeliverySelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                         IsChecked="{Binding IsDeliverySelected, Mode=TwoWay}"
                                                          Style="{StaticResource ModernRadioButtonStyle}"/>
                                         </StackPanel>
 
-                                        <!-- Address Section -->
-                                        <Border Grid.Row="4" 
-                                                Grid.ColumnSpan="2"
+                                        <!-- Address Section (visible when delivery selected) -->
+                                        <Border Grid.Row="4" Grid.ColumnSpan="2"
                                                 Background="#F3F8F4" 
                                                 CornerRadius="12" 
                                                 Padding="12" 
@@ -203,7 +196,7 @@
                                                            FontWeight="Medium" 
                                                            FontSize="12"
                                                            Margin="0,0,0,6"/>
-                                                <TextBox Text="{Binding AddressText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                <TextBox Text="{Binding AddressText, Mode=TwoWay}" 
                                                          Style="{StaticResource RoundedTextBoxStyle}"/>
                                             </StackPanel>
                                         </Border>
@@ -233,88 +226,116 @@
         </Grid>
 
         <!-- Checkout Summary Section -->
-        <Border Grid.Row="2" 
-                Background="White" 
-                CornerRadius="20" 
-                Padding="24" 
-                BorderBrush="#E5EDE9" 
-                BorderThickness="1"
-                Margin="0,24,0,0">
+        <Border Grid.Row="2"
+        Background="White"
+        CornerRadius="16"
+        Padding="16"
+        BorderBrush="#E5EDE9"
+        BorderThickness="1"
+        Margin="0,16,0,0">
+
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="360"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Total and Terms -->
-                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,24,0">
-                    <TextBlock Text="Selected Total" 
-                               Foreground="#5E6F6B" 
-                               FontSize="14"/>
-                    <TextBlock x:Name="CartTotalTextBlock" 
-                               Text="₱0.00" 
-                               FontSize="32" 
-                               FontWeight="Light" 
-                               Foreground="#1A3B2E"/>
-                    <Border Background="#F7FBF9"
-                            BorderBrush="#DCEBE4"
-                            BorderThickness="1"
-                            CornerRadius="12"
-                            Padding="14"
-                            Margin="0,12,0,0">
-                        <StackPanel>
-                            <TextBlock Text="Buyer Terms &amp; Conditions"
-                                       FontWeight="SemiBold"
-                                       Foreground="#1A3B2E"
-                                       FontSize="13"/>
-                            <TextBlock Text="Please review and accept before proceeding with your transaction."
-                                       Margin="0,4,0,8"
-                                       Foreground="#5E6F6B"
-                                       FontSize="12"/>
-                            <Button Content="View Terms &amp; Conditions"
-                                    HorizontalAlignment="Left"
-                                    Padding="10,6"
-                                    FontSize="12"
-                                    FontWeight="SemiBold"
-                                    Foreground="#2D6A4F"
-                                    Background="#ECF7F1"
-                                    BorderBrush="#D3EBDD"
-                                    Click="ViewTermsButton_Click"/>
-                            <CheckBox x:Name="AcceptTncCheckBox"
-                                      Margin="0,10,0,0"
-                                      Content="I have reviewed and accept the Buyer Terms and Conditions."
-                                      Foreground="#1A3B2E"
-                                      Checked="AcceptTncCheckBox_Changed"
-                                      Unchecked="AcceptTncCheckBox_Changed"/>
-                        </StackPanel>
-                    </Border>
+                <!-- LEFT : TOTAL -->
+                <StackPanel Grid.Column="0"
+                    VerticalAlignment="Center">
+
+                    <TextBlock Text="Selected Total"
+                       Foreground="#5E6F6B"
+                       FontSize="13"/>
+
+                    <TextBlock x:Name="CartTotalTextBlock"
+                       Text="₱0.00"
+                       FontSize="32"
+                       FontWeight="Light"
+                       Foreground="#1A3B2E"
+                       Margin="0,4,0,0"/>
+
                 </StackPanel>
 
-                <!-- Checkout Button -->
-                <Button Grid.Column="1"
-                        x:Name="CheckoutButton"
-                        Content="Proceed to Checkout"
-                        Background="#2D6A4F"
-                        Foreground="White"
-                        BorderThickness="0"
-                        Padding="32,14"
-                        FontWeight="Medium"
-                        FontSize="14"
-                        Cursor="Hand"
-                        IsEnabled="False"
-                        Click="CheckoutButton_Click" Margin="0,122,0,0">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}"
-                                    CornerRadius="30"
-                                    Padding="{TemplateBinding Padding}">
-                                <ContentPresenter HorizontalAlignment="Center" 
-                                                  VerticalAlignment="Center"/>
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
+                <!-- RIGHT SIDE -->
+                <Grid Grid.Column="1">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Terms -->
+                    <Border Grid.Row="0"
+                    Background="#F7FBF9"
+                    BorderBrush="#DCEBE4"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Padding="10"
+                    Margin="0,0,0,8">
+
+                        <StackPanel>
+
+                            <TextBlock Text="Buyer Terms &amp; Conditions"
+                               FontWeight="SemiBold"
+                               Foreground="#1A3B2E"
+                               FontSize="12"/>
+
+                            <Button Content="View Terms &amp; Conditions"
+                            HorizontalAlignment="Left"
+                            Padding="8,4"
+                            FontSize="11"
+                            FontWeight="SemiBold"
+                            Foreground="#2D6A4F"
+                            Background="#ECF7F1"
+                            BorderBrush="#D3EBDD"
+                            Click="ViewTermsButton_Click"
+                            Margin="0,6,0,0"/>
+
+                            <CheckBox x:Name="AcceptTncCheckBox"
+                              Margin="0,6,0,0"
+                              Content="Accept Buyer Terms"
+                              FontSize="11"
+                              Foreground="#1A3B2E"
+                              Checked="AcceptTncCheckBox_Changed"
+                              Unchecked="AcceptTncCheckBox_Changed"/>
+
+                        </StackPanel>
+
+                    </Border>
+
+                    <!-- Checkout Button -->
+                    <Button Grid.Row="1"
+                    x:Name="CheckoutButton"
+                    Content="Proceed to Checkout"
+                    Background="#2D6A4F"
+                    Foreground="White"
+                    BorderThickness="0"
+                    Padding="28,10"
+                    FontWeight="Medium"
+                    FontSize="13"
+                    Cursor="Hand"
+                    IsEnabled="False"
+                    Click="CheckoutButton_Click"
+                    HorizontalAlignment="Right">
+
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}"
+                                CornerRadius="24"
+                                Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+
+                    </Button>
+
+                </Grid>
+
             </Grid>
+
         </Border>
     </Grid>
 </UserControl>
